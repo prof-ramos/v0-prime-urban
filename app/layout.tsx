@@ -1,9 +1,14 @@
 import React from "react"
 import type { Metadata, Viewport } from 'next'
-import { Inter, Playfair_Display } from 'next/font/google'
+
 import { Analytics } from '@vercel/analytics/next'
 import { WhatsAppFloat } from '@/components/whatsapp-float'
 import './globals.css'
+import { Inter, Playfair_Display, Geist_Mono as V0_Font_Geist_Mono, Bree_Serif as V0_Font_Bree_Serif } from 'next/font/google'
+
+// Initialize fonts
+const _geistMono = V0_Font_Geist_Mono({ subsets: ['latin'], weight: ["100","200","300","400","500","600","700","800","900"] })
+const _breeSerif = V0_Font_Bree_Serif({ subsets: ['latin'], weight: ["400"] })
 
 const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });
 const playfair = Playfair_Display({ subsets: ["latin"], variable: '--font-playfair' });
@@ -59,7 +64,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" className="bg-background">
-      <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} ${playfair.variable} font-serif antialiased`}>
         {children}
         <WhatsAppFloat />
         <Analytics />
