@@ -1,0 +1,21 @@
+{
+  "name": "PrimeUrban Brasília",
+  "short_name": "PrimeUrban",
+  "description": "Imóveis de alto padrão em Brasília - Curadoria exclusiva de apartamentos, casas e coberturas",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F9F6F0",
+  "theme_color": "#1D2D3A",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
