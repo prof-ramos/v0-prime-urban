@@ -25,3 +25,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+# OMC state
+.omc/
+
+# Repomix output
+repomix-output.xml
+
+# npm lock (using pnpm)
+package-lock.json
