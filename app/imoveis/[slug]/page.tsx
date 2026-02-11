@@ -8,6 +8,7 @@ import { PropertyInfo } from "@/components/property-info"
 import { ContactForm } from "@/components/contact-form"
 import { Button } from "@/components/ui/button"
 import { getPropertyBySlug, mockProperties } from "@/lib/mock-data"
+import { formatCurrency } from "@/lib/utils"
 import type { Metadata } from "next"
 
 interface PropertyPageProps {
@@ -22,14 +23,6 @@ export async function generateMetadata({ params }: PropertyPageProps): Promise<M
     return {
       title: "Imóvel não encontrado",
     }
-  }
-
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-      minimumFractionDigits: 0,
-    }).format(value)
   }
 
   return {

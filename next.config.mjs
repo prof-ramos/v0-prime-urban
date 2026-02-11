@@ -4,9 +4,29 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: true,
+    remotePatterns: [
+      { protocol: 'https', hostname: 'images.unsplash.com' }
+    ],
+    formats: ['image/avif', 'image/webp'],
   },
- 
+  async headers() {
+    return [
+      {
+        source: '/:all*(svg|jpg|jpeg|png|webp|avif|ico)',
+        headers: [{
+          key: 'Cache-Control',
+          value: 'public, max-age=31536000, immutable',
+        }],
+      },
+      {
+        source: '/_next/static/:path*',
+        headers: [{
+          key: 'Cache-Control',
+          value: 'public, max-age=31536000, immutable',
+        }],
+      },
+    ]
+  },
 }
 
 export default nextConfig

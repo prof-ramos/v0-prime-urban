@@ -3,6 +3,8 @@ import Link from "next/link"
 import { Bed, Bath, Car, Maximize2, MapPin, Heart } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
+import { formatCurrency } from "@/lib/utils"
+import React from "react"
 
 export interface Property {
   id: string
@@ -31,15 +33,6 @@ interface PropertyCardProps {
   property: Property
 }
 
-const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(value)
-}
-
 const typeLabels: Record<string, string> = {
   apartamento: "Apartamento",
   casa: "Casa",
@@ -47,7 +40,7 @@ const typeLabels: Record<string, string> = {
   sala_comercial: "Sala Comercial",
 }
 
-export function PropertyCard({ property }: PropertyCardProps) {
+const PropertyCard = React.memo(function PropertyCard({ property }: PropertyCardProps) {
   const monthlyCost = (property.condoFee || 0) + (property.iptu || 0)
 
   return (
@@ -60,13 +53,13 @@ export function PropertyCard({ property }: PropertyCardProps) {
           className="object-cover transition-transform duration-300 group-hover:scale-105"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
-        
+
         {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-wrap gap-2">
-          <Badge 
+          <Badge
             className={`${
-              property.transactionType === "venda" 
-                ? "bg-primary text-primary-foreground" 
+              property.transactionType === "venda"
+                ? "bg-primary text-primary-foreground"
                 : "bg-accent text-accent-foreground"
             }`}
           >
@@ -80,7 +73,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
         </div>
 
         {/* Favorite Button */}
-        <button 
+        <button
           className="absolute top-3 right-3 p-2 rounded-full bg-card/90 hover:bg-card transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
           aria-label="Adicionar aos favoritos"
         >
@@ -146,4 +139,8 @@ export function PropertyCard({ property }: PropertyCardProps) {
       </CardContent>
     </Card>
   )
-}
+}, (prevProps, nextProps) => {
+  return prevProps.property.id === nextProps.property.id
+})
+
+export { PropertyCard }

@@ -1,10 +1,12 @@
 "use client"
 
 import { useState } from "react"
+import { useDebouncedCallback } from "use-debounce"
 import { Search, SlidersHorizontal, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { formatCurrency } from "@/lib/utils"
 import {
   Select,
   SelectContent,
@@ -56,23 +58,31 @@ const propertyTypes = [
   { value: "sala_comercial", label: "Sala Comercial" },
 ]
 
-const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(value)
-}
-
 export function PropertyFilters({ filters, onFilterChange, onReset }: PropertyFiltersProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [localFilters, setLocalFilters] = useState(filters)
 
+  // Create debounced callback (300ms delay)
+  const debouncedOnFilterChange = useDebouncedCallback(
+    (newFilters: FilterState) => {
+      onFilterChange(newFilters)
+    },
+    300,
+    { leading: false }
+  )
+
   const updateFilter = <K extends keyof FilterState>(key: K, value: FilterState[K]) => {
     const newFilters = { ...localFilters, [key]: value }
     setLocalFilters(newFilters)
-    onFilterChange(newFilters)
+
+    // Use debounced for non-critical, immediate for critical
+    if (key === 'search' || key === 'minPrice' || key === 'maxPrice') {
+      // Critical filters - immediate update
+      onFilterChange(newFilters)
+    } else {
+      // Non-critical - use debounced (300ms delay)
+      debouncedOnFilterChange.callback(newFilters)
+    }
   }
 
   const hasActiveFilters = 
@@ -153,8 +163,10 @@ export function PropertyFilters({ filters, onFilterChange, onReset }: PropertyFi
             max={10000000}
             step={50000}
             onValueChange={([min, max]) => {
-              setLocalFilters({ ...localFilters, minPrice: min, maxPrice: max })
-              onFilterChange({ ...localFilters, minPrice: min, maxPrice: max })
+              const newFilters = { ...localFilters, minPrice: min, maxPrice: max }
+              setLocalFilters(newFilters)
+              // Price sliders need immediate feedback for UX
+              onFilterChange(newFilters)
             }}
             className="[&_[role=slider]]:bg-secondary"
           />

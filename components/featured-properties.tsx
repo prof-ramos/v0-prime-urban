@@ -1,11 +1,12 @@
 import Link from "next/link"
+import React, { useMemo } from "react"
 import { ArrowRight } from "lucide-react"
 import { PropertyCard } from "@/components/property-card"
 import { Button } from "@/components/ui/button"
 import { getFeaturedProperties } from "@/lib/mock-data"
 
-export function FeaturedProperties() {
-  const featuredProperties = getFeaturedProperties()
+const FeaturedProperties = React.memo(function FeaturedProperties() {
+  const featuredProperties = useMemo(() => getFeaturedProperties(), [])
 
   return (
     <section className="py-16 md:py-24 bg-[var(--sky-200)]/20">
@@ -39,4 +40,6 @@ export function FeaturedProperties() {
       </div>
     </section>
   )
-}
+})
+
+export { FeaturedProperties }

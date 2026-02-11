@@ -35,39 +35,24 @@ export default function PropertiesPage() {
   const filteredProperties = useMemo(() => {
     let results = [...mockProperties]
 
-    // Search filter
-    if (filters.search) {
-      const searchLower = filters.search.toLowerCase()
-      results = results.filter(
-        (p) =>
-          p.title.toLowerCase().includes(searchLower) ||
-          p.address.toLowerCase().includes(searchLower) ||
-          p.neighborhood.toLowerCase().includes(searchLower)
-      )
-    }
-
-    // Transaction type filter
+    // 1. SELECTIVE FILTERS FIRST (fast, reduce dataset early)
+    // Transaction type filter (~50% selectivity)
     if (filters.transactionType) {
       results = results.filter((p) => p.transactionType === filters.transactionType)
     }
 
-    // Property type filter
+    // Property type filter (~25% selectivity)
     if (filters.propertyType) {
       results = results.filter((p) => p.type === filters.propertyType)
     }
 
-    // Neighborhood filter
+    // Neighborhood filter (~12% selectivity)
     if (filters.neighborhood) {
       results = results.filter(
         (p) =>
           p.neighborhood.toLowerCase().replace(/ /g, "-") === filters.neighborhood
       )
     }
-
-    // Price range filter
-    results = results.filter(
-      (p) => p.price >= filters.minPrice && p.price <= filters.maxPrice
-    )
 
     // Bedrooms filter
     if (filters.bedrooms) {
@@ -78,6 +63,22 @@ export default function PropertiesPage() {
     if (filters.parkingSpaces) {
       results = results.filter(
         (p) => p.parkingSpaces >= parseInt(filters.parkingSpaces)
+      )
+    }
+
+    // Price range filter (runs on reduced dataset)
+    results = results.filter(
+      (p) => p.price >= filters.minPrice && p.price <= filters.maxPrice
+    )
+
+    // 2. SEARCH FILTER LAST (most expensive, after selective filters)
+    if (filters.search) {
+      const searchLower = filters.search.toLowerCase()
+      results = results.filter(
+        (p) =>
+          p.title.toLowerCase().includes(searchLower) ||
+          p.address.toLowerCase().includes(searchLower) ||
+          p.neighborhood.toLowerCase().includes(searchLower)
       )
     }
 
