@@ -33,3 +33,6 @@ repomix-output.xml
 
 # npm lock (using pnpm)
 package-lock.json
+
+# claude code
+.claude/
