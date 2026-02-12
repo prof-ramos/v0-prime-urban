@@ -11,6 +11,9 @@ export function WhatsAppFloat() {
   const [showTooltip, setShowTooltip] = useState(false)
 
   useEffect(() => {
+    // Only run on client
+    if (typeof window === "undefined") return
+
     // Show button after scrolling
     const handleScroll = () => {
       setIsVisible(window.scrollY > 200)
@@ -31,6 +34,7 @@ export function WhatsAppFloat() {
   }, [])
 
   const handleClick = () => {
+    if (typeof window === "undefined") return
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`
     window.open(url, "_blank")
   }

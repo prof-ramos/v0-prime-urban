@@ -39,6 +39,7 @@ export function ContactForm({ propertyTitle, propertyId }: ContactFormProps) {
   }
 
   const handleWhatsApp = () => {
+    if (typeof window === "undefined") return
     const message = `Olá! Tenho interesse no imóvel: ${propertyTitle}. Gostaria de mais informações.`
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`
     window.open(url, "_blank")
