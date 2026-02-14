@@ -135,5 +135,23 @@ export const mockProperties: Property[] = [
   },
 ]
 
-export const getFeaturedProperties = () => mockProperties.filter((p) => p.featured)
-export const getPropertyBySlug = (slug: string) => mockProperties.find((p) => p.slug === slug)
+// Cache featured properties to avoid filtering on every call
+let _featuredProperties: Property[] | null = null
+export const getFeaturedProperties = () => {
+  if (_featuredProperties === null) {
+    _featuredProperties = mockProperties.filter((p) => p.featured)
+  }
+  return _featuredProperties
+}
+
+// Cache property lookups by slug
+const _propertyCache = new Map<string, Property>()
+export const getPropertyBySlug = (slug: string) => {
+  if (!_propertyCache.has(slug)) {
+    const property = mockProperties.find((p) => p.slug === slug)
+    if (property) {
+      _propertyCache.set(slug, property)
+    }
+  }
+  return _propertyCache.get(slug)
+}

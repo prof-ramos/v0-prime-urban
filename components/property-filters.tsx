@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { useDebouncedCallback } from "use-debounce"
 import { Search, SlidersHorizontal, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -33,49 +33,17 @@ interface PropertyFiltersProps {
 
 const propertyTypes = Object.entries(PROPERTY_TYPE_LABELS).map(([value, label]) => ({ value, label }))
 
-export function PropertyFilters({ filters, onFilterChange, onReset }: PropertyFiltersProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [localFilters, setLocalFilters] = useState(filters)
+interface FilterContentProps {
+  localFilters: FilterState
+  updateFilter: (key: keyof FilterState, value: string) => void
+  onFilterChange: (filters: FilterState) => void
+  onReset: () => void
+  hasActiveFilters: boolean
+  setLocalFilters: React.Dispatch<React.SetStateAction<FilterState>>
+}
 
-  // Create debounced callback (300ms delay)
-  const debouncedOnFilterChange = useDebouncedCallback(
-    (newFilters: FilterState) => {
-      onFilterChange(newFilters)
-    },
-    300,
-    { leading: false }
-  )
-
-  useEffect(() => {
-    return () => {
-      debouncedOnFilterChange.cancel()
-    }
-  }, [debouncedOnFilterChange])
-
-  const updateFilter = <K extends keyof FilterState>(key: K, value: FilterState[K] | string) => {
-    const newFilters = { ...localFilters, [key]: value as FilterState[K] }
-    setLocalFilters(newFilters)
-
-    // Use debounced for non-critical, immediate for critical
-    if (key === 'search' || key === 'minPrice' || key === 'maxPrice') {
-      // Critical filters - immediate update
-      onFilterChange(newFilters)
-    } else {
-      // Non-critical - use debounced (300ms delay)
-      debouncedOnFilterChange.callback(newFilters)
-    }
-  }
-
-  const hasActiveFilters = 
-    filters.transactionType || 
-    filters.propertyType || 
-    filters.neighborhood || 
-    filters.bedrooms || 
-    filters.parkingSpaces ||
-    filters.minPrice > PRICE_LIMITS.MIN ||
-    filters.maxPrice < PRICE_LIMITS.MAX
-
-  const FilterContent = () => (
+function FilterContent({ localFilters, updateFilter, onFilterChange, onReset, hasActiveFilters, setLocalFilters }: FilterContentProps) {
+  return (
     <div className="space-y-6">
       {/* Transaction Type */}
       <div className="space-y-2">
@@ -220,6 +188,53 @@ export function PropertyFilters({ filters, onFilterChange, onReset }: PropertyFi
       )}
     </div>
   )
+}
+
+export function PropertyFilters({ filters, onFilterChange, onReset }: PropertyFiltersProps) {
+  const [isOpen, setIsOpen] = useState(false)
+  const [localFilters, setLocalFilters] = useState(filters)
+
+  // Create debounced callback (300ms delay)
+  const debouncedOnFilterChange = useDebouncedCallback(
+    (newFilters: FilterState) => {
+      onFilterChange(newFilters)
+    },
+    300,
+    { leading: false }
+  )
+
+  useEffect(() => {
+    return () => {
+      debouncedOnFilterChange.cancel()
+    }
+  }, [debouncedOnFilterChange])
+
+  const updateFilter = <K extends keyof FilterState>(key: K, value: FilterState[K] | string) => {
+    const newFilters = { ...localFilters, [key]: value as FilterState[K] }
+    setLocalFilters(newFilters)
+
+    // Use debounced for non-critical, immediate for critical
+    if (key === 'search' || key === 'minPrice' || key === 'maxPrice') {
+      // Critical filters - immediate update
+      onFilterChange(newFilters)
+    } else {
+      // Non-critical - use debounced (300ms delay)
+      debouncedOnFilterChange.callback(newFilters)
+    }
+  }
+
+  const hasActiveFilters = useMemo(
+    () => Boolean(
+      filters.transactionType ||
+      filters.propertyType ||
+      filters.neighborhood ||
+      filters.bedrooms ||
+      filters.parkingSpaces ||
+      filters.minPrice > PRICE_LIMITS.MIN ||
+      filters.maxPrice < PRICE_LIMITS.MAX
+    ),
+    [filters]
+  )
 
   return (
     <div className="bg-card border border-border/50 rounded-xl p-4 mb-6">
@@ -297,8 +312,8 @@ export function PropertyFilters({ filters, onFilterChange, onReset }: PropertyFi
         {/* Mobile Filter Button */}
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="lg:hidden h-12 border-secondary text-secondary bg-transparent"
             >
               <SlidersHorizontal className="mr-2 h-5 w-5" />
@@ -315,7 +330,14 @@ export function PropertyFilters({ filters, onFilterChange, onReset }: PropertyFi
               <SheetTitle>Filtrar imóveis</SheetTitle>
             </SheetHeader>
             <div className="mt-6">
-              <FilterContent />
+              <FilterContent
+                localFilters={localFilters}
+                updateFilter={updateFilter}
+                onFilterChange={onFilterChange}
+                onReset={onReset}
+                hasActiveFilters={hasActiveFilters}
+                setLocalFilters={setLocalFilters}
+              />
             </div>
           </SheetContent>
         </Sheet>
