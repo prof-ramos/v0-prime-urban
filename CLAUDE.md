@@ -1,293 +1,124 @@
-# Contexto do Projeto PrimeUrban
+# CLAUDE.md
 
-Este documento contém informações sobre o projeto para orientar desenvolvimento e design.
+Este arquivo fornece orientações para o Claude Code (claude.ai/code) trabalhar com este repositório.
 
----
+## Comandos Essenciais
 
-## Stack Tecnológico
+### Desenvolvimento
+```bash
+npm run dev        # Inicia servidor de desenvolvimento (localhost:3000)
+npm run build      # Cria build de produção
+npm run start      # Inicia servidor de produção
+```
 
-| Tecnologia | Versão | Uso |
-|------------|--------|------|
-| Next.js | 16.1.6 | Framework React |
-| React | 19.2.0 | Biblioteca UI |
-| TypeScript | 5.x | Tipagem estática |
-| Tailwind CSS | 4.1.9 | Estilização com design tokens |
-| Lucide React | - | Ícones |
-| Vercel Analytics | 1.3.1 | Análise de uso |
-
----
-
-## Design Tokens (Paleta de Cores)
-
-```css
-/* Cores da Marca */
---primary-brand: #1D2D3A      /* Azul marinho profundo */
---secondary-brand: #B68863    /* Azul acinzentado */
---accent-brand: #3D4D55       /* Dourado */
---base-cream: #F9F6F0        /* Creme claro */
---base-tan: #D9C3A9          /* Bege claro */
---base-mauve: #A78E9C        /* Malha suave */
-
-/* Semântico */
---background: #F9F6F0        /* Fundo da página */
---foreground: #1D2D3A        /* Texto principal */
---card: #ffffff               /* Fundo dos cards */
---card-foreground: #1D2D3A   /* Texto dos cards */
---primary: #1D2D3A           /* Elementos primários */
---primary-foreground: #F9F6F0 /* Texto sobre primário */
---accent: #3D4D55            /* Destaques */
---accent-foreground: #F9F6F0  /* Texto sobre destaque */
---border: #D9C3A9            /* Bordas sutis */
---muted: #D9C3A9             /* Texto mutado */
---muted-foreground: #F9F6F0  /* Fundo de texto mutado */
-
-/* WhatsApp */
---whatsapp: #25D366            /* Verde WhatsApp */
+### Código
+```bash
+npm run lint       # Executa ESLint
+npx tsc --noEmit # Verificação de tipos TypeScript
 ```
 
 ---
 
-## Tipografia
+## Arquitetura
 
-```css
-/* Font Config */
---font-sans: 'Inter', sans-serif           /* Texto de corpo */
---font-serif: 'Libre Baskerville', serif   /* Títulos e serifados */
---font-mono: 'Geist Mono' (não usado)  /* Removido na Fase 3 */
-```
+**Next.js 16 App Router** com arquitetura plana:
+- `app/` - Rotas e páginas (Server Components por padrão)
+- `components/` - Componentes React reutilizáveis
+- `lib/` - Utilitários, tipos e constantes
+- `public/` - Assets estáticos (manifesto PWA, Service Worker, ícones)
 
-**Uso Atual:**
-- **Inter** para texto de corpo (leitura)
-- **Playfair Display** para títulos (elegância, sofisticação)
-- **Libre Baskerville** como fallback serif
+**Componentes UI** (shadcn/ui baseado em Radix UI):
+- `components/ui/` - Componentes base (button, card, input, select, etc.)
+- Use estes em vez de criar primitivos UI
 
-**Hierarquia Típica:**
-- H1: Playfair Display, 48-56px
-- H2: Playfair Display, 36-44px
-- H3: Playfair Display, 28-32px
-- Body: Inter, 16-18px (base)
-- Small: Inter, 14px
+**Gestão de Estado** (sem Redux/Zustand):
+- `useState/useReducer` - Estado local
+- Context API - Estado compartilhado
+- React Hook Form + Zod - Formulários com validação
+- `useSearchParams` (Next.js) - Estado em URL para filtros
 
 ---
 
-## Espaçamento e Layout
+## Stack
 
-```css
-/* Radius */
---radius: 1.25rem               /* Bordas arredondadas */
---radius-sm: calc(var(--radius) - 4px)
---radius-md: calc(var(--radius) - 2px)
---radius-lg: var(--radius)
---radius-xl: calc(var(--radius) + 4px)
-```
-
-**Características do Layout:**
-- Container centralizado com max-width
-- Espaçamentos generosos (padding adequado)
-- Grid responsivo para cards de propriedades
-- Sidebar de navegação em desktop
-- Header fixo com informações de contato
+| Tecnologia | Versão |
+|-----------|---------|
+| Next.js | 16.1.6 (App Router) |
+| React | 19.2.0 |
+| TypeScript | 5.x (strict) |
+| Tailwind CSS | 4.1.9 |
+| Radix UI | shadcn/ui componentes |
 
 ---
 
-## Padrões de Componentes
+## Convenções
 
-### Cards de Propriedade
-- Fundo branco (#ffffff)
-- Imagem de destaque no topo
-- Informações em sobreposição (overlay)
-- Bordas arredondadas sutis
-- Hover com elevação sutil
+**Nomes:**
+- Componentes: PascalCase (`PropertyCard`, `Header`)
+- Funções/hooks: camelCase (`formatCurrency`, `useFilters`)
+- Constantes: SCREAMING_SNAKE_CASE (`PROPERTY_TYPE_LABELS`, `WHATSAPP_CONFIG`)
+- Tipos/interfaces: PascalCase (`Property`, `FilterState`)
 
-### Botões
-- Primário: background #1D2D3A, texto branco
-- Secundário: outline ou background transparente
-- Borda arredondada: --radius
-- Padding generoso
-- Transições suaves
-
-### Formulários
-- Inputs com borda sutil (#D9C3A9)
-- Focus com ring (#1D2D3A)
-- Labels claros e legíveis
-- Validação em tempo real
-
----
-
-## Funcionalidades Principais
-
-### Catálogo de Imóveis
-- Listagem com filtros avançados
-- Cards de propriedade com imagem, preço, características
-- Página de detalhes com galeria de imagens
-- Contador de resultados
-
-### Filtros
-- Tipo de transação (venda/aluguel)
-- Tipo de imóvel (apartamento, casa, cobertura)
-- Faixa de preço
-- Número de quartos e vagas
-- Busca por texto ou código
-- Filtro por bairro
-
-### Contato
-- Botão flutuante do WhatsApp
-- Formulário com validação
-- Informações de contato no header e footer
-
----
-
-## Diretrizes de Design
-
-### 1. Sofisticação e Exclusividade
-O design deve transmitir **luxo e elegância**:
-- Usar Playfair Display para títulos (serifa clássica e sofisticada)
-- Espaçamentos generosos para respiração visual
-- Cores sóbrias e bem combinadas
-- Imagens de alta qualidade
-
-### 2. Hierarquia Visual Clara
-- **Primário**: Azul marinho (#1D2D3A) para CTAs e informações importantes
-- **Secundário**: Azul acinzentado (#B68863) para elementos de suporte
-- **Destaque**: Dourado (#3D4D55) para badges e preços
-- **Fundo**: Creme claro (#F9F6F0) para amplitude
-
-### 3. Acessibilidade
-- Contraste adequado (WCAG AA mínimo)
-- Tamanho de fonte mínimo 16px para corpo
-- Labels claros em formulários
-- Estados de foco visíveis
-- Alt text em imagens
-
-### 4. Responsividade
-- Mobile-first approach
-- Grid de 1 coluna em mobile, 2-3 em desktop
-- Navegação adaptativa (menu hambúrguer em mobile)
-- Imagens responsivas com Next.js Image
-
-### 5. Performance
-- Otimização de imagens (AVIF/WebP) habilitada
-- React.memo em componentes pesados
-- Debounce em filtros de busca
-- Cache de assets estáticos
-- Service Worker para PWA
-
----
-
-## Status Atual
-
-### Implementado (v0.4.0 - Vercel Best Practices)
-- ✅ 12 otimizações Vercel React Best Practices aplicadas
-- ✅ O(1) lookups com Maps para filtros
-- ✅ Content-visibility CSS para longas listas
-- ✅ React.memo com comparação customizada
-- ✅ JSX estático extraído fora de componentes
-- ✅ Dynamic imports para code splitting
-
-### Implementado (v0.3.0 - Fase 3)
-- ✅ PWA Service Worker com estratégias de cache
-- ✅ Ícones PWA (192x192, 512x512)
-- ✅ Página 404 customizada
-- ✅ Dark mode removido (código mais limpo)
-
-### Otimizações Anteriores (v0.2.0)
-- ✅ Otimização de imagens AVIF/WebP
-- ✅ React.memo em PropertyCard e FeaturedProperties
-- ✅ Debounce de 300ms em filtros
-- ✅ Remoção de pacotes não utilizados
-- ✅ Cache headers HTTP
-
----
-
-## Princípios para Desenvolvimento Futuro
-
-Ao adicionar novas funcionalidades ou componentes:
-
-1. **Manter consistência** com tokens de design existentes
-2. **Usar tipografia apropriada** (Inter para corpo, Playfair para títulos)
-3. **Seguir hierarquia de cores** (Primary > Secondary > Accent)
-4. **Priorizar performance** (imagens otimizadas, memoização)
-5. **Garantir acessibilidade** (contraste, labels, foco)
-6. **Manter mobile-first** (responsividade em todos os componentes)
-7. **Usar espaços consistentes** (múltiplos de 8px ou 16px)
-8. **Testar em ambos os estados** (hover, focus, active, disabled)
-
----
-
-## Estrutura de Arquivos
-
-```
-app/
-├── layout.tsx              # Layout root com fontes e metadata
-├── page.tsx                # Homepage
-├── globals.css             # Design tokens e estilos globais
-├── imoveis/
-│   ├── page.tsx           # Listagem de propriedades
-│   └── [slug]/page.tsx     # Detalhes do imóvel
-└── not-found.tsx           # Página 404
-
-components/
-├── header.tsx              # Cabeçalho com navegação
-├── footer.tsx              # Rodapé com links
-├── property-card.tsx        # Card de propriedade (com memo)
-├── property-filters.tsx     # Componente de filtros
-├── featured-properties.tsx  # Propriedades em destaque
-├── contact-form.tsx        # Formulário de contato
-├── whatsapp-float.tsx      # Botão flutuante do WhatsApp
-└── service-worker-register.tsx # Registro do PWA SW
-
-lib/
-├── utils.ts                # Utilitários (formatCurrency)
-├── mock-data.ts            # Dados mock de propriedades
-└── utils.ts                # Funções helper
-
-public/
-├── manifest.json           # Manifesto PWA
-├── sw.js                 # Service Worker
-└── icon-*.png            # Ícones da aplicação
-```
-
----
-
-## Metadados SEO
-
+**Imports:**
 ```typescript
-title: 'PrimeUrban | Imóveis de Alto Padrão em Brasília'
-description: 'Encontre apartamentos e casas de alto padrão em Brasília. Curadoria exclusiva de imóveis na Asa Sul, Asa Norte, Águas Claras, Sudoeste e mais.'
-keywords: [
-  'imóveis Brasília',
-  'apartamentos Asa Sul',
-  'casas Asa Norte',
-  'imobiliária Brasília',
-  'imóveis alto padrão DF'
-]
+"use client"
+
+import { useState, useMemo } from "react"
+import Image from "next/image"
+import Link from "next/link"
+import { IconName } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import type { Property } from "@/lib/types"
+import { formatCurrency } from "@/lib/utils"
 ```
+
+**TypeScript:**
+- Usar union types em vez de strings genéricas
+- Evitar `any` - usar tipos específicos de `@/lib/types`
+- Interfaces para objetos, types para unions
+
+**React:**
+- Componentes em listas usam `React.memo` com comparação customizada
+- `useMemo` para valores computados
+- `useCallback` para funções em dependências de `useEffect`
+- Cleanup em `useEffect` (abort controllers, event listeners)
 
 ---
 
-**Última atualização:** 2026-02-14
-**Versão:** v0.4.0 (Vercel Best Practices aplicadas)
+## Design Tokens
 
-## Otimizações Vercel React Best Practices (v0.4.0)
+Cores principais (ver `app/globals.css`):
+- `--primary-brand: #1D2D3A` - Elementos primários, CTAs
+- `--secondary-brand: #B68863` - Elementos de suporte
+- `--accent-brand: #3D4D55` - Badges, preços
+- `--background: #F9F6F0` - Fundo da página
+- `--whatsapp: #25D366` - Verde WhatsApp
 
-### JavaScript Performance
-- **js-index-maps**: Maps O(1) para lookups de bairros e tipos de imóvel
-- **js-combine-iterations**: Filter e map em único loop
-- **js-early-exit**: Return antecipado quando nenhum filtro ativo
-- **js-hoist-regexp**: RegExp movida fora de loops
+Tipografia:
+- Títulos: Playfair Display (H1: 48-56px, H2: 36-44px)
+- Corpo: Inter (16-18px base)
 
-### Rendering Performance
-- **rendering-content-visibility**: CSS `content-visibility: auto` para longas listas
-- **rendering-hoist-jsx**: JSX estático extraído fora de componentes
+---
 
-### Re-render Optimization
-- **rerender-memo**: React.memo com comparação customizada
-- **rerender-memo-with-default-value**: Props não primitivos hoistados
-- **rerender-derived-state-no-effect**: Estado derivado calculado no render
+## Otimizações (v0.4.0)
 
-### Bundle Optimization
-- **bundle-dynamic-imports**: next/dynamic para componentes pesados
-- **bundle-conditional**: Importação condicional de ContactForm
+Já aplicadas 12 otimizações Vercel React Best Practices:
+- O(1) lookups com Maps (`lib/constants.ts`)
+- Iterações combinadas (filter + map em único loop)
+- Early exit quando nenhum filtro ativo
+- RegExp hoistada fora de loops
+- `content-visibility: auto` para listas longas
+- JSX estático extraído fora de componentes
+- Dynamic imports (`next/dynamic`) para code splitting
+- `React.memo` com comparação customizada
+- Estado derivado sem `useEffect`
+- Cleanup de event listeners
 
-### Client-Side
-- **client-event-listeners**: Cleanup de event listeners no useEffect
+---
+
+## Componentes Principais
+
+- `PropertyCard` - Card de propriedade (memoizado, O(1) lookup de bairros)
+- `PropertyFilters` - Sistema de filtros com debounce 300ms
+- `ContactForm` - Formulário com React Hook Form + Zod
+- `FeaturedProperties` - Lista de propriedades em destaque na homepage

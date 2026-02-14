@@ -4,6 +4,7 @@
 [![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/gabriel-ramos-projects-c715690c/v0-prime-urban)
 [![Built with Next.js](https://img.shields.io/badge/Built%20with-Next.js-16-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
 > Plataforma imobiliária de alto padrão especializada em Brasília, DF.
 
@@ -77,6 +78,49 @@ npm run dev
 ```
 
 4. Acesse [http://localhost:3000](http://localhost:3000)
+
+## 📚 Próximos Passos
+
+Depois de configurar o projeto:
+
+1. **Entenda a estrutura** → [Leia sobre arquitetura](#-arquitetura-de-componentes)
+2. **Performance** → [Veja o backlog de otimizações](./PERFORMANCE_BACKLOG.md)
+3. **Contribua** → [Leia as guidelines](./CONTRIBUTING.md)
+4. **Reporte bugs** → [Abra uma issue](https://github.com/gabrielramos/v0-prime-urban/issues)
+
+## 🔧 Troubleshooting
+
+### Porta 3000 em uso
+```bash
+# Mate o processo na porta 3000
+npx kill-port 3000
+# ou use outra porta
+npm run dev -- -p 3001
+```
+
+### Erro de build após mudanças
+```bash
+# Limpe cache e reinstale
+rm -rf .next node_modules
+npm install
+npm run build
+```
+
+### TypeScript errors
+```bash
+# Type check isolado
+npx tsc --noEmit
+```
+
+### Imagens não carregam
+Verifique se `next.config.mjs` tem o domínio Unsplash configurado:
+```javascript
+images: {
+  remotePatterns: [
+    { hostname: 'images.unsplash.com' }
+  ]
+}
+```
 
 ## Scripts Disponíveis
 
@@ -241,6 +285,21 @@ public/
   - Componentes devem usar React.memo se usados em listas
   - useEffect com cleanup para efeitos colaterais
   - Debounce para inputs de busca
+
+---
+
+## 🤝 Contribuindo
+
+Contribuições são bem-vindas! Por favor, leia [CONTRIBUTING.md](./CONTRIBUTING.md) para:
+
+- Guias de desenvolvimento local
+- Convenções de commit (Conventional Commits)
+- Processo de Pull Request
+- Padrões de código
+
+## 📄 Licença
+
+Este projeto está licenciado sob a [MIT License](LICENSE).
 
 ---
 
