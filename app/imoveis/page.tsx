@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo, Suspense } from "react"
+import { useState, useMemo } from "react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { PropertyCard } from "@/components/property-card"
@@ -28,9 +28,14 @@ const initialFilters: FilterState = {
   parkingSpaces: "",
 }
 
+// Helper to normalize neighborhood names for comparison
+// Converts "Águas Claras" -> "aguas-claras" (removes accents, spaces to hyphens)
+const normalizeNeighborhood = (name: string) =>
+  name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/ /g, "-")
+
 // Dynamically import filters to reduce initial bundle size
 const PropertyFilters = dynamic(() => import("@/components/property-filters").then(m => ({ default: m.PropertyFilters })), {
-  loading: () => <div className="bg-card border border-border/50 rounded-xl p-4 mb-6 animate-pulse h-32" aria-label="Carregando filtros..." />,
+  loading: () => <div role="status" className="bg-card border border-border/50 rounded-xl p-4 mb-6 animate-pulse h-32" aria-label="Carregando filtros..." />,
 })
 
 export default function PropertiesPage() {
@@ -70,7 +75,7 @@ export default function PropertiesPage() {
       }
 
       // Neighborhood filter
-      if (filters.neighborhood && p.neighborhood.toLowerCase().replace(/ /g, "-") !== filters.neighborhood) {
+      if (filters.neighborhood && normalizeNeighborhood(p.neighborhood) !== filters.neighborhood) {
         return false
       }
 
