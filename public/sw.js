@@ -1,6 +1,14 @@
 // Prime Urban Service Worker
 // Plain JavaScript version for browser compatibility
 
+// Debug flag - set to true only for development
+const DEBUG = false
+
+// Helper for conditional logging
+const debugLog = (...args) => {
+  if (DEBUG) console.log('[SW]', ...args)
+}
+
 // Cache name with versioning for easy invalidation
 const CACHE_VERSION = 'v1'
 const CACHE_NAME = `prime-urban-${CACHE_VERSION}`
@@ -13,13 +21,13 @@ self.clients.claim()
 
 // Basic install handler - cache static assets
 self.addEventListener('install', (event) => {
-  console.log('[SW] Install event')
+  debugLog('Install event')
   self.skipWaiting()
 })
 
 // Basic activate handler to clean old caches
 self.addEventListener('activate', (event) => {
-  console.log('[SW] Activate event')
+  debugLog('Activate event')
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
@@ -29,7 +37,7 @@ self.addEventListener('activate', (event) => {
             return cacheName.startsWith('prime-urban-') && cacheName !== CACHE_NAME
           })
           .map((cacheName) => {
-            console.log('[SW] Deleting old cache:', cacheName)
+            debugLog('Deleting old cache:', cacheName)
             return caches.delete(cacheName)
           })
       )
