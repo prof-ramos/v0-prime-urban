@@ -16,15 +16,11 @@ const logger = {
 
 export function ServiceWorkerRegister() {
   useEffect(() => {
-    if (typeof window === "undefined") return
+    if (typeof window === "undefined" || !('serviceWorker' in navigator)) return
 
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-          .then((reg) => logger.log('SW registered:', reg.scope))
-          .catch((err) => logger.error('SW registration failed:', err))
-      })
-    }
+    navigator.serviceWorker.register('/sw.js')
+      .then((reg) => logger.log('SW registered:', reg.scope))
+      .catch((err) => logger.error('SW registration failed:', err))
   }, [])
 
   return null
