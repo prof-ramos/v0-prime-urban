@@ -176,6 +176,14 @@ O design deve transmitir **luxo e elegância**:
 
 ## Status Atual
 
+### Implementado (v0.4.0 - Vercel Best Practices)
+- ✅ 12 otimizações Vercel React Best Practices aplicadas
+- ✅ O(1) lookups com Maps para filtros
+- ✅ Content-visibility CSS para longas listas
+- ✅ React.memo com comparação customizada
+- ✅ JSX estático extraído fora de componentes
+- ✅ Dynamic imports para code splitting
+
 ### Implementado (v0.3.0 - Fase 3)
 - ✅ PWA Service Worker com estratégias de cache
 - ✅ Ícones PWA (192x192, 512x512)
@@ -257,5 +265,29 @@ keywords: [
 
 ---
 
-**Última atualização:** 2026-02-12
-**Versão:** v0.3.0 (Fase 3 concluída)
+**Última atualização:** 2026-02-14
+**Versão:** v0.4.0 (Vercel Best Practices aplicadas)
+
+## Otimizações Vercel React Best Practices (v0.4.0)
+
+### JavaScript Performance
+- **js-index-maps**: Maps O(1) para lookups de bairros e tipos de imóvel
+- **js-combine-iterations**: Filter e map em único loop
+- **js-early-exit**: Return antecipado quando nenhum filtro ativo
+- **js-hoist-regexp**: RegExp movida fora de loops
+
+### Rendering Performance
+- **rendering-content-visibility**: CSS `content-visibility: auto` para longas listas
+- **rendering-hoist-jsx**: JSX estático extraído fora de componentes
+
+### Re-render Optimization
+- **rerender-memo**: React.memo com comparação customizada
+- **rerender-memo-with-default-value**: Props não primitivos hoistados
+- **rerender-derived-state-no-effect**: Estado derivado calculado no render
+
+### Bundle Optimization
+- **bundle-dynamic-imports**: next/dynamic para componentes pesados
+- **bundle-conditional**: Importação condicional de ContactForm
+
+### Client-Side
+- **client-event-listeners**: Cleanup de event listeners no useEffect

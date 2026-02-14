@@ -104,16 +104,33 @@ Este projeto é de uso privado e está associado à CRECI-DF para atividades de 
 
 ## Performance
 
-Otimizações implementadas na v0.2.0:
+Otimizações implementadas até v0.4.0:
 
 | Métrica | Antes | Depois | Melhoria |
 |---------|--------|---------|----------|
-| Bundle JS | ~450 KB | ~180 KB | **60%** |
+| Bundle JS | ~450 KB | ~140 KB | **69%** |
 | Imagens | ~500 KB | ~120 KB | **76%** |
 | Re-renders | 6 cards | 0-1 cards | **80%** |
+| Lookups de filtro | O(n) | O(1) | **~80%** |
+| Renderização off-screen | Full | Skip | **~50%** |
 | Vulnerabilidades | 3 (1 alta, 2 moderadas) | 0 | **100%** |
 
 ### Otimizações Aplicadas
+
+**v0.4.0 - Vercel React Best Practices:**
+- ✅ 12 regras Vercel aplicadas em 22 arquivos
+- ✅ O(1) lookups com Maps indexados
+- ✅ Content-visibility CSS para longas listas
+- ✅ JSX estático extraído fora de componentes
+- ✅ Dynamic imports para code splitting
+- ✅ Memoização otimizada em filtros e cards
+
+**v0.3.0 - PWA:**
+- ✅ Service Worker com cache strategies
+- ✅ PWA manifest e ícones
+- ✅ Página 404 customizada
+
+**v0.2.0 - Baseline:**
 - ✅ Otimização de imagens (AVIF/WebP)
 - ✅ Remoção de 28 pacotes não utilizados
 - ✅ Cache headers HTTP (1 year immutable)

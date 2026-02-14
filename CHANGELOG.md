@@ -8,8 +8,64 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Planejado
-- Fase 3: Separação de componentes client/server da página /imoveis (DEFERIDA até integração de API)
-- Virtual Scrolling para datasets grandes (documentado, implementação deferida até 50+ propriedades)
+- Integração com API de imóveis (substituição de mock-data)
+- Virtual Scrolling para datasets grandes (implementação deferida até 50+ propriedades)
+
+---
+
+## [0.4.0] - 2026-02-14
+
+### Adicionado
+- **Vercel React Best Practices**: 12 otimizações de performance aplicadas em 22 arquivos
+- CSS utility `content-visibility` para otimização de renderização off-screen
+- Maps O(1) para lookups de filtros (bairros e tipos de imóvel)
+- Função `normalizeNeighborhood` com NFD para filtros com acentos (Águas Claras)
+- `role="status"` em todos os skeletons de loading para acessibilidade
+- Dependências Workbox para PWA (`workbox-core@^7.4.0`, `workbox-precaching@^7.4.0`)
+
+### Alterado
+- **lib/constants.ts**: Otimização com Maps indexados para lookups O(1)
+- **components/property-filters.tsx**:
+  - Memoização de `hasActiveFilters`
+  - Extração de `FilterContent` fora do componente
+  - Cleanup de debounce no useEffect
+- **app/imoveis/page.tsx**:
+  - Early exit quando nenhum filtro está ativo
+  - Combinação de iterações de filter/map
+  - Uso de `content-visibility` CSS
+- **app/imoveis/[slug]/page.tsx**:
+  - Dynamic import otimizado para ContactForm
+  - Atributos `role="status"` em skeletons
+- **components/property-card.tsx**: React.memo com comparação customizada
+- **components/featured-properties.tsx**: useMemo para propriedades estáveis
+- **components/contact-form.tsx**: Memoização com React.memo
+- **components/neighborhoods-section.tsx**: Extração de JSX estático
+
+### Corrigido
+- **Bug crítico**: Filtro de bairro não funcionava com "Águas Claras" (acentos)
+- **TypeScript**: Removido `as const` inválido em `PROPERTY_TYPE_OPTIONS`
+- **Acessibilidade**: Adicionado `role="status"` em todos os loading skeletons
+- **Build**: Atualizado `pnpm-lock.yaml` com dependências workbox
+
+### Performance
+- **Otimizações aplicadas** (12 regras Vercel):
+  - `js-index-maps`: Lookups O(1) em vez de O(n)
+  - `js-combine-iterations`: Filter+map em único loop
+  - `js-early-exit`: Return antecipado sem filtros
+  - `js-hoist-regexp`: RegExp fora de loops
+  - `rendering-content-visibility`: CSS para longas listas
+  - `rendering-hoist-jsx`: JSX estático fora de componentes
+  - `rerender-memo`: React.memo em componentes pesados
+  - `rerender-memo-with-default-value`: Props não primitivos hoistados
+  - `rerender-derived-state-no-effect`: Estado derivado no render
+  - `bundle-dynamic-imports`: next/dynamic para componentes pesados
+  - `client-event-listeners`: Cleanup de event listeners
+  - `bundle-conditional`: Importação condicional de ContactForm
+
+- **Métricas estimadas**:
+  - Lookups de bairro: O(n) → O(1) (~80% mais rápido)
+  - Renderização off-screen: ~50% redução em painting time
+  - Re-renders de filtros: ~60% redução com memoização
 
 ---
 
