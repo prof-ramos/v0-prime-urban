@@ -10,24 +10,18 @@ import {
   Building2,
   Ruler,
 } from "lucide-react"
-import type { Property } from "@/components/property-card"
+import type { Property } from "@/lib/types"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { formatCurrency } from "@/lib/utils"
+import { PROPERTY_TYPE_LABELS } from "@/lib/constants"
 
 interface PropertyInfoProps {
   property: Property
 }
 
-const typeLabels: Record<string, string> = {
-  apartamento: "Apartamento",
-  casa: "Casa",
-  cobertura: "Cobertura",
-  sala_comercial: "Sala Comercial",
-}
-
 export function PropertyInfo({ property }: PropertyInfoProps) {
-  const monthlyCost = (property.condoFee || 0) + (property.iptu || 0)
+  const monthlyCost = (property.condominiumFee || 0) + (property.iptu || 0)
 
   const features = [
     { icon: Bed, label: "Quartos", value: property.bedrooms },
@@ -44,7 +38,7 @@ export function PropertyInfo({ property }: PropertyInfoProps) {
       <div>
         <div className="flex flex-wrap gap-2 mb-3">
           <Badge className="bg-primary text-primary-foreground">
-            {typeLabels[property.type]}
+            {PROPERTY_TYPE_LABELS[property.type]}
           </Badge>
           <Badge 
             variant="outline"
@@ -89,10 +83,10 @@ export function PropertyInfo({ property }: PropertyInfoProps) {
           
           {monthlyCost > 0 && (
             <div className="mt-4 pt-4 border-t border-border/50 grid grid-cols-2 gap-4">
-              {property.condoFee && property.condoFee > 0 && (
+              {property.condominiumFee && property.condominiumFee > 0 && (
                 <div>
                   <p className="text-sm text-muted-foreground">Condomínio</p>
-                  <p className="font-semibold text-foreground">{formatCurrency(property.condoFee)}/mês</p>
+                  <p className="font-semibold text-foreground">{formatCurrency(property.condominiumFee)}/mês</p>
                 </div>
               )}
               {property.iptu && property.iptu > 0 && (
@@ -164,7 +158,7 @@ export function PropertyInfo({ property }: PropertyInfoProps) {
               <Building2 className="h-5 w-5 text-secondary" />
               <div>
                 <p className="text-sm text-muted-foreground">Tipo do imóvel</p>
-                <p className="font-medium">{typeLabels[property.type]}</p>
+                <p className="font-medium">{PROPERTY_TYPE_LABELS[property.type]}</p>
               </div>
             </div>
             <div className="flex items-center gap-3">

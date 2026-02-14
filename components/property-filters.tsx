@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useDebouncedCallback } from "use-debounce"
 import { Search, SlidersHorizontal, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -22,17 +22,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { Slider } from "@/components/ui/slider"
-
-export interface FilterState {
-  search: string
-  transactionType: string
-  propertyType: string
-  neighborhood: string
-  minPrice: number
-  maxPrice: number
-  bedrooms: string
-  parkingSpaces: string
-}
+import type { FilterState } from "@/lib/types"
+import { NEIGHBORHOODS, PROPERTY_TYPE_LABELS, PRICE_LIMITS } from "@/lib/constants"
 
 interface PropertyFiltersProps {
   filters: FilterState
@@ -40,23 +31,7 @@ interface PropertyFiltersProps {
   onReset: () => void
 }
 
-const neighborhoods = [
-  { value: "asa-sul", label: "Asa Sul" },
-  { value: "asa-norte", label: "Asa Norte" },
-  { value: "aguas-claras", label: "Águas Claras" },
-  { value: "sudoeste", label: "Sudoeste" },
-  { value: "noroeste", label: "Noroeste" },
-  { value: "lago-sul", label: "Lago Sul" },
-  { value: "lago-norte", label: "Lago Norte" },
-  { value: "guara", label: "Guará" },
-]
-
-const propertyTypes = [
-  { value: "apartamento", label: "Apartamento" },
-  { value: "casa", label: "Casa" },
-  { value: "cobertura", label: "Cobertura" },
-  { value: "sala_comercial", label: "Sala Comercial" },
-]
+const propertyTypes = Object.entries(PROPERTY_TYPE_LABELS).map(([value, label]) => ({ value, label }))
 
 export function PropertyFilters({ filters, onFilterChange, onReset }: PropertyFiltersProps) {
   const [isOpen, setIsOpen] = useState(false)
@@ -71,8 +46,14 @@ export function PropertyFilters({ filters, onFilterChange, onReset }: PropertyFi
     { leading: false }
   )
 
-  const updateFilter = <K extends keyof FilterState>(key: K, value: FilterState[K]) => {
-    const newFilters = { ...localFilters, [key]: value }
+  useEffect(() => {
+    return () => {
+      debouncedOnFilterChange.cancel()
+    }
+  }, [debouncedOnFilterChange])
+
+  const updateFilter = <K extends keyof FilterState>(key: K, value: FilterState[K] | string) => {
+    const newFilters = { ...localFilters, [key]: value as FilterState[K] }
     setLocalFilters(newFilters)
 
     // Use debounced for non-critical, immediate for critical
@@ -91,8 +72,8 @@ export function PropertyFilters({ filters, onFilterChange, onReset }: PropertyFi
     filters.neighborhood || 
     filters.bedrooms || 
     filters.parkingSpaces ||
-    filters.minPrice > 0 ||
-    filters.maxPrice < 10000000
+    filters.minPrice > PRICE_LIMITS.MIN ||
+    filters.maxPrice < PRICE_LIMITS.MAX
 
   const FilterContent = () => (
     <div className="space-y-6">
@@ -144,7 +125,7 @@ export function PropertyFilters({ filters, onFilterChange, onReset }: PropertyFi
             <SelectValue placeholder="Todos os bairros" />
           </SelectTrigger>
           <SelectContent>
-            {neighborhoods.map((n) => (
+            {NEIGHBORHOODS.map((n) => (
               <SelectItem key={n.value} value={n.value}>
                 {n.label}
               </SelectItem>
@@ -159,8 +140,8 @@ export function PropertyFilters({ filters, onFilterChange, onReset }: PropertyFi
         <div className="pt-2">
           <Slider
             value={[localFilters.minPrice, localFilters.maxPrice]}
-            min={0}
-            max={10000000}
+            min={PRICE_LIMITS.MIN}
+            max={PRICE_LIMITS.MAX}
             step={50000}
             onValueChange={([min, max]) => {
               const newFilters = { ...localFilters, minPrice: min, maxPrice: max }
@@ -225,8 +206,8 @@ export function PropertyFilters({ filters, onFilterChange, onReset }: PropertyFi
               transactionType: "",
               propertyType: "",
               neighborhood: "",
-              minPrice: 0,
-              maxPrice: 10000000,
+              minPrice: PRICE_LIMITS.MIN,
+              maxPrice: PRICE_LIMITS.MAX,
               bedrooms: "",
               parkingSpaces: "",
             })
@@ -294,7 +275,7 @@ export function PropertyFilters({ filters, onFilterChange, onReset }: PropertyFi
               <SelectValue placeholder="Bairro" />
             </SelectTrigger>
             <SelectContent>
-              {neighborhoods.map((n) => (
+              {NEIGHBORHOODS.map((n) => (
                 <SelectItem key={n.value} value={n.value}>
                   {n.label}
                 </SelectItem>

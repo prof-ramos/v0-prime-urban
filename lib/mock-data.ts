@@ -1,4 +1,4 @@
-import type { Property } from "@/components/property-card"
+import type { Property } from "@/lib/types"
 
 export const mockProperties: Property[] = [
   {
@@ -8,7 +8,7 @@ export const mockProperties: Property[] = [
     type: "apartamento",
     transactionType: "venda",
     price: 1850000,
-    condoFee: 1800,
+    condominiumFee: 1800,
     iptu: 650,
     neighborhood: "Asa Sul",
     address: "SQS 308, Bloco A",
@@ -30,7 +30,7 @@ export const mockProperties: Property[] = [
     type: "cobertura",
     transactionType: "venda",
     price: 3200000,
-    condoFee: 2500,
+    condominiumFee: 2500,
     iptu: 1200,
     neighborhood: "Noroeste",
     address: "SQNW 111, Bloco B",
@@ -52,7 +52,7 @@ export const mockProperties: Property[] = [
     type: "apartamento",
     transactionType: "aluguel",
     price: 4500,
-    condoFee: 800,
+    condominiumFee: 800,
     iptu: 200,
     neighborhood: "Águas Claras",
     address: "Rua 37 Norte, Lote 12",
@@ -74,7 +74,7 @@ export const mockProperties: Property[] = [
     type: "casa",
     transactionType: "venda",
     price: 8500000,
-    condoFee: 0,
+    condominiumFee: 0,
     iptu: 3500,
     neighborhood: "Lago Sul",
     address: "SHIS QI 25, Conjunto 8",
@@ -96,7 +96,7 @@ export const mockProperties: Property[] = [
     type: "apartamento",
     transactionType: "aluguel",
     price: 3800,
-    condoFee: 950,
+    condominiumFee: 950,
     iptu: 280,
     neighborhood: "Sudoeste",
     address: "SQSW 300, Bloco C",
@@ -118,7 +118,7 @@ export const mockProperties: Property[] = [
     type: "apartamento",
     transactionType: "venda",
     price: 1450000,
-    condoFee: 1400,
+    condominiumFee: 1400,
     iptu: 520,
     neighborhood: "Asa Norte",
     address: "SQN 405, Bloco D",
