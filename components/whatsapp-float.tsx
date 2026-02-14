@@ -2,9 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { MessageCircle, X } from "lucide-react"
-
-const WHATSAPP_NUMBER = "5561999999999"
-const WHATSAPP_MESSAGE = "Olá! Gostaria de mais informações sobre imóveis em Brasília."
+import { WHATSAPP_CONFIG } from "@/lib/constants"
 
 export function WhatsAppFloat() {
   const [isVisible, setIsVisible] = useState(false)
@@ -35,7 +33,7 @@ export function WhatsAppFloat() {
 
   const handleClick = () => {
     if (typeof window === "undefined") return
-    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`
+    const url = `https://wa.me/${WHATSAPP_CONFIG.NUMBER}?text=${encodeURIComponent(WHATSAPP_CONFIG.DEFAULT_MESSAGE)}`
     window.open(url, "_blank")
   }
 

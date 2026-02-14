@@ -4,6 +4,7 @@ import type { Metadata, Viewport } from 'next'
 import { Analytics } from '@vercel/analytics/next'
 import { WhatsAppFloat } from '@/components/whatsapp-float'
 import { ServiceWorkerRegister } from '@/components/service-worker-register'
+import { ErrorBoundary } from '@/components/error-boundary'
 import './globals.css'
 
 import { Inter, Playfair_Display, Libre_Baskerville as V0_Font_Libre_Baskerville } from 'next/font/google'
@@ -66,7 +67,9 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className="bg-background">
       <body className={`${inter.variable} ${playfair.variable} font-serif antialiased`}>
-        {children}
+        <ErrorBoundary>
+          {children}
+        </ErrorBoundary>
         <WhatsAppFloat />
         <Analytics />
         <ServiceWorkerRegister />

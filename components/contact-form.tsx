@@ -9,13 +9,12 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
+import { WHATSAPP_CONFIG } from "@/lib/constants"
 
 interface ContactFormProps {
   propertyTitle: string
   propertyId: string
 }
-
-const WHATSAPP_NUMBER = "5561999999999"
 
 export function ContactForm({ propertyTitle, propertyId }: ContactFormProps) {
   const [formData, setFormData] = useState({
@@ -41,7 +40,7 @@ export function ContactForm({ propertyTitle, propertyId }: ContactFormProps) {
   const handleWhatsApp = () => {
     if (typeof window === "undefined") return
     const message = `Olá! Tenho interesse no imóvel: ${propertyTitle}. Gostaria de mais informações.`
-    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`
+    const url = `https://wa.me/${WHATSAPP_CONFIG.NUMBER}?text=${encodeURIComponent(message)}`
     window.open(url, "_blank")
   }
 

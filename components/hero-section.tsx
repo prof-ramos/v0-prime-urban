@@ -11,18 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-
-const neighborhoods = [
-  "Asa Sul",
-  "Asa Norte",
-  "Águas Claras",
-  "Sudoeste",
-  "Noroeste",
-  "Lago Sul",
-  "Lago Norte",
-  "Park Sul",
-  "Guará",
-]
+import { NEIGHBORHOODS } from "@/lib/constants"
 
 export function HeroSection() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -106,9 +95,9 @@ export function HeroSection() {
                   <SelectValue placeholder="Bairro" />
                 </SelectTrigger>
                 <SelectContent>
-                  {neighborhoods.map((n) => (
-                    <SelectItem key={n} value={n.toLowerCase().replace(/ /g, "-")}>
-                      {n}
+                  {NEIGHBORHOODS.map((n) => (
+                    <SelectItem key={n.value} value={n.value}>
+                      {n.label}
                     </SelectItem>
                   ))}
                 </SelectContent>

@@ -4,44 +4,12 @@ import { Bed, Bath, Car, Maximize2, MapPin, Heart } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { formatCurrency } from "@/lib/utils"
+import { PROPERTY_TYPE_LABELS } from "@/lib/constants"
 import React from "react"
-
-export interface Property {
-  id: string
-  slug: string
-  title: string
-  type: "apartamento" | "casa" | "cobertura" | "sala_comercial"
-  transactionType: "venda" | "aluguel"
-  price: number
-  condoFee?: number
-  iptu?: number
-  neighborhood: string
-  address: string
-  privateArea: number
-  totalArea?: number
-  bedrooms: number
-  suites?: number
-  bathrooms: number
-  parkingSpaces: number
-  images: string[]
-  featured?: boolean
-  acceptsPets?: boolean
-  solarOrientation?: string
-}
-
-interface PropertyCardProps {
-  property: Property
-}
-
-const typeLabels: Record<string, string> = {
-  apartamento: "Apartamento",
-  casa: "Casa",
-  cobertura: "Cobertura",
-  sala_comercial: "Sala Comercial",
-}
+import { Property, PropertyCardProps } from "@/lib/types"
 
 const PropertyCard = React.memo(function PropertyCard({ property }: PropertyCardProps) {
-  const monthlyCost = (property.condoFee || 0) + (property.iptu || 0)
+  const monthlyCost = (property.condominiumFee || 0) + (property.iptu || 0)
 
   return (
     <Card className="group overflow-hidden border-border/50 hover:border-secondary transition-all duration-300 hover:shadow-lg">
@@ -83,7 +51,7 @@ const PropertyCard = React.memo(function PropertyCard({ property }: PropertyCard
         {/* Type Label */}
         <div className="absolute bottom-3 left-3">
           <span className="px-3 py-1 bg-card/90 backdrop-blur text-sm font-medium text-foreground rounded-full">
-            {typeLabels[property.type]}
+            {PROPERTY_TYPE_LABELS[property.type]}
           </span>
         </div>
       </div>

@@ -1,44 +1,16 @@
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
+import { NEIGHBORHOODS } from "@/lib/constants"
 
-const neighborhoods = [
-  {
-    name: "Asa Sul",
-    slug: "asa-sul",
-    count: 87,
-    description: "Tradicional e arborizada",
-  },
-  {
-    name: "Asa Norte",
-    slug: "asa-norte",
-    count: 92,
-    description: "Universitária e cultural",
-  },
-  {
-    name: "Águas Claras",
-    slug: "aguas-claras",
-    count: 156,
-    description: "Moderna e em expansão",
-  },
-  {
-    name: "Sudoeste",
-    slug: "sudoeste",
-    count: 64,
-    description: "Planejado e valorizado",
-  },
-  {
-    name: "Noroeste",
-    slug: "noroeste",
-    count: 45,
-    description: "Sustentável e exclusivo",
-  },
-  {
-    name: "Lago Sul",
-    slug: "lago-sul",
-    count: 38,
-    description: "Luxuoso e tranquilo",
-  },
-]
+// Neighborhood counts for display purposes
+const NEIGHBORHOOD_COUNTS: Record<string, number> = {
+  "asa-sul": 87,
+  "asa-norte": 92,
+  "aguas-claras": 156,
+  "sudoeste": 64,
+  "noroeste": 45,
+  "lago-sul": 38,
+}
 
 export function NeighborhoodsSection() {
   return (
@@ -56,11 +28,11 @@ export function NeighborhoodsSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {neighborhoods.map((neighborhood) => (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {NEIGHBORHOODS.filter(n => n.value in NEIGHBORHOOD_COUNTS).map((neighborhood) => (
             <Link
-              key={neighborhood.slug}
-              href={`/bairros/${neighborhood.slug}`}
+              key={neighborhood.value}
+              href={`/bairros/${neighborhood.value}`}
               className="group relative overflow-hidden rounded-xl bg-primary p-6 text-primary-foreground transition-all duration-300 hover:bg-accent hover:shadow-lg hover:-translate-y-1"
             >
               <div className="relative z-10">
@@ -68,12 +40,12 @@ export function NeighborhoodsSection() {
                 <p className="text-xs text-primary-foreground/60 mb-3">{neighborhood.description}</p>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-secondary">
-                    {neighborhood.count} imóveis
+                    {NEIGHBORHOOD_COUNTS[neighborhood.value]} imóveis
                   </span>
                   <ArrowRight className="h-4 w-4 text-secondary opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
               </div>
-              
+
               {/* Background decoration */}
               <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-secondary/10 rounded-full transition-transform group-hover:scale-150" />
             </Link>
