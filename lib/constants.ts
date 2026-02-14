@@ -20,7 +20,7 @@ export const PROPERTY_TYPE_OPTIONS = Object.entries(PROPERTY_TYPE_LABELS).map(
     _propertyTypeLabelIndexMap.set(label, value as keyof typeof PROPERTY_TYPE_LABELS)
     return { value, label }
   }
-) as const
+)
 
 /**
  * Get property type key by label with O(1) reverse lookup
