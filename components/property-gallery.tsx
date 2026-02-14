@@ -14,15 +14,22 @@ export function PropertyGallery({ images, title }: PropertyGalleryProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isFullscreen, setIsFullscreen] = useState(false)
 
+  // Early exit: Guard against empty images array
+  const imageCount = images.length
+  const hasImages = imageCount > 0
+
   const goToPrevious = () => {
-    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1))
+    if (!hasImages) return // Early exit
+    setCurrentIndex((prev) => (prev === 0 ? imageCount - 1 : prev - 1))
   }
 
   const goToNext = () => {
-    setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1))
+    if (!hasImages) return // Early exit
+    setCurrentIndex((prev) => (prev === imageCount - 1 ? 0 : prev + 1))
   }
 
-  const displayImages = images.length > 0 ? images : ["/placeholder-property.jpg"]
+  // Early exit: Fallback to placeholder if no images
+  const displayImages = hasImages ? images : ["/placeholder-property.jpg"]
 
   return (
     <>

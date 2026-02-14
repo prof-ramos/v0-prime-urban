@@ -20,10 +20,14 @@ import { Property, PropertyCardProps } from "@/lib/types"
  * ```
  */
 const PropertyCard = React.memo(function PropertyCard({ property }: PropertyCardProps) {
-  const monthlyCost = (property.condominiumFee || 0) + (property.iptu || 0)
+  // Early exit: Calculate monthly cost only if both fees exist
+  const monthlyCost = property.condominiumFee && property.iptu
+    ? property.condominiumFee + property.iptu
+    : 0
 
   return (
-    <Card className="group overflow-hidden border-border/50 hover:border-secondary transition-all duration-300 hover:shadow-lg">
+    // Content-visibility optimization for off-screen cards
+    <Card className="group overflow-hidden border-border/50 hover:border-secondary transition-all duration-300 hover:shadow-lg [content-visibility:auto] [contain-intrinsic-size:0_500px]">
       <div className="relative aspect-[4/3] overflow-hidden">
         <Image
           src={property.images[0] || "/placeholder-property.jpg"}

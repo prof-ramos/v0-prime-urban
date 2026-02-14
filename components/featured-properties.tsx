@@ -32,7 +32,8 @@ const FeaturedProperties = React.memo(function FeaturedProperties() {
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Content-visibility optimization for property grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 [content-visibility:auto]">
           {featuredProperties.map((property) => (
             <PropertyCard key={property.id} property={property} />
           ))}

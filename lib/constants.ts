@@ -12,6 +12,23 @@ export const PROPERTY_TYPE_LABELS = {
   sala_comercial: "Sala Comercial",
 } as const
 
+// Combine iterations: Build both index map and options array in a single pass
+const _propertyTypeLabelIndexMap = new Map<string, keyof typeof PROPERTY_TYPE_LABELS>()
+export const PROPERTY_TYPE_OPTIONS = Object.entries(PROPERTY_TYPE_LABELS).map(
+  ([value, label]) => {
+    // Populate reverse lookup map during the same iteration
+    _propertyTypeLabelIndexMap.set(label, value as keyof typeof PROPERTY_TYPE_LABELS)
+    return { value, label }
+  }
+) as const
+
+/**
+ * Get property type key by label with O(1) reverse lookup
+ * @param label - The display label (e.g., "Apartamento")
+ * @returns Property type key or undefined if not found
+ */
+export const getPropertyTypeByLabel = (label: string) => _propertyTypeLabelIndexMap.get(label)
+
 // Lista unificada de bairros (com estrutura compatível para todos os casos de uso)
 export const NEIGHBORHOODS = [
   { value: "asa-sul", label: "Asa Sul", name: "Asa Sul", description: "Coração político e administrativo de Brasília" },
@@ -23,6 +40,17 @@ export const NEIGHBORHOODS = [
   { value: "lago-norte", label: "Lago Norte", name: "Lago Norte", description: "Bairro lacustre com estilo de vida único" },
   { value: "guara", label: "Guará", name: "Guará", description: "Bairro tradicional com bom custo-benefício" },
 ] as const
+
+// Index map for O(1) neighborhood lookups by value
+const _neighborhoodIndexMap = new Map<string, (typeof NEIGHBORHOODS)[number]>()
+NEIGHBORHOODS.forEach((n) => _neighborhoodIndexMap.set(n.value, n))
+
+/**
+ * Get neighborhood data by value with O(1) lookup
+ * @param value - The neighborhood value (e.g., "asa-sul")
+ * @returns Neighborhood object or undefined if not found
+ */
+export const getNeighborhoodByValue = (value: string) => _neighborhoodIndexMap.get(value)
 
 // Magic numbers
 export const PRICE_LIMITS = {

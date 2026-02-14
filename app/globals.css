@@ -107,3 +107,17 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Rendering optimization: content-visibility for off-screen content */
+@layer utilities {
+  /* Apply to sections that are typically below the fold */
+  .content-visibility-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 500px;
+  }
+
+  /* For heavy components that can be skipped entirely when off-screen */
+  .content-visibility-hidden {
+    content-visibility: hidden;
+  }
+}

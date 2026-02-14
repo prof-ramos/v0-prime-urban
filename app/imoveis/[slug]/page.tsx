@@ -3,13 +3,27 @@ import Link from "next/link"
 import { ChevronLeft, Share2, Heart } from "lucide-react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { PropertyGallery } from "@/components/property-gallery"
-import { PropertyInfo } from "@/components/property-info"
-import { ContactForm } from "@/components/contact-form"
+import dynamic from "next/dynamic"
 import { Button } from "@/components/ui/button"
 import { getPropertyBySlug, mockProperties } from "@/lib/mock-data"
 import { formatCurrency } from "@/lib/utils"
 import type { Metadata } from "next"
+
+// Dynamically import property detail components to reduce initial bundle size
+const PropertyGallery = dynamic(() => import("@/components/property-gallery").then(m => ({ default: m.PropertyGallery })), {
+  loading: () => <div className="relative aspect-[16/10] md:aspect-[16/9] rounded-xl overflow-hidden bg-muted animate-pulse" aria-label="Carregando galeria..." />,
+  ssr: true, // Images should be server-rendered for SEO
+})
+
+const PropertyInfo = dynamic(() => import("@/components/property-info").then(m => ({ default: m.PropertyInfo })), {
+  loading: () => <div className="bg-card rounded-xl border border-border/50 p-6 animate-pulse" aria-label="Carregando informações..." />,
+  ssr: true,
+})
+
+// Contact form dynamically imported (component itself is client-side)
+const ContactForm = dynamic(() => import("@/components/contact-form").then(m => ({ default: m.ContactForm })), {
+  loading: () => <div className="bg-card rounded-xl border border-border/50 p-6 animate-pulse sticky top-24" aria-label="Carregando formulário..." />,
+})
 
 interface PropertyPageProps {
   params: Promise<{ slug: string }>
