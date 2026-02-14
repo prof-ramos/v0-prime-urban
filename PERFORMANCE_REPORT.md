@@ -45,63 +45,24 @@
 
 ## Quick Wins (Alto Impacto, Baixo Esforço)
 
-### 1. ⚠️ [app/imoveis/page.tsx:3847] normalizeNeighborhood recriado a cada render
+### 1. ✅ [app/imoveis/page.tsx:3847] normalizeNeighborhood recriado a cada render - **JÁ RESOLVIDO**
 
-**Problema:** A função `normalizeNeighborhood` está definida dentro do componente, sendo recriada a cada render.
-
-```typescript
-// ❌ ATUAL (linha 3847)
-const normalizeNeighborhood = (name: string) =>
-  name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/ /g, "-")
-```
-
-**Solução:** Mover para fora do componente ou para `lib/utils.ts`
-
-```typescript
-// ✅ CORREÇÃO - fora do componente
-const normalizeNeighborhood = (name: string) =>
-  name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/ /g, "-")
-
-export default function PropertiesPage() {
-  // ... código do componente
-}
-```
-
-**Impacto:** ALTO - Reduz alocação de função a cada render
-**Esforço:** 5 minutos
+**Status:** ✅ Implementado - A função já estava fora do componente (linha 33-34)
 
 ---
 
-### 2. ⚠️ [components/property-card.tsx:125-127] React.memo com comparação insuficiente
+### 2. ✅ [components/property-card.tsx:125-127] React.memo com comparação insuficiente - **IMPLEMENTADO**
 
-**Problema:** A comparação no `React.memo` só verifica `property.id`, ignorando mudanças em outras propriedades.
+**Status:** ✅ Implementado - Removido comparador customizado insuficiente
 
-```typescript
-// ❌ ATUAL (linha 125-127)
-}, (prevProps, nextProps) => {
-  return prevProps.property.id === nextProps.property.id
-})
+**Mudança:** Removido o custom comparer que só verificava `property.id`. Agora o React.memo usa shallow compare padrão que compara todas as propriedades.
+
+```diff
+-}, (prevProps, nextProps) => {
+-  return prevProps.property.id === nextProps.property.id
+-})
++})
 ```
-
-**Solução:** Usar comparação mais completa ou remover o custom comparer.
-
-```typescript
-// ✅ CORREÇÃO - usar shallow compare padrão
-// Apenas: React.memo(function PropertyCard({ property }: PropertyCardProps) {
-// ...
-
-// OU comparação completa:
-}, (prevProps, nextProps) => {
-  return (
-    prevProps.property.id === nextProps.property.id &&
-    prevProps.property.price === nextProps.property.price &&
-    prevProps.property.featured === nextProps.property.featured
-  )
-})
-```
-
-**Impacto:** ALTO - Previne re-renders incorretos
-**Esforço:** 10 minutos
 
 ---
 
