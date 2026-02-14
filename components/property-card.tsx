@@ -122,8 +122,6 @@ const PropertyCard = React.memo(function PropertyCard({ property }: PropertyCard
       </CardContent>
     </Card>
   )
-}, (prevProps, nextProps) => {
-  return prevProps.property.id === nextProps.property.id
 })
 
 export { PropertyCard }
