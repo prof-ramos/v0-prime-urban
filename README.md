@@ -154,7 +154,7 @@ Este projeto é de uso privado e está associado à CRECI-DF para atividades de 
 - 📊 [PERFORMANCE_REPORT.md](./PERFORMANCE_REPORT.md) - Análise completa com 15+ problemas identificados
 - 📋 [PERFORMANCE_BACKLOG.md](./PERFORMANCE_BACKLOG.md) - Backlog estruturado com 12+ tarefas priorizadas
 
-### Otimizações Implementadas (v0.4.0)
+### Otimizações Implementadas (v0.5.0)
 
 | Métrica | Antes | Depois | Melhoria |
 |---------|--------|---------|----------|
@@ -162,8 +162,19 @@ Este projeto é de uso privado e está associado à CRECI-DF para atividades de 
 | Imagens | ~500 KB | ~120 KB | **76%** |
 | Re-renders | 6 cards | 0-1 cards | **80%** |
 | Lookups de filtro | O(n) | O(1) | **~80%** |
+| Neighborhood lookup | O(n) | O(1) | **~80%** |
 | Renderização off-screen | Full | Skip | **~50%** |
 | Vulnerabilidades | 3 (1 alta, 2 moderadas) | 0 | **100%** |
+
+**v0.5.0 - ISR + Cache + Service Worker v2:**
+- ✅ ISR (Incremental Static Regeneration) com revalidação de 1h
+- ✅ HTTP cache headers com stale-while-revalidate (s-maxage=60, swr=300)
+- ✅ Pre-computed neighborhoodNormalized para O(1) lookup
+- ✅ useCallback memoização em updateFilter
+- ✅ Service Worker v2 com múltiplas estratégias de cache
+- ✅ Pre-caching de assets críticos (/, /imoveis, manifest, icons)
+- ✅ Runtime caching para imagens Unsplash (7 dias)
+- ✅ Cache expiration granular por tipo de recurso
 
 **v0.4.0 - Vercel React Best Practices:**
 - ✅ 12 regras Vercel aplicadas em 22 arquivos
@@ -183,24 +194,34 @@ Veja [CHANGELOG.md](./CHANGELOG.md) para histórico completo.
 
 ## Roadmap
 
-### Próximas Otimizações (Prioridade ALTA)
+### ✅ Otimizações Completadas (v0.5.0)
 
-🔴 **Alto Impacto (2-4 horas):**
-1. Implementar ISR (Incremental Static Regeneration) para páginas de propriedades
-2. Adicionar HTTP cache headers com stale-while-revalidate
-3. Pre-computar neighborhoodNormalized para O(1) lookup
+Todas as tarefas de prioridade ALTA e MÉDIA foram implementadas!
 
-🟡 **Médio Impacto (4-8 horas):**
-4. Memoizar updateFilter com useCallback
-5. Implementar stale-while-revalidate no Service Worker
-6. Adicionar pre-caching de assets críticos
+🔴 **Alto Impacto - COMPLETO:**
+1. ✅ Implementar ISR (Incremental Static Regeneration) para páginas de propriedades
+2. ✅ Adicionar HTTP cache headers com stale-while-revalidate
+3. ✅ Pre-computar neighborhoodNormalized para O(1) lookup
+
+🟡 **Médio Impacto - COMPLETO:**
+4. ✅ Memoizar updateFilter com useCallback
+5. ✅ Implementar stale-while-revalidate no Service Worker
+6. ✅ Adicionar pre-caching de assets críticos
+
+### Próximas Otimizações (Prioridade BAIXA)
+
+🟢 **Baixo Impacto (1-2 horas):**
+1. Remover `@custom-variant dark` não utilizado do CSS
+2. Remover variáveis CSS não utilizadas (`--sidebar-*`, `--chart-*`)
+3. Adicionar placeholder blur nas imagens
+
+### Longo Prazo
+
+- ⏳ Migrar de mock-data para API real
+- ⏳ Implementar Virtual Scrolling para listas grandes (50+ propriedades)
+- ⏳ Usar React.cache() para data fetching (React 19)
 
 Veja [PERFORMANCE_BACKLOG.md](./PERFORMANCE_BACKLOG.md) para o backlog completo.
-
-### Longo Prazo (quando necessário)
-- Migrar de mock-data para API real
-- Implementar Virtual Scrolling para listas grandes (50+ propriedades)
-- Usar React.cache() para data fetching (React 19)
 
 ## Deploy
 
