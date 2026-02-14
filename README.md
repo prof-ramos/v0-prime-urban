@@ -102,9 +102,15 @@ v0-prime-urban/
 
 Este projeto é de uso privado e está associado à CRECI-DF para atividades de corretagem de imóveis.
 
-## Performance
+## Performance & Documentação
 
-Otimizações implementadas até v0.4.0:
+### Análise de Performance
+
+**Relatórios Disponíveis:**
+- 📊 [PERFORMANCE_REPORT.md](./PERFORMANCE_REPORT.md) - Análise completa com 15+ problemas identificados
+- 📋 [PERFORMANCE_BACKLOG.md](./PERFORMANCE_BACKLOG.md) - Backlog estruturado com 12+ tarefas priorizadas
+
+### Otimizações Implementadas (v0.4.0)
 
 | Métrica | Antes | Depois | Melhoria |
 |---------|--------|---------|----------|
@@ -115,8 +121,6 @@ Otimizações implementadas até v0.4.0:
 | Renderização off-screen | Full | Skip | **~50%** |
 | Vulnerabilidades | 3 (1 alta, 2 moderadas) | 0 | **100%** |
 
-### Otimizações Aplicadas
-
 **v0.4.0 - Vercel React Best Practices:**
 - ✅ 12 regras Vercel aplicadas em 22 arquivos
 - ✅ O(1) lookups com Maps indexados
@@ -124,29 +128,35 @@ Otimizações implementadas até v0.4.0:
 - ✅ JSX estático extraído fora de componentes
 - ✅ Dynamic imports para code splitting
 - ✅ Memoização otimizada em filtros e cards
+- ✅ React.memo comparer corrigido
 
 **v0.3.0 - PWA:**
 - ✅ Service Worker com cache strategies
 - ✅ PWA manifest e ícones
 - ✅ Página 404 customizada
 
-**v0.2.0 - Baseline:**
-- ✅ Otimização de imagens (AVIF/WebP)
-- ✅ Remoção de 28 pacotes não utilizados
-- ✅ Cache headers HTTP (1 year immutable)
-- ✅ React.memo nos componentes de listagem
-- ✅ Debounce de 300ms nos filtros
-- ✅ Ordenação de filtros por seletividade
-
-Veja [CHANGELOG.md](./CHANGELOG.md) para detalhes completos.
+Veja [CHANGELOG.md](./CHANGELOG.md) para histórico completo.
 
 ## Roadmap
 
-### Próximas Otimizações (Fase 3)
-- [ ] Separação client/server da página /imoveis
-- [ ] Implementação de Dark Mode ou remoção do next-themes
-- [ ] Virtual Scrolling para datasets grandes
-- [ ] Service Worker para PWA
+### Próximas Otimizações (Prioridade ALTA)
+
+🔴 **Alto Impacto (2-4 horas):**
+1. Implementar ISR (Incremental Static Regeneration) para páginas de propriedades
+2. Adicionar HTTP cache headers com stale-while-revalidate
+3. Pre-computar neighborhoodNormalized para O(1) lookup
+
+🟡 **Médio Impacto (4-8 horas):**
+4. Memoizar updateFilter com useCallback
+5. Implementar stale-while-revalidate no Service Worker
+6. Adicionar pre-caching de assets críticos
+
+Veja [PERFORMANCE_BACKLOG.md](./PERFORMANCE_BACKLOG.md) para o backlog completo.
+
+### Longo Prazo (quando necessário)
+- Migrar de mock-data para API real
+- Implementar Virtual Scrolling para listas grandes (50+ propriedades)
+- Usar React.cache() para data fetching (React 19)
 
 ## Deploy
 
