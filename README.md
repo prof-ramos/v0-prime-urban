@@ -137,4 +137,84 @@ O projeto é automaticamente implantado na [Vercel](https://vercel.com) a partir
 
 ---
 
+## 🏗️ Arquitetura de Componentes
+
+### Componentes Principais
+
+- **PropertyCard**: Componente memoizado para exibição de cartões de propriedade em listagens. Usa React.memo para evitar re-renders desnecessários.
+- **PropertyFilters**: Sistema de filtros com debounce de 300ms para otimização de performance. Suporta filtros por tipo, bairro, preço, quartos e vagas.
+- **ContactForm**: Formulário de contato com integração direta ao WhatsApp.
+- **FeaturedProperties**: Lista de propriedades em destaque na homepage.
+
+### Padrões Utilizados
+
+- Componentes funcionais com React Hooks
+- TypeScript para type safety
+- Tailwind CSS para estilização
+- Radix UI para componentes de UI base
+
+## 🛠️ Ambiente de Desenvolvimento
+
+```bash
+# Instalar dependências
+npm install
+
+# Servidor de desenvolvimento
+npm run dev
+
+# Build para produção
+npm run build
+
+# Verificar código com ESLint
+npm run lint
+
+# Type check
+npx tsc --noEmit
+```
+
+## 📁 Estrutura de Pastas
+
+```
+app/
+├── layout.tsx          # Layout root com fontes e metadata
+├── page.tsx            # Homepage
+├── imoveis/            # Rotas de imóveis
+│   ├── page.tsx        # Listagem de propriedades
+│   └── [slug]/         # Páginas dinâmicas de detalhes
+
+components/
+├── ui/                 # Componentes base (shadcn/ui)
+└── *.tsx               # Componentes de domínio
+
+lib/
+├── constants.ts        # Constantes centralizadas
+├── types.ts            # Tipos de domínio
+├── utils.ts            # Funções utilitárias
+└── mock-data.ts        # Dados mockados
+
+public/
+├── sw.js               # Service Worker para PWA
+└── manifest.json       # Manifesto PWA
+```
+
+## 📝 Padrões de Código
+
+- **Convenção de Nomes**:
+  - Componentes: PascalCase (PropertyCard, Header)
+  - Funções: camelCase (formatCurrency, handleSubmit)
+  - Constantes: SCREAMING_SNAKE_CASE (WHATSAPP_CONFIG)
+  - Interfaces/Types: PascalCase (Property, FilterState)
+
+- **TypeScript**:
+  - Usar union types em vez de strings genéricas
+  - Evitar `any` - usar tipos específicos
+  - Interfaces para objetos, types para unions
+
+- **React**:
+  - Componentes devem usar React.memo se usados em listas
+  - useEffect com cleanup para efeitos colaterais
+  - Debounce para inputs de busca
+
+---
+
 Desenvolvido com [v0.dev](https://v0.dev) e integrado com Vercel.

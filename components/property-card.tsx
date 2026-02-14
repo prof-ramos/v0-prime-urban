@@ -8,6 +8,17 @@ import { PROPERTY_TYPE_LABELS } from "@/lib/constants"
 import React from "react"
 import { Property, PropertyCardProps } from "@/lib/types"
 
+/**
+ * Componente de cartão de propriedade imobiliária
+ * @description Exibe informações resumidas de um imóvel em formato de card,
+ * incluindo imagem, preço, características e localização. Otimizado com
+ * React.memo para evitar re-renders desnecessários.
+ *
+ * @example
+ * ```tsx
+ * <PropertyCard property={myProperty} />
+ * ```
+ */
 const PropertyCard = React.memo(function PropertyCard({ property }: PropertyCardProps) {
   const monthlyCost = (property.condominiumFee || 0) + (property.iptu || 0)
 
