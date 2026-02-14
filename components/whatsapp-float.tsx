@@ -22,7 +22,7 @@ export function WhatsAppFloat() {
       setShowTooltip(true)
     }, 5000)
 
-    window.addEventListener("scroll", handleScroll)
+    window.addEventListener("scroll", handleScroll, { passive: true })
     handleScroll() // Check initial position
 
     return () => {
