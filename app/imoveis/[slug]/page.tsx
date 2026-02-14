@@ -9,6 +9,8 @@ import { getPropertyBySlug, mockProperties } from "@/lib/mock-data"
 import { formatCurrency } from "@/lib/utils"
 import type { Metadata } from "next"
 
+export const revalidate = 3600 // Revalida a cada 1 hora (ISR)
+
 // Dynamically import property detail components to reduce initial bundle size
 const PropertyGallery = dynamic(() => import("@/components/property-gallery").then(m => ({ default: m.PropertyGallery })), {
   loading: () => <div role="status" className="relative aspect-[16/10] md:aspect-[16/9] rounded-xl overflow-hidden bg-muted animate-pulse" aria-label="Carregando galeria..." />,

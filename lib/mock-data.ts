@@ -1,6 +1,10 @@
 import type { Property } from "@/lib/types"
 
-export const mockProperties: Property[] = [
+function normalizeNeighborhood(neighborhood: string): string {
+  return neighborhood.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+}
+
+const properties: Property[] = [
   {
     id: "1",
     slug: "apartamento-asa-sul-sqn-308",
@@ -135,6 +139,11 @@ export const mockProperties: Property[] = [
   },
 ]
 
+export const mockProperties: Property[] = properties.map(p => ({
+  ...p,
+  neighborhoodNormalized: normalizeNeighborhood(p.neighborhood)
+}))
+
 // Cache featured properties to avoid filtering on every call
 let _featuredProperties: Property[] | null = null
 export const getFeaturedProperties = () => {
@@ -154,4 +163,14 @@ export const getPropertyBySlug = (slug: string) => {
     }
   }
   return _propertyCache.get(slug)
+}
+
+// O(1) neighborhood slug index for fast lookups
+const _neighborhoodSlugIndex = new Map<string, string>()
+mockProperties.forEach(p => {
+  _neighborhoodSlugIndex.set(p.neighborhood, p.neighborhoodNormalized!)
+})
+
+export function getNeighborhoodNormalized(neighborhood: string): string {
+  return _neighborhoodSlugIndex.get(neighborhood) || normalizeNeighborhood(neighborhood)
 }

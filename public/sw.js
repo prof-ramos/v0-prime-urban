@@ -10,7 +10,25 @@ const debugLog = (...args) => {
 }
 
 // Cache name with versioning for easy invalidation
-const CACHE_VERSION = 'v1'
+const CACHE_VERSION = 'v2'
+
+// Cache configuration with separate stores for different content types
+const CACHE_CONFIG = {
+  static: {
+    name: 'prime-urban-static-v2',
+    urls: ['/', '/imoveis', '/manifest.json', '/icon-192x192.png', '/icon-512x512.png']
+  },
+  images: {
+    name: 'prime-urban-images-v2',
+    maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+  },
+  pages: {
+    name: 'prime-urban-pages-v2',
+    maxAge: 5 * 60 * 1000 // 5 minutes
+  }
+}
+
+// Legacy cache name for cleanup compatibility
 const CACHE_NAME = `prime-urban-${CACHE_VERSION}`
 
 // Skip waiting - activate immediately
@@ -19,22 +37,32 @@ self.skipWaiting()
 // Claim control immediately so the service worker is in control
 self.clients.claim()
 
-// Basic install handler - cache static assets
+// Install handler - pre-cache critical static assets
 self.addEventListener('install', (event) => {
-  debugLog('Install event')
+  debugLog('Install event - pre-caching critical assets')
+  event.waitUntil(
+    caches.open(CACHE_CONFIG.static.name).then((cache) => {
+      return cache.addAll(CACHE_CONFIG.static.urls)
+    })
+  )
   self.skipWaiting()
 })
 
-// Basic activate handler to clean old caches
+// Activate handler - clean up old caches
 self.addEventListener('activate', (event) => {
-  debugLog('Activate event')
+  debugLog('Activate event - cleaning old caches')
   event.waitUntil(
     caches.keys().then((cacheNames) => {
+      const currentCaches = [
+        CACHE_CONFIG.static.name,
+        CACHE_CONFIG.images.name,
+        CACHE_CONFIG.pages.name
+      ]
       return Promise.all(
         cacheNames
           .filter((cacheName) => {
             // Delete caches that don't match our current version
-            return cacheName.startsWith('prime-urban-') && cacheName !== CACHE_NAME
+            return cacheName.startsWith('prime-urban-') && !currentCaches.includes(cacheName)
           })
           .map((cacheName) => {
             debugLog('Deleting old cache:', cacheName)
@@ -43,28 +71,64 @@ self.addEventListener('activate', (event) => {
       )
     })
   )
+  self.clients.claim()
 })
 
-// Basic fetch handler - Network First strategy for dynamic content,
-// Cache First for static assets
+// Fetch handler - multi-strategy caching based on content type
 self.addEventListener('fetch', (event) => {
   const { request } = event
   const url = new URL(request.url)
 
   // Skip non-GET requests
   if (request.method !== 'GET') return
-  // Skip cross-origin requests
+
+  // Stale-While-Revalidate for navigation requests (pages)
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      caches.open(CACHE_CONFIG.pages.name).then((cache) => {
+        return cache.match(request).then((cached) => {
+          const fetchPromise = fetch(request).then((response) => {
+            if (response.status === 200) {
+              cache.put(request, response.clone())
+            }
+            return response
+          })
+          // Serve from cache immediately, update in background
+          return cached || fetchPromise
+        })
+      })
+    )
+    return
+  }
+
+  // Cache external images from Unsplash (Cache First)
+  if (url.hostname.includes('images.unsplash.com')) {
+    event.respondWith(
+      caches.open(CACHE_CONFIG.images.name).then((cache) => {
+        return cache.match(request).then((cached) => {
+          return cached || fetch(request).then((response) => {
+            if (response.ok) {
+              cache.put(request, response.clone())
+            }
+            return response
+          })
+        })
+      })
+    )
+    return
+  }
+
+  // Skip cross-origin for non-image requests
   if (url.origin !== location.origin) return
 
-  // Network First for API routes and HTML pages
-  if (url.pathname.startsWith('/api/') || url.pathname.endsWith('.html')) {
+  // Network First for API routes
+  if (url.pathname.startsWith('/api/')) {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          // Only cache successful responses
           if (response.status === 200) {
             const responseClone = response.clone()
-            caches.open(CACHE_NAME).then((cache) => {
+            caches.open(CACHE_CONFIG.static.name).then((cache) => {
               cache.put(request, responseClone)
             })
           }
@@ -73,40 +137,26 @@ self.addEventListener('fetch', (event) => {
         .catch(() => {
           return caches.match(request).then((cached) => {
             if (cached) return cached
-            // Return offline fallback for HTML pages
-            if (request.headers.get('accept')?.includes('text/html')) {
-              return new Response('Offline - Please check your connection', {
-                status: 503,
-                headers: { 'Content-Type': 'text/plain' }
-              })
-            }
+            return new Response('Offline - Please check your connection', {
+              status: 503,
+              headers: { 'Content-Type': 'text/plain' }
+            })
           })
         })
     )
     return
   }
 
-  // Cache First for static assets
+  // Cache First for static assets (JS, CSS, images, fonts)
   event.respondWith(
     caches.match(request).then((cached) => {
-      if (cached) {
-        // Update cache in background
-        fetch(request).then((response) => {
-          if (response.status === 200) {
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(request, response)
-            })
-          }
-        })
-        return cached
-      }
+      if (cached) return cached
 
       return fetch(request).then((response) => {
-        // Don't cache non-successful responses
         if (response.status !== 200) return response
 
         const responseClone = response.clone()
-        caches.open(CACHE_NAME).then((cache) => {
+        caches.open(CACHE_CONFIG.static.name).then((cache) => {
           cache.put(request, responseClone)
         })
         return response

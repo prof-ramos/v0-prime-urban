@@ -39,6 +39,8 @@ export interface Property {
   address: string
   /** Bairro */
   neighborhood: string
+  /** Bairro normalizado (sem acentos, minúsculas) para buscas */
+  neighborhoodNormalized?: string
   /** Valor do imóvel */
   price: number
   /** Taxa de condomínio (opcional) */

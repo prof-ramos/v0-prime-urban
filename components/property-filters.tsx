@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useCallback } from "react"
 import { useDebouncedCallback } from "use-debounce"
 import { Search, SlidersHorizontal, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -207,7 +207,7 @@ export function PropertyFilters({ filters, onFilterChange, onReset }: PropertyFi
     }
   }, [debouncedOnFilterChange])
 
-  const updateFilter = <K extends keyof FilterState>(key: K, value: FilterState[K] | string) => {
+  const updateFilter = useCallback(<K extends keyof FilterState>(key: K, value: FilterState[K] | string) => {
     const newFilters = { ...localFilters, [key]: value as FilterState[K] }
     setLocalFilters(newFilters)
 
@@ -219,7 +219,7 @@ export function PropertyFilters({ filters, onFilterChange, onReset }: PropertyFi
       // Non-critical - use debounced (300ms delay)
       debouncedOnFilterChange.callback(newFilters)
     }
-  }
+  }, [localFilters, debouncedOnFilterChange, onFilterChange])
 
   // Early exit: Check for active filters with short-circuit evaluation
   const hasActiveFilters = useMemo(() => {

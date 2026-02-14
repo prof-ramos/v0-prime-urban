@@ -32,6 +32,13 @@ const nextConfig = {
           value: 'public, max-age=31536000, immutable',
         }],
       },
+      {
+        source: '/imoveis/:path*',
+        headers: [{
+          key: 'Cache-Control',
+          value: 'public, s-maxage=60, stale-while-revalidate=300'
+        }],
+      },
     ]
   },
 }
