@@ -23,15 +23,13 @@ import {
 } from "@/components/ui/sheet"
 import { Slider } from "@/components/ui/slider"
 import type { FilterState } from "@/lib/types"
-import { NEIGHBORHOODS, PROPERTY_TYPE_LABELS, PRICE_LIMITS } from "@/lib/constants"
+import { NEIGHBORHOODS, PROPERTY_TYPE_OPTIONS, PRICE_LIMITS } from "@/lib/constants"
 
 interface PropertyFiltersProps {
   filters: FilterState
   onFilterChange: (filters: FilterState) => void
   onReset: () => void
 }
-
-const propertyTypes = Object.entries(PROPERTY_TYPE_LABELS).map(([value, label]) => ({ value, label }))
 
 interface FilterContentProps {
   localFilters: FilterState
@@ -73,7 +71,7 @@ function FilterContent({ localFilters, updateFilter, onFilterChange, onReset, ha
             <SelectValue placeholder="Todos os tipos" />
           </SelectTrigger>
           <SelectContent>
-            {propertyTypes.map((type) => (
+            {PROPERTY_TYPE_OPTIONS.map((type) => (
               <SelectItem key={type.value} value={type.value}>
                 {type.label}
               </SelectItem>
@@ -223,18 +221,18 @@ export function PropertyFilters({ filters, onFilterChange, onReset }: PropertyFi
     }
   }
 
-  const hasActiveFilters = useMemo(
-    () => Boolean(
-      filters.transactionType ||
-      filters.propertyType ||
-      filters.neighborhood ||
-      filters.bedrooms ||
-      filters.parkingSpaces ||
-      filters.minPrice > PRICE_LIMITS.MIN ||
-      filters.maxPrice < PRICE_LIMITS.MAX
-    ),
-    [filters]
-  )
+  // Early exit: Check for active filters with short-circuit evaluation
+  const hasActiveFilters = useMemo(() => {
+    // Early exit on first active filter found
+    if (filters.transactionType) return true
+    if (filters.propertyType) return true
+    if (filters.neighborhood) return true
+    if (filters.bedrooms) return true
+    if (filters.parkingSpaces) return true
+    if (filters.minPrice > PRICE_LIMITS.MIN) return true
+    if (filters.maxPrice < PRICE_LIMITS.MAX) return true
+    return false
+  }, [filters])
 
   return (
     <div className="bg-card border border-border/50 rounded-xl p-4 mb-6">
@@ -274,7 +272,7 @@ export function PropertyFilters({ filters, onFilterChange, onReset }: PropertyFi
               <SelectValue placeholder="Tipo de imóvel" />
             </SelectTrigger>
             <SelectContent>
-              {propertyTypes.map((type) => (
+              {PROPERTY_TYPE_OPTIONS.map((type) => (
                 <SelectItem key={type.value} value={type.value}>
                   {type.label}
                 </SelectItem>

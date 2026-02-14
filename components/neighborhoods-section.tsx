@@ -12,6 +12,9 @@ const NEIGHBORHOOD_COUNTS: Record<string, number> = {
   "lago-sul": 38,
 }
 
+// Combine iterations: Pre-filter neighborhoods to avoid filter+map in render
+const ACTIVE_NEIGHBORHOODS = NEIGHBORHOODS.filter(n => n.value in NEIGHBORHOOD_COUNTS)
+
 export function NeighborhoodsSection() {
   return (
     <section className="py-16 md:py-24 bg-background">
@@ -29,7 +32,7 @@ export function NeighborhoodsSection() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {NEIGHBORHOODS.filter(n => n.value in NEIGHBORHOOD_COUNTS).map((neighborhood) => (
+          {ACTIVE_NEIGHBORHOODS.map((neighborhood) => (
             <Link
               key={neighborhood.value}
               href={`/bairros/${neighborhood.value}`}
