@@ -39,3 +39,8 @@ repomix-output.xml
 
 # claude code
 .claude/
+
+# Playwright artifacts
+playwright-report/
+test-results/
+e2e/.auth/
