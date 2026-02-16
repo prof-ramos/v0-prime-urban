@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { NEIGHBORHOODS } from "@/lib/constants"
+import { NEIGHBORHOODS_DF, NEIGHBORHOODS_GO, NEIGHBORHOODS_MG } from "@/lib/constants"
 
 export function HeroSection() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -95,7 +95,20 @@ export function HeroSection() {
                   <SelectValue placeholder="Bairro" />
                 </SelectTrigger>
                 <SelectContent>
-                  {NEIGHBORHOODS.map((n) => (
+                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Distrito Federal</div>
+                  {NEIGHBORHOODS_DF.map((n) => (
+                    <SelectItem key={n.value} value={n.value}>
+                      {n.label}
+                    </SelectItem>
+                  ))}
+                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1 pt-2">Entorno - GO</div>
+                  {NEIGHBORHOODS_GO.map((n) => (
+                    <SelectItem key={n.value} value={n.value}>
+                      {n.label}
+                    </SelectItem>
+                  ))}
+                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1 pt-2">Entorno - MG</div>
+                  {NEIGHBORHOODS_MG.map((n) => (
                     <SelectItem key={n.value} value={n.value}>
                       {n.label}
                     </SelectItem>
@@ -120,8 +133,8 @@ export function HeroSection() {
               <p className="text-sm text-primary-foreground/60">Imóveis disponíveis</p>
             </div>
             <div className="text-center">
-              <p className="text-3xl md:text-4xl font-bold text-secondary">15</p>
-              <p className="text-sm text-primary-foreground/60">Bairros atendidos</p>
+              <p className="text-3xl md:text-4xl font-bold text-secondary">68</p>
+              <p className="text-sm text-primary-foreground/60">Regiões atendidas</p>
             </div>
             <div className="text-center">
               <p className="text-3xl md:text-4xl font-bold text-secondary">98%</p>

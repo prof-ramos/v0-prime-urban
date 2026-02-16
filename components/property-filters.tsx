@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/sheet"
 import { Slider } from "@/components/ui/slider"
 import type { FilterState } from "@/lib/types"
-import { NEIGHBORHOODS, PROPERTY_TYPE_OPTIONS, PRICE_LIMITS } from "@/lib/constants"
+import { NEIGHBORHOODS_DF, NEIGHBORHOODS_GO, NEIGHBORHOODS_MG, NEIGHBORHOODS, PROPERTY_TYPE_OPTIONS, PRICE_LIMITS } from "@/lib/constants"
 
 interface PropertyFiltersProps {
   filters: FilterState
@@ -82,16 +82,29 @@ function FilterContent({ localFilters, updateFilter, onFilterChange, onReset, ha
 
       {/* Neighborhood */}
       <div className="space-y-2">
-        <Label>Bairro</Label>
+        <Label>Região</Label>
         <Select
           value={localFilters.neighborhood}
           onValueChange={(value) => updateFilter("neighborhood", value)}
         >
           <SelectTrigger className="h-12">
-            <SelectValue placeholder="Todos os bairros" />
+            <SelectValue placeholder="Todas as regiões" />
           </SelectTrigger>
           <SelectContent>
-            {NEIGHBORHOODS.map((n) => (
+            <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Distrito Federal</div>
+            {NEIGHBORHOODS_DF.map((n) => (
+              <SelectItem key={n.value} value={n.value}>
+                {n.label}
+              </SelectItem>
+            ))}
+            <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1 pt-2">Entorno - Goiás</div>
+            {NEIGHBORHOODS_GO.map((n) => (
+              <SelectItem key={n.value} value={n.value}>
+                {n.label}
+              </SelectItem>
+            ))}
+            <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1 pt-2">Entorno - Minas Gerais</div>
+            {NEIGHBORHOODS_MG.map((n) => (
               <SelectItem key={n.value} value={n.value}>
                 {n.label}
               </SelectItem>
@@ -284,11 +297,24 @@ export function PropertyFilters({ filters, onFilterChange, onReset }: PropertyFi
             value={localFilters.neighborhood}
             onValueChange={(value) => updateFilter("neighborhood", value)}
           >
-            <SelectTrigger className="w-[160px] h-12">
-              <SelectValue placeholder="Bairro" />
+            <SelectTrigger className="w-[180px] h-12">
+              <SelectValue placeholder="Região" />
             </SelectTrigger>
             <SelectContent>
-              {NEIGHBORHOODS.map((n) => (
+              <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Distrito Federal</div>
+              {NEIGHBORHOODS_DF.map((n) => (
+                <SelectItem key={n.value} value={n.value}>
+                  {n.label}
+                </SelectItem>
+              ))}
+              <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1 pt-2">Entorno - GO</div>
+              {NEIGHBORHOODS_GO.map((n) => (
+                <SelectItem key={n.value} value={n.value}>
+                  {n.label}
+                </SelectItem>
+              ))}
+              <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1 pt-2">Entorno - MG</div>
+              {NEIGHBORHOODS_MG.map((n) => (
                 <SelectItem key={n.value} value={n.value}>
                   {n.label}
                 </SelectItem>
