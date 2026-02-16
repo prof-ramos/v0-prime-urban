@@ -58,6 +58,16 @@ Acesse `http://localhost:3000`.
 | `npm run build` | Gera build de producao             |
 | `npm run start` | Executa build em modo producao     |
 | `npm run lint`  | Executa ESLint                     |
+| `npm run payload:generate:importmap` | Regenera `app/(payload)/admin/importMap.js` |
+
+### ImportMap do Payload Admin
+
+O arquivo `app/(payload)/admin/importMap.js` é **gerado automaticamente** e deve permanecer versionado para builds determinísticas.  
+Para regenerar após mudanças de componentes no admin, execute:
+
+```bash
+npm run payload:generate:importmap
+```
 
 ## Estrutura do projeto
 

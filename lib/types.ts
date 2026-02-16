@@ -104,3 +104,61 @@ export interface PropertyCardProps {
   /** Dados do imóvel a ser exibido */
   property: Property
 }
+
+// ============= API TYPES =============
+
+export interface Deal {
+  finalPrice?: number | null
+}
+
+export interface SendEmailResult {
+  id: string | null
+  error: Error | null
+}
+
+// ============= RICH TEXT TYPES =============
+
+export interface RichTextNodeBase {
+  type: string
+  version: number
+  [key: string]: unknown
+}
+
+export interface RichTextTextNode extends RichTextNodeBase {
+  type: 'text'
+  text: string
+}
+
+export interface RichTextElementNode extends RichTextNodeBase {
+  children: RichTextNode[]
+}
+
+export type RichTextNode = RichTextTextNode | RichTextElementNode | RichTextNodeBase
+
+export interface RichTextField {
+  root: {
+    type: string
+    children: RichTextNode[]
+    direction: 'ltr' | 'rtl' | null
+    format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | ''
+    indent: number
+    version: number
+    [key: string]: unknown
+  }
+  [key: string]: unknown
+}
+
+export const isRichTextField = (value: unknown): value is RichTextField => {
+  if (!value || typeof value !== 'object') return false
+
+  const root = (value as { root?: unknown }).root
+  if (!root || typeof root !== 'object') return false
+
+  const children = (root as { children?: unknown }).children
+  return Array.isArray(children)
+}
+
+export const getRichTextChildren = (value: unknown): RichTextNode[] => {
+  if (!isRichTextField(value)) return []
+  return value.root.children
+}
