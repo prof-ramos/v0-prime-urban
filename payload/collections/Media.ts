@@ -1,10 +1,14 @@
 import type { CollectionConfig } from 'payload'
 import { isAdmin } from '../access/is-admin'
 
-export const Media: CollectionConfig = {
+export const MEDIA: CollectionConfig = {
   slug: 'media',
+  labels: {
+    singular: 'Mídia',
+    plural: 'Mídias',
+  },
   admin: {
-    group: 'Mídia',
+    group: 'Configurações',
   },
   access: {
     read: () => true,

@@ -1,10 +1,8 @@
 import React from 'react'
 import { RootLayout } from '@payloadcms/next/layouts'
 
-/* eslint-disable import/order */
 import '@payloadcms/next/css'
 import './custom.css'
-/* eslint-enable import/order */
 
 import config from '@payload-config'
 import { importMap } from './admin/importMap.js'
@@ -22,7 +20,9 @@ const Layout = ({ children }: LayoutProps) => (
       return null
     }}
   >
-    {children}
+    <div className="pu-admin-scope" data-pu-admin-scope>
+      {children}
+    </div>
   </RootLayout>
 )
 

@@ -1,5 +1,5 @@
-import type { CollectionBeforeChangeHook } from 'payload'
 import slugify from 'slugify'
+import type { CollectionBeforeChangeHook } from 'payload'
 
 export const autoSlug =
   (field: string): CollectionBeforeChangeHook =>

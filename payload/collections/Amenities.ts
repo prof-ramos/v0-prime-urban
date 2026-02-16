@@ -3,6 +3,10 @@ import { autoSlug } from '../hooks/beforeChange/auto-slug'
 
 export const Amenities: CollectionConfig = {
   slug: 'amenities',
+  labels: {
+    singular: 'Comodidade',
+    plural: 'Comodidades',
+  },
   admin: {
     useAsTitle: 'label',
     defaultColumns: ['label', 'icon', 'category', 'active'],

@@ -1,8 +1,11 @@
 import type { GlobalConfig } from 'payload'
+
 import { isAdmin } from '../access/is-admin'
+import { validateBrazilianPhone } from '../hooks/validators'
 
 export const SETTINGS: GlobalConfig = {
   slug: 'settings',
+  label: 'Configurações Gerais',
   typescript: {
     interface: 'Settings',
   },
@@ -28,6 +31,7 @@ export const SETTINGS: GlobalConfig = {
     {
       name: 'phoneNumber',
       type: 'text',
+      validate: validateBrazilianPhone,
     },
     {
       name: 'address',
@@ -55,11 +59,9 @@ export const SETTINGS: GlobalConfig = {
           required: true,
           label: 'URL',
           validate: (value: unknown) => {
-            if (!value || (typeof value === 'string' && value.trim() === '')) return true
-            const stringValue = Array.isArray(value) ? value[0] : value
-            if (typeof stringValue !== 'string') return true
+            if (typeof value !== 'string') return true
             try {
-              new URL(stringValue)
+              new URL(value)
               return true
             } catch {
               return 'URL deve ser válida (ex: https://instagram.com/primeurban)'
@@ -67,6 +69,14 @@ export const SETTINGS: GlobalConfig = {
           },
         },
       ],
+    },
+    {
+      name: 'lastAssignedAgentIndex',
+      type: 'number',
+      admin: {
+        hidden: true,
+      },
+      defaultValue: 0,
     },
   ],
 }

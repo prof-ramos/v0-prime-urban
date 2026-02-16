@@ -1,8 +1,13 @@
 import type { CollectionConfig } from 'payload'
-import { updateLeadLastContact } from '../hooks/afterCreate/update-lead-last-contact'
+import { updateLeadLastContact } from '../hooks/afterChange/update-lead-last-contact'
 
+// Payload convention: export named collection config in PascalCase for readability across registration files.
 export const Activities: CollectionConfig = {
   slug: 'activities',
+  labels: {
+    singular: 'Atividade',
+    plural: 'Atividades',
+  },
   admin: {
     useAsTitle: 'type',
     defaultColumns: ['type', 'lead', 'agent', 'createdAt'],

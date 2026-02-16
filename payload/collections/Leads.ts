@@ -1,9 +1,25 @@
-import type { CollectionConfig } from 'payload'
-import { distributeLead } from '../hooks/afterCreate/distribute-lead'
-import { updateLeadScore } from '../hooks/beforeChange/update-score'
+import type { CollectionBeforeChangeHook, CollectionConfig } from 'payload'
+
+import { distributeLead } from '../hooks/afterChange/distribute-lead'
+import { updateLeadScore } from '../hooks/afterChange/update-score'
+import { normalizeBrazilianPhone, validateBrazilianPhone } from '../hooks/validators'
+
+const normalizeLeadPhone: CollectionBeforeChangeHook = async ({ data }) => {
+  if (!data) return data
+
+  if (typeof data.phone === 'string') {
+    data.phone = normalizeBrazilianPhone(data.phone)
+  }
+
+  return data
+}
 
 export const Leads: CollectionConfig = {
   slug: 'leads',
+  labels: {
+    singular: 'Lead',
+    plural: 'Leads',
+  },
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'phone', 'source', 'status', 'priority', 'assignedTo', 'score'],
@@ -24,8 +40,8 @@ export const Leads: CollectionConfig = {
     delete: ({ req }) => req.user?.role === 'admin',
   },
   hooks: {
-    beforeChange: [updateLeadScore],
-    afterChange: [distributeLead],
+    beforeChange: [normalizeLeadPhone],
+    afterChange: [distributeLead, updateLeadScore],
   },
   fields: [
     {
@@ -39,6 +55,7 @@ export const Leads: CollectionConfig = {
       type: 'text',
       required: true,
       label: 'Telefone',
+      validate: validateBrazilianPhone,
     },
     {
       name: 'email',
@@ -83,7 +100,12 @@ export const Leads: CollectionConfig = {
         { label: 'Fechado - Ganho', value: 'closed_won' },
         { label: 'Fechado - Perdido', value: 'closed_lost' },
       ],
-      admin: { position: 'sidebar' },
+      admin: {
+        position: 'sidebar',
+        components: {
+          Field: '/payload/components/fields/LeadStatusSelect#LeadStatusSelect',
+        },
+      },
       label: 'Status',
     },
     {

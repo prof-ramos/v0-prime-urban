@@ -1,7 +1,8 @@
 import type { CollectionAfterChangeHook } from 'payload'
 
 interface ActivityDoc {
-  lead?: string | { id: string }
+  id?: number | string
+  lead?: string | number | { id: string | number }
 }
 
 export const updateLeadLastContact: CollectionAfterChangeHook = async ({ doc, req, operation }) => {
@@ -19,10 +20,17 @@ export const updateLeadLastContact: CollectionAfterChangeHook = async ({ doc, re
         data: {
           lastContactAt: new Date().toISOString(),
         },
+        context: {
+          internalUpdate: true,
+        },
       })
-    } catch (error) {
-      // Logar erro mas não interromper o fluxo
-      console.error('Erro ao atualizar lastContactAt do lead:', error)
+    } catch (error: unknown) {
+      req.payload.logger.error({
+        msg: 'Erro ao atualizar lastContactAt do lead',
+        activityId: activity.id,
+        leadId,
+        err: error,
+      })
     }
   }
 

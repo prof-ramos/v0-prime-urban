@@ -1,32 +1,104 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionBeforeChangeHook, CollectionConfig, FieldHook } from 'payload'
+
 import { isOwnerOrAdmin } from '../access/is-owner-or-admin'
 
 export type DealStage = 'proposal' | 'contract' | 'signed' | 'cancelled'
 
-export const DEAL_STAGE_OPTIONS: { label: string; value: DealStage }[] = [
+export interface DealStageOption {
+  label: string
+  value: DealStage
+}
+
+export const DEAL_STAGE_OPTIONS: DealStageOption[] = [
   { label: 'Proposta', value: 'proposal' },
   { label: 'Contrato', value: 'contract' },
   { label: 'Assinado', value: 'signed' },
   { label: 'Cancelado', value: 'cancelled' },
 ]
 
+const assignAgentOnCreate: CollectionBeforeChangeHook = async ({ data, req }) => {
+  if (!data) return data
+
+  if (!data.agent && req.user?.id) {
+    data.agent = req.user.id
+  }
+
+  return data
+}
+
+const getRelationshipId = (value: unknown): string | null => {
+  if (typeof value === 'string') return value
+  if (typeof value === 'number') return String(value)
+  if (!value || typeof value !== 'object' || !('id' in value)) return null
+
+  const id = (value as { id?: unknown }).id
+  if (typeof id === 'string') return id
+  if (typeof id === 'number') return String(id)
+
+  return null
+}
+
+const getRelationshipTitle = async ({
+  id,
+  collection,
+  fallback,
+  req,
+}: {
+  id: string | null
+  collection: 'leads' | 'properties'
+  fallback: string
+  req: Parameters<FieldHook>[0]['req']
+}): Promise<string> => {
+  if (!id) return fallback
+
+  try {
+    const doc = await req.payload.findByID({
+      collection,
+      id,
+      depth: 0,
+    })
+
+    if (collection === 'leads') {
+      const leadName = 'name' in doc ? doc.name : undefined
+      return typeof leadName === 'string' && leadName.trim().length > 0 ? leadName : fallback
+    }
+
+    const propertyTitle = 'title' in doc ? doc.title : undefined
+    return typeof propertyTitle === 'string' && propertyTitle.trim().length > 0
+      ? propertyTitle
+      : fallback
+  } catch {
+    return fallback
+  }
+}
+
+const composeDealTitle: FieldHook = async ({ siblingData, data, req }) => {
+  const leadId = getRelationshipId(siblingData?.lead ?? data?.lead)
+  const propertyId = getRelationshipId(siblingData?.property ?? data?.property)
+
+  if (!leadId || !propertyId) return undefined
+
+  const [leadTitle, propertyTitle] = await Promise.all([
+    getRelationshipTitle({ id: leadId, collection: 'leads', fallback: 'Lead', req }),
+    getRelationshipTitle({ id: propertyId, collection: 'properties', fallback: 'Imóvel', req }),
+  ])
+
+  return `${leadTitle} - ${propertyTitle}`
+}
+
 export const Deals: CollectionConfig = {
   slug: 'deals',
+  labels: {
+    singular: 'Negócio',
+    plural: 'Negócios',
+  },
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['lead', 'property', 'stage', 'finalPrice', 'agent'],
     group: 'CRM',
   },
   hooks: {
-    beforeChange: [
-      ({ data, req }) => {
-        // Auto-preencher agent com req.user.id se não definido
-        if (!data.agent && req.user?.id) {
-          data.agent = req.user.id
-        }
-        return data
-      },
-    ],
+    beforeChange: [assignAgentOnCreate],
   },
   access: {
     read: isOwnerOrAdmin,
@@ -44,15 +116,7 @@ export const Deals: CollectionConfig = {
         description: 'Gerado automaticamente a partir do lead e propriedade',
       },
       hooks: {
-        beforeChange: [
-          ({ data, siblingData }) => {
-            // Compor título de lead + propriedade
-            if (!data) return data
-            const leadTitle = siblingData?.lead || data.lead || 'Lead'
-            const propertyTitle = siblingData?.property || data.property || 'Imóvel'
-            return `${leadTitle} - ${propertyTitle}`
-          },
-        ],
+        beforeChange: [composeDealTitle],
       },
     },
     {

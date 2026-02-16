@@ -1,2 +1,921 @@
-/* Custom styles for Payload Admin can go here */
+/**
+ * PrimeUrban - Payload Admin Custom Styles
+ * Customização visual baseada no Design System do PrimeUrban
+ *
+ * MODO LIGHT FORÇADO - Tema claro consistente
+ */
+
 @import '@payloadcms/next/css';
+
+/* =====================================================
+   FORÇAR MODO LIGHT
+   ===================================================== */
+
+/* Desabilitar dark mode do Payload e forçar light theme */
+:root,
+[class*="ThemeProvider"],
+[class*="PayloadAdmin"],
+body {
+  color-scheme: light !important;
+}
+
+/* Remover qualquer classe dark que possa ser aplicada */
+.dark,
+[data-theme="dark"],
+[class*="dark"] {
+  color-scheme: light !important;
+}
+
+:root {
+  /* PrimeUrban Brand Colors - Light Theme */
+  --pu-primary: #1D2D3A;
+  --pu-secondary: #B68863;
+  --pu-accent: #3D4D55;
+  --pu-cream: #F9F6F0;
+  --pu-tan: #D9C3A9;
+  --pu-mauve: #A78E9C;
+  --pu-white: #FFFFFF;
+  --pu-gray-50: #FAFAF9;
+  --pu-gray-100: #F5F5F4;
+  --pu-gray-200: #E7E5E4;
+  --pu-gray-300: #D6D3D1;
+  --pu-gray-400: #A8A29E;
+  --pu-gray-500: #78716C;
+  --pu-gray-600: #57534E;
+  --pu-gray-700: #44403C;
+  --pu-gray-800: #292524;
+  --pu-gray-900: #1C1917;
+
+  /* Status Colors */
+  --pu-success: #2E7D32;
+  --pu-warning: #B26A00;
+  --pu-error: #B00020;
+  --pu-info: #446F91;
+  --pu-whatsapp: #25D366;
+
+  /* Typography - system fonts como fallback */
+  --pu-font-serif: 'Libre Baskerville', Georgia, serif;
+  --pu-font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Spacing & Radius */
+  --pu-radius-base: 1.25rem;
+  --pu-radius-sm: calc(var(--pu-radius-base) - 4px);
+  --pu-radius-md: calc(var(--pu-radius-base) - 2px);
+  --pu-radius-lg: var(--pu-radius-base);
+  --pu-radius-xl: calc(var(--pu-radius-base) + 4px);
+
+  /* =====================================================
+     SHADCN/UI VARIABLES - Para componentes shadcn/ui
+     ===================================================== */
+  --background: 0 0% 100%;
+  --foreground: 210 24% 16%;
+  --card: 0 0% 100%;
+  --card-foreground: 210 24% 16%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 210 24% 16%;
+  --primary: 210 24% 16%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 28 35% 55%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 46 23% 96%;
+  --muted-foreground: 20 6% 46%;
+  --accent: 210 12% 28%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 84% 37%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 34 30% 77%;
+  --input: 34 30% 77%;
+  --ring: 28 35% 55%;
+  --radius: 1.25rem;
+
+  /* Override Payload CSS Variables para Light Mode */
+  --bg-base: var(--pu-cream) !important;
+  --bg-white: var(--pu-white) !important;
+  --bg-depth-1: var(--pu-white) !important;
+  --bg-depth-2: var(--pu-gray-50) !important;
+  --bg-depth-3: var(--pu-gray-100) !important;
+  --bg-depth-4: var(--pu-gray-200) !important;
+
+  --text-base: var(--pu-primary) !important;
+  --text-secondary: var(--pu-gray-600) !important;
+  --text-tertiary: var(--pu-gray-500) !important;
+  --text-inverse: var(--pu-white) !important;
+
+  --border-base: var(--pu-tan) !important;
+  --border-color: var(--pu-tan) !important;
+  --border-depth-1: var(--pu-gray-200) !important;
+  --border-depth-2: var(--pu-gray-300) !important;
+  --border-depth-3: var(--pu-gray-300) !important;
+  --border-depth-4: var(--pu-gray-400) !important;
+
+  --btn-primary: var(--pu-primary) !important;
+  --btn-primary-text: var(--pu-white) !important;
+  --btn-secondary: var(--pu-secondary) !important;
+  --btn-secondary-text: var(--pu-primary) !important;
+}
+
+/* =====================================================
+   CORE CUSTOMIZATIONS
+   ===================================================== */
+
+/* Payload UI usa !important internamente - sobrescrita necessária */
+
+/* Sidebar Navigation */
+/* Necessário para vencer a cascata interna do Payload na sidebar. */
+nav[class*="Nav_"] {
+  background: var(--pu-primary) !important;
+}
+
+/* Logo Area - PrimeUrban Branding */
+[class*="Logo_"] {
+  font-family: var(--pu-font-serif) !important;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Navigation Items */
+nav[class*="Nav_"] button[class*="NavItem_"],
+nav[class*="Nav_"] a[class*="NavLink_"] {
+  border-radius: var(--pu-radius-sm) !important;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+nav[class*="Nav_"] button[class*="NavItem_"]:hover,
+nav[class*="Nav_"] a[class*="NavLink_"]:hover {
+  background: rgba(182, 136, 99, 0.15) !important;
+  transform: translateX(2px);
+}
+
+nav[class*="Nav_"] button[class*="NavItem_"][class*="active_"],
+nav[class*="Nav_"] a[class*="NavLink_"][class*="active_"] {
+  background: var(--pu-secondary) !important;
+  color: var(--pu-primary) !important;
+  font-weight: 600;
+}
+
+/* Navigation Groups */
+[class*="NavGroup_"] {
+  font-family: var(--pu-font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.7rem;
+  color: var(--pu-tan);
+  font-weight: 600;
+  padding: 1rem 1rem 0.5rem;
+}
+
+/* =====================================================
+   BUTTONS & INTERACTIVE ELEMENTS
+   ===================================================== */
+
+/* Primary Buttons */
+button[class*="Button_"][class*="primary_"],
+button.btn-primary,
+button[type="submit"].btn-primary {
+  background: var(--pu-primary) !important;
+  border-color: var(--pu-primary) !important;
+  border-radius: var(--pu-radius-sm) !important;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+button[class*="Button_"][class*="primary_"]:hover,
+button.btn-primary:hover,
+button[type="submit"].btn-primary:hover {
+  background: var(--pu-accent) !important;
+  border-color: var(--pu-accent) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(29, 45, 58, 0.25);
+}
+
+/* Secondary Buttons */
+button[class*="Button_"][class*="secondary_"] {
+  background: var(--pu-secondary) !important;
+  border-color: var(--pu-secondary) !important;
+  color: var(--pu-primary) !important;
+  border-radius: var(--pu-radius-sm) !important;
+  font-weight: 600;
+}
+
+button[class*="Button_"][class*="secondary_"]:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+/* Destructive/Error Buttons */
+button[class*="Button_"][class*="destructive_"] {
+  background: var(--pu-error) !important;
+  border-color: var(--pu-error) !important;
+  border-radius: var(--pu-radius-sm) !important;
+}
+
+/* =====================================================
+   CARDS & CONTAINERS
+   ===================================================== */
+
+/* Collection Cards */
+[class*="Card_"],
+[class*="collection-card_"],
+[class*="List_"] [class*="item_"] {
+  border-radius: var(--pu-radius-md) !important;
+  border-color: var(--pu-tan) !important;
+  transition: all 0.2s ease;
+}
+
+[class*="Card_"]:hover,
+[class*="collection-card_"]:hover,
+[class*="List_"] [class*="item_"]:hover {
+  border-color: var(--pu-secondary) !important;
+  box-shadow: 0 2px 8px rgba(182, 136, 99, 0.15);
+}
+
+/* =====================================================
+   FORMS & INPUTS
+   ===================================================== */
+
+/* Input Fields */
+.pu-admin-scope input[type="text"],
+.pu-admin-scope input[type="email"],
+.pu-admin-scope input[type="number"],
+.pu-admin-scope input[type="password"],
+.pu-admin-scope input[type="url"],
+.pu-admin-scope input[type="tel"],
+.pu-admin-scope textarea,
+.pu-admin-scope select {
+  border-radius: var(--pu-radius-sm) !important;
+  border-color: var(--pu-tan) !important;
+  transition: all 0.2s ease;
+}
+
+.pu-admin-scope input[type="text"]:focus,
+.pu-admin-scope input[type="email"]:focus,
+.pu-admin-scope input[type="number"]:focus,
+.pu-admin-scope input[type="password"]:focus,
+.pu-admin-scope input[type="url"]:focus,
+.pu-admin-scope input[type="tel"]:focus,
+.pu-admin-scope textarea:focus,
+.pu-admin-scope select:focus {
+  border-color: var(--pu-secondary) !important;
+  box-shadow: 0 0 0 3px rgba(182, 136, 99, 0.15) !important;
+}
+
+.pu-admin-scope :is(button, [role="button"], a, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--pu-secondary);
+  outline-offset: 2px;
+}
+
+/* Labels */
+.pu-admin-scope label {
+  font-family: var(--pu-font-sans);
+  font-weight: 600;
+  color: var(--pu-primary);
+  font-size: 0.875rem;
+}
+
+/* =====================================================
+   TABLES & LISTS
+   ===================================================== */
+
+/* Table Headers */
+.pu-admin-scope table thead th {
+  font-family: var(--pu-font-sans);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.75rem;
+  color: var(--pu-accent);
+  border-bottom-color: var(--pu-tan) !important;
+  padding: 1rem !important;
+}
+
+/* Table Rows */
+.pu-admin-scope table tbody tr {
+  transition: all 0.15s ease;
+}
+
+.pu-admin-scope table tbody tr:hover {
+  background: rgba(249, 246, 240, 0.5) !important;
+}
+
+.pu-admin-scope table tbody td {
+  padding: 1rem !important;
+}
+
+/* =====================================================
+   BADGES & STATUS INDICATORS
+   ===================================================== */
+
+/* Status Badges */
+[class*="Badge_"],
+[class*="Pill_"] {
+  border-radius: var(--pu-radius-sm) !important;
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.75rem !important;
+  letter-spacing: 0.02em;
+}
+
+/* Collection List Badges */
+[class*="list_"] [class*="pill_"],
+[class*="status-pill_"] {
+  border-radius: var(--pu-radius-sm);
+  font-family: var(--pu-font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.625rem;
+}
+
+/* =====================================================
+   MODALS & DRAWERS
+   ===================================================== */
+
+/* Modal/Drawer Background */
+[class*="Modal_"],
+[class*="Drawer_"] {
+  border-radius: var(--pu-radius-lg) !important;
+  content-visibility: auto;
+  contain-intrinsic-size: 720px;
+}
+
+/* Modal/Drawer Header */
+[class*="Modal_"] [class*="Header_"],
+[class*="Drawer_"] [class*="Header_"] {
+  border-bottom-color: var(--pu-tan) !important;
+  padding: 1.5rem !important;
+}
+
+[class*="Modal_"] [class*="Header_"] h1,
+[class*="Modal_"] [class*="Header_"] h2,
+[class*="Drawer_"] [class*="Header_"] h1,
+[class*="Drawer_"] [class*="Header_"] h2 {
+  font-family: var(--pu-font-serif);
+  font-weight: 700;
+  color: var(--pu-primary);
+}
+
+/* =====================================================
+   HEADINGS & TYPOGRAPHY
+   ===================================================== */
+
+/* Page Titles */
+.pu-admin-scope h1,
+.pu-admin-scope h2,
+.pu-admin-scope h3,
+.pu-admin-scope h4,
+.pu-admin-scope h5,
+.pu-admin-scope h6 {
+  font-family: var(--pu-font-serif);
+  color: var(--pu-primary);
+  font-weight: 700;
+}
+
+.pu-admin-scope h1 {
+  letter-spacing: -0.02em;
+}
+
+/* Body Text */
+.pu-admin-scope,
+.pu-admin-scope p,
+.pu-admin-scope span,
+.pu-admin-scope div {
+  font-family: var(--pu-font-sans);
+}
+
+/* =====================================================
+   TABS
+   ===================================================== */
+
+/* Tab Navigation */
+[role="tablist"] {
+  border-bottom-color: var(--pu-tan) !important;
+}
+
+[role="tab"] {
+  font-family: var(--pu-font-sans);
+  font-weight: 500;
+  color: var(--pu-accent);
+  transition: all 0.2s ease;
+  border-radius: var(--pu-radius-sm) var(--pu-radius-sm) 0 0 !important;
+}
+
+[role="tab"]:hover {
+  color: var(--pu-primary);
+}
+
+[role="tab"][aria-selected="true"] {
+  color: var(--pu-secondary) !important;
+  border-bottom-color: var(--pu-secondary) !important;
+  font-weight: 600;
+}
+
+/* =====================================================
+   LIGHT MODE OVERRIDES FORÇADOS
+   ===================================================== */
+
+/* Forçar backgrounds claros em todos os containers */
+[class*="Shell_"],
+[class*="App_"],
+[class*="Content_"],
+[class*="View_"],
+[class*="EditDepth_"],
+[class*="CollectionList_"],
+[class*="Dashboard_"],
+[class*="Global_"],
+[class*="Version_"] {
+  background: var(--pu-cream) !important;
+}
+
+/* Cards e containers com fundo branco */
+[class*="Card_"],
+[class*="card_"],
+[class*="Panel_"],
+[class*="panel_"],
+[class*="Block_"],
+[class*="block_"],
+[class*="Row_"],
+[class*="field_"],
+[class*="FormField_"] {
+  background: var(--pu-white) !important;
+  border-color: var(--pu-tan) !important;
+}
+
+/* Forçar texto escuro */
+.pu-admin-scope,
+.pu-admin-scope [class*="Shell_"],
+.pu-admin-scope [class*="App_"],
+.pu-admin-scope [class*="Content_"],
+.pu-admin-scope [class*="View_"],
+.pu-admin-scope div,
+.pu-admin-scope span,
+.pu-admin-scope p,
+.pu-admin-scope h1,
+.pu-admin-scope h2,
+.pu-admin-scope h3,
+.pu-admin-scope h4,
+.pu-admin-scope h5,
+.pu-admin-scope h6,
+.pu-admin-scope label,
+.pu-admin-scope [class*="App_"] {
+  color: var(--pu-primary);
+}
+
+/* Textos secundários */
+[class*="text-secondary"],
+[class*="description"],
+[class*="label"],
+small, .text-sm {
+  color: var(--pu-gray-600) !important;
+}
+
+/* Placeholder de inputs */
+::placeholder,
+input::placeholder,
+textarea::placeholder {
+  color: var(--pu-gray-500) !important;
+}
+
+/* Links e textos interativos */
+.pu-admin-scope a,
+.pu-admin-scope [class*="Link_"],
+.pu-admin-scope [class*="link_"] {
+  color: var(--pu-secondary);
+}
+
+.pu-admin-scope a:hover,
+.pu-admin-scope [class*="Link_"]:hover {
+  color: var(--pu-primary);
+}
+
+.pu-admin-scope a:visited {
+  color: var(--pu-secondary);
+}
+
+.pu-admin-scope a:focus {
+  color: var(--pu-primary);
+}
+
+.pu-admin-scope button {
+  color: var(--pu-primary);
+}
+
+.pu-admin-scope button:focus {
+  color: inherit;
+}
+
+/* Ícones */
+.pu-admin-scope svg,
+.pu-admin-scope [class*="Icon_"],
+.pu-admin-scope [class*="icon_"] {
+  color: var(--pu-gray-700) !important;
+}
+
+/* Botões com texto claro sobre fundo escuro */
+button[class*="Button_"][class*="primary_"],
+button.btn-primary,
+button[type="submit"].btn-primary {
+  color: var(--pu-white) !important;
+}
+
+button[class*="Button_"][class*="secondary_"] {
+  color: var(--pu-primary) !important;
+}
+
+/* Select dropdowns */
+[class*="Select_"],
+[class*="select_"] {
+  background: var(--pu-white) !important;
+  color: var(--pu-primary) !important;
+}
+
+/* Dropdown menus */
+[class*="Dropdown_"],
+[class*="dropdown_"],
+[class*="Menu_"],
+[class*="menu_"] {
+  background: var(--pu-white) !important;
+  border-color: var(--pu-tan) !important;
+  content-visibility: auto;
+  contain-intrinsic-size: 240px;
+}
+
+[class*="Dropdown_"] [class*="MenuItem_"],
+[class*="dropdown_"] [class*="menu-item_"] {
+  background: var(--pu-white) !important;
+  color: var(--pu-primary) !important;
+  content-visibility: auto;
+  contain-intrinsic-size: 48px;
+}
+
+[class*="Dropdown_"] [class*="MenuItem_"]:hover,
+[class*="dropdown_"] [class*="menu-item_"]:hover {
+  background: var(--pu-cream) !important;
+}
+
+/* Toast notifications */
+[class*="Toast_"],
+[class*="Alert_"],
+[class*="Notice_"] {
+  background: var(--pu-white) !important;
+  border-color: var(--pu-tan) !important;
+  color: var(--pu-primary) !important;
+  content-visibility: auto;
+  contain-intrinsic-size: 100px;
+}
+
+/* Tooltips */
+[class*="Tooltip_"] {
+  background: var(--pu-gray-900) !important;
+  color: var(--pu-white) !important;
+  content-visibility: auto;
+  contain-intrinsic-size: 56px;
+}
+
+/* Modal overlay/backdrop */
+[class*="Modal_"][class*="overlay"],
+[class*="Drawer_"][class*="overlay"],
+[class*="backdrop"],
+[class*="Backdrop_"] {
+  background: rgba(29, 45, 58, 0.5) !important;
+}
+
+/* Input backgrounds */
+.pu-admin-scope input,
+.pu-admin-scope textarea,
+.pu-admin-scope select {
+  background: var(--pu-white) !important;
+  color: var(--pu-primary) !important;
+}
+
+/* Input disabled */
+.pu-admin-scope input:disabled,
+.pu-admin-scope textarea:disabled,
+.pu-admin-scope select:disabled {
+  background: var(--pu-gray-100) !important;
+  color: var(--pu-gray-500) !important;
+}
+
+/* Checkbox e Radio */
+.pu-admin-scope input[type="checkbox"],
+.pu-admin-scope input[type="radio"] {
+  background: var(--pu-white) !important;
+  border-color: var(--pu-tan) !important;
+}
+
+/* Switch toggle */
+[class*="Switch_"],
+[class*="Toggle_"] {
+  background: var(--pu-gray-300) !important;
+}
+
+[class*="Switch_"][class*="checked"],
+[class*="Toggle_"][class*="checked"] {
+  background: var(--pu-secondary) !important;
+}
+
+/* Code blocks e pre */
+.pu-admin-scope pre,
+.pu-admin-scope code,
+.pu-admin-scope [class*="Code_"] {
+  background: var(--pu-gray-100) !important;
+  color: var(--pu-gray-800) !important;
+}
+
+/* Tabs active state */
+[role="tab"][aria-selected="true"] {
+  background: var(--pu-white) !important;
+  border-bottom-color: var(--pu-secondary) !important;
+}
+
+/* Table backgrounds */
+.pu-admin-scope table,
+.pu-admin-scope thead,
+.pu-admin-scope tbody,
+.pu-admin-scope tr,
+.pu-admin-scope th,
+.pu-admin-scope td {
+  background: transparent !important;
+}
+
+.pu-admin-scope table thead th {
+  background: var(--pu-gray-50) !important;
+  color: var(--pu-accent) !important;
+}
+
+.pu-admin-scope table tbody tr:nth-child(even) {
+  background: var(--pu-gray-50) !important;
+}
+
+.pu-admin-scope table tbody tr:hover {
+  background: rgba(182, 136, 99, 0.1) !important;
+}
+
+/* Pagination */
+[class*="Pagination_"],
+[class*="pagination_"] {
+  background: var(--pu-white) !important;
+}
+
+[class*="Pagination_"] button,
+[class*="pagination_"] button {
+  background: var(--pu-white) !important;
+  color: var(--pu-primary) !important;
+  border-color: var(--pu-tan) !important;
+}
+
+[class*="Pagination_"] button[class*="active"],
+[class*="pagination_"] button[class*="active"] {
+  background: var(--pu-secondary) !important;
+  color: var(--pu-primary) !important;
+}
+
+/* Breadcrumbs */
+[class*="Breadcrumb_"],
+[class*="breadcrumb_"] {
+  color: var(--pu-gray-600) !important;
+}
+
+[class*="Breadcrumb_"] a,
+[class*="breadcrumb_"] a {
+  color: var(--pu-secondary) !important;
+}
+
+/* Sidebar navigation items textos */
+nav[class*="Nav_"] button,
+nav[class*="Nav_"] a {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+nav[class*="Nav_"] button:hover,
+nav[class*="Nav_"] a:hover {
+  color: var(--pu-white) !important;
+}
+
+/* User menu/account dropdown */
+[class*="Account_"],
+[class*="UserMenu_"] {
+  background: var(--pu-white) !important;
+  border-color: var(--pu-tan) !important;
+}
+
+/* Search input no header */
+[class*="Search_"] input,
+[class*="Header_"] input[type="search"] {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: var(--pu-white) !important;
+  border-color: transparent !important;
+}
+
+[class*="Search_"] input::placeholder,
+[class*="Header_"] input[type="search"]::placeholder {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+[class*="Search_"] input:focus,
+[class*="Header_"] input[type="search"]:focus {
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Collection list items */
+[class*="CollectionList_"] [class*="Card_"],
+[class*="CollectionList_"] [class*="Item_"] {
+  background: var(--pu-white) !important;
+  border-color: var(--pu-tan) !important;
+  content-visibility: auto;
+  contain-intrinsic-size: 320px;
+}
+
+[class*="CollectionList_"] [class*="Card_"]:hover,
+[class*="CollectionList_"] [class*="Item_"]:hover {
+  border-color: var(--pu-secondary) !important;
+  background: var(--pu-gray-50) !important;
+}
+
+/* =====================================================
+   SHELL & LAYOUT
+   ===================================================== */
+
+/* Main Content Area */
+.pu-admin-scope main {
+  background: var(--pu-cream);
+}
+
+/* Dashboard Cards */
+[class*="dashboard_"] [class*="card_"],
+[class*="stat-card_"] {
+  border-radius: var(--pu-radius-md) !important;
+  border-color: var(--pu-tan) !important;
+  background: white !important;
+}
+
+/* =====================================================
+   SPECIFIC COLLECTION STYLES
+   ===================================================== */
+
+/* Properties Collection - Status Colors */
+[data-collection="properties"] [class*="status_"][data-value="published"] {
+  background: var(--pu-success) !important;
+  color: white !important;
+}
+
+[data-collection="properties"] [class*="status_"][data-value="draft"] {
+  background: var(--pu-accent) !important;
+  color: white !important;
+}
+
+[data-collection="properties"] [class*="status_"][data-value="sold"] {
+  background: var(--pu-secondary) !important;
+  color: var(--pu-primary) !important;
+}
+
+[data-collection="properties"] [class*="status_"][data-value="paused"] {
+  background: var(--pu-warning) !important;
+  color: white !important;
+}
+
+/* Leads - Priority Colors */
+[data-collection="leads"] [class*="priority_"][data-value="high"] {
+  background: var(--pu-error) !important;
+  color: white !important;
+}
+
+[data-collection="leads"] [class*="priority_"][data-value="medium"] {
+  background: var(--pu-warning) !important;
+  color: white !important;
+}
+
+[data-collection="leads"] [class*="priority_"][data-value="low"] {
+  background: var(--pu-info) !important;
+  color: white !important;
+}
+
+/* Deals - Stage Colors */
+[data-collection="deals"] [class*="stage_"][data-value="proposal"] {
+  background: var(--pu-info) !important;
+  color: white !important;
+}
+
+[data-collection="deals"] [class*="stage_"][data-value="contract"] {
+  background: var(--pu-warning) !important;
+  color: white !important;
+}
+
+[data-collection="deals"] [class*="stage_"][data-value="signed"] {
+  background: var(--pu-success) !important;
+  color: white !important;
+}
+
+[data-collection="deals"] [class*="stage_"][data-value="cancelled"] {
+  background: var(--pu-error) !important;
+  color: white !important;
+}
+
+/* =====================================================
+   RESPONSIVE ADJUSTMENTS
+   ===================================================== */
+
+@media (max-width: 768px) {
+  :root {
+    --pu-radius-base: 1rem;
+  }
+
+  [class*="Card_"],
+  [class*="Modal_"] {
+    border-radius: var(--pu-radius-md) !important;
+  }
+}
+
+/* =====================================================
+   ANIMATIONS & TRANSITIONS
+   ===================================================== */
+
+/* Smooth page transitions */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Animação seletiva - usar classe .fade-in quando necessário */
+@media (prefers-reduced-motion: no-preference) {
+  .fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pu-admin-scope * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  nav[class*="Nav_"] button[class*="NavItem_"]:hover,
+  nav[class*="Nav_"] a[class*="NavLink_"]:hover,
+  button[class*="Button_"][class*="primary_"]:hover,
+  button[class*="Button_"][class*="secondary_"]:hover {
+    transform: none;
+  }
+}
+
+/* Loading states */
+[class*="skeleton_"],
+[class*="loading_"] {
+  background: linear-gradient(
+    90deg,
+    var(--pu-cream) 0%,
+    var(--pu-tan) 50%,
+    var(--pu-cream) 100%
+  ) !important;
+  background-size: 200% 100% !important;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* =====================================================
+   SCROLLBAR CUSTOMIZATION
+   ===================================================== */
+
+html,
+body,
+.pu-admin-scope {
+  scrollbar-width: thin;
+  scrollbar-color: var(--pu-tan) var(--pu-cream);
+}
+
+.pu-admin-scope *::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.pu-admin-scope *::-webkit-scrollbar-track {
+  background: var(--pu-cream);
+}
+
+.pu-admin-scope *::-webkit-scrollbar-thumb {
+  background: var(--pu-tan);
+  border-radius: 4px;
+}
+
+.pu-admin-scope *::-webkit-scrollbar-thumb:hover {
+  background: var(--pu-secondary);
+}
+
+/* =====================================================
+   PRINT STYLES
+   ===================================================== */
+
+@media print {
+  .pu-admin-scope nav[class*="Nav_"],
+  .pu-admin-scope button[class*="Button_"] {
+    display: none !important;
+  }
+
+  .pu-admin-scope main {
+    background: white !important;
+  }
+}

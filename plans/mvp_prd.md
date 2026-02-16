@@ -14,7 +14,7 @@ Sistema integrado de CMS + CRM para a PrimeUrban Imobiliária, focado em gestão
 | Linguagem | TypeScript 5.x                        | Segurança de tipos                            |
 | UI        | Tailwind CSS 4 + shadcn/ui            | Design system consistente                     |
 | CMS       | Payload CMS 3.x                       | Integração nativa com Next.js, admin embutido |
-| Banco     | SQLite (Dev) / Postgres (Prod)        | SQLite local para agilidade; Neon em prod     |
+| Banco     | Postgres (Dev/Staging/Prod)           | Paridade entre ambientes e menor risco de divergência |
 | Storage   | Local Disk (Dev) / Vercel Blob (Prod) | Desenvolvimento rápido local; Blob para prod  |
 | Auth      | Payload Auth                          | RBAC nativo, sem custo extra                  |
 | Imagens   | Sharp (Vercel)                        | Processamento serverless                      |
@@ -29,9 +29,9 @@ Sistema integrado de CMS + CRM para a PrimeUrban Imobiliária, focado em gestão
 | ----------------- | ---------------------------- | ------------------------------------------ |
 | Bandwidth         | 100GB/mês                    | Otimização de imagens, lazy loading        |
 | Function Duration | 60s (Pro) / 10s (Hobby)      | Processamento em background via API routes |
-| Cron Jobs         | Não disponível               | Client-side scheduling com setInterval     |
+| Cron Jobs         | Não disponível no free tier  | Scheduler externo (cron-job.org/EasyCron/GitHub Actions) ou lazy-cron em requests |
 | Build Time        | 6000 min/mês                 | Otimização de builds                       |
-| Blob Storage      | 1GB (Prod) / Ilimitado (Dev) | Local em dev; compressão WebP em prod      |
+| Blob Storage      | 1GB (Prod) / Limitado em Dev | Local em dev; limitado ao disco/quotas e compressão WebP em prod |
 
 ---
 
@@ -117,6 +117,13 @@ Sistema integrado de CMS + CRM para a PrimeUrban Imobiliária, focado em gestão
    - LGPD: consentimento, data, IP
    - Score (0-100)
    - Último contato
+
+**Atualização de score (0-100):**
+- Modelo adotado no MVP: **lazy scoring + eventos**.
+- Eventos imediatos (ex.: envio de formulário, clique WhatsApp, agendamento) recalculam score no momento da interação.
+- Penalizações por tempo (ex.: `-20: Sem interação 7 dias`) são aplicadas sob demanda na leitura do lead, comparando `lastInteractionAt` com `now`.
+- Como cron server-side não está disponível no free tier, não haverá job periódico obrigatório nesta fase.
+- Se for exigida penalização automática em lote (sem leitura), isso depende de scheduler externo ou upgrade para plano com cron.
 
 2. **Deals (Oportunidades)**
    - Lead + imóvel vinculados
@@ -215,6 +222,15 @@ Sistema integrado de CMS + CRM para a PrimeUrban Imobiliária, focado em gestão
 - Breakpoints: 640/768/1024/1280
 - Cards: 1 coluna (mobile), 2 (tablet), 3 (desktop)
 
+### Observabilidade e Operações
+
+- Estratégia de erros: retry com backoff para integrações externas, fallback seguro e feedback claro ao usuário.
+- Tracking de erros: Sentry (free tier) para exceptions de frontend/API.
+- Logging centralizado: logs da Vercel com retenção operacional mínima e correlação por request id.
+- Monitoramento e alertas: alertas por e-mail (Resend) para falhas críticas de API/revalidação.
+- Backup: export recorrente de Postgres + snapshots de Blob/local media com retenção definida.
+- Migração de dados: plano simples SQLite (dev) -> Postgres (staging/prod) com execução de testes de integração antes de deploy.
+
 ---
 
 ## Estratégia de Cache
@@ -239,6 +255,11 @@ Lead criado
   -> Enviar email (Resend)
 ```
 
+**Persistência do round-robin (MVP):**
+- Guardar `last_assigned_agent_id` em tabela de configuração (`settings`).
+- Atualizar esse campo de forma transacional no momento de criação do lead.
+- Em fallback sem estado, usar seletor por menor carga (`agent` com menos leads ativos) com lock para evitar corrida.
+
 ### Score de Lead
 
 ```text
@@ -256,16 +277,33 @@ Lead criado
 | Requisito     | Implementação                |
 | ------------- | ---------------------------- |
 | Autenticação  | Payload Auth (bcrypt + JWT)  |
-| Rate limiting | Vercel KV + middleware       |
+| Rate limiting | In-memory Map+TTL (MVP), Upstash Redis free tier (recomendado), Cloudflare edge opcional |
 | Sanitização   | Payload + Zod                |
 | Headers       | CSP, HSTS, X-Frame-Options   |
 | Consentimento | Checkbox + timestamp + IP    |
-| Exportação    | API route `/api/lgpd/export` |
-| Anonimização  | API route `/api/lgpd/delete` |
+| Exportação    | API route `/api/lgpd/export` (JSON + CSV) |
+| Anonimização  | API route `/api/lgpd/delete` (deleção ou anonimização condicional) |
+
+### Direitos LGPD cobertos no MVP
+
+| Direito | Implementação planejada |
+| ------- | ----------------------- |
+| Informação | Página pública `/privacidade` e termos em linguagem clara |
+| Retificação | Fluxo de edição de dados do lead/usuário com trilha de alteração |
+| Portabilidade | `/api/lgpd/export` com formatos JSON e CSV |
+| Eliminação | `/api/lgpd/delete` com exclusão total quando permitido |
+| Anonimização | Quando houver vínculo com negócio fechado, anonimizar em vez de excluir |
+| Retenção | Política: `2 anos após último contato` (revisão jurídica antes do go-live) |
+
+**Cookies e consentimento:**
+- MVP usa apenas cookies essenciais de autenticação.
+- Banner de consentimento só é obrigatório se analytics/marketing cookies forem ativados.
+
+> [request_verification] Referência de decisão: Vercel comunicou sunset do produto KV e recomendou alternativas via Marketplace: https://vercel.com/changelog/vercel-kv-is-now-generally-available
 
 ---
 
-## Roadmap MVP (6 Semanas)
+## Roadmap MVP (7-8 Semanas)
 
 ### Semana 1: Setup Local e Collections
 
@@ -296,19 +334,32 @@ Lead criado
 - [ ] Captura WhatsApp
 - [ ] Distribuição round-robin
 
-### Semana 5: Pipeline e Atividades
+### Semana 5: Pipeline (Escopo Core)
 
-- [ ] Kanban de pipeline
-- [ ] Deals e Activities
-- [ ] Timeline de interações
+- [ ] Kanban de pipeline (versão simplificada)
+- [ ] Deals (core)
 - [ ] Templates de mensagens
+- [ ] **Opcional/Phase 2:** Activities + Timeline completa
 
-### Semana 6: Hardening e Deploy
+### Semana 6: Ambiente de Staging e Testes Integrados
+
+- [ ] Ambiente de staging ativo (Next.js 16 + Payload + storage)
+- [ ] Testes integrados ponta a ponta (captura de lead, publish de imóvel, revalidate)
+- [ ] Validação de integrações com Vercel Blob e auth
+- [ ] Correções de bugs de integração
+
+### Semana 7: Hardening e Go-Live
 
 - [ ] SEO técnico
 - [ ] Rate limiting
 - [ ] LGPD compliance
 - [ ] Deploy na Vercel
+
+### Semana 8 (Opcional): Buffer Pós-Deploy
+
+- [ ] Janela de estabilização
+- [ ] Observabilidade/alertas finos
+- [ ] Correções rápidas de produção
 
 ---
 
@@ -344,21 +395,38 @@ Lead criado
 
 ## Custos Estimados
 
-| Item                  | Custo/Mês (Prod) | Custo (Dev) |
-| --------------------- | ---------------- | ----------- |
-| Vercel Pro (opcional) | $20              | $0          |
-| Vercel Postgres       | $0 (free tier)   | $0 (SQLite) |
-| Vercel Blob           | $0 (free tier)   | $0 (Local)  |
-| Resend                | $0 (100 emails)  | $0          |
-| **Total**             | **$20 ou $0**    | **$0**      |
+### Free Tier ($0/mês)
+
+| Item            | Custo/Mês |
+| --------------- | --------- |
+| Vercel Hobby    | $0        |
+| Postgres (free) | $0        |
+| Blob (free)     | $0        |
+| Resend (free)   | $0        |
+| **Total**       | **$0**    |
+
+### Vercel Pro ($20/mês)
+
+| Item            | Custo/Mês |
+| --------------- | --------- |
+| Vercel Pro      | $20       |
+| Postgres (free/inicial) | $0 |
+| Blob (free/inicial) | $0 |
+| Resend (free/inicial) | $0 |
+| **Total**       | **$20**   |
+
+**Recursos que dependem de Pro (ou equivalente pago):**
+- Cron Jobs nativos da plataforma.
+- Timeouts maiores de função (fluxos longos).
+- Migração futura para Vercel KV gerenciado (caso necessário).
 
 ---
 
 ## Limitações Conhecidas do Free Tier
 
-1. **Sem Cron Jobs**: Automações agendadas devem usar client-side ou serviços externos
+1. **Sem Cron Jobs nativos no free tier**: usar serviços externos (cron-job.org, EasyCron, GitHub Actions) ou lazy-cron.
 2. **Function Duration**: Processamento pesado deve ser dividido em chunks
-3. **Blob Storage 1GB**: Limite de mídia, exige compressão e política de retenção
+3. **Blob Storage 1GB**: Limite de mídia, exige compressão e política de retenção.
 4. **Postgres 256MB**: Adequado para MVP, upgrade necessário após crescimento
 
 ---

@@ -3,6 +3,10 @@ import { autoSlug } from '../hooks/beforeChange/auto-slug'
 
 export const Tags: CollectionConfig = {
   slug: 'tags',
+  labels: {
+    singular: 'Tag',
+    plural: 'Tags',
+  },
   admin: {
     useAsTitle: 'label',
     defaultColumns: ['label', 'color', 'active'],
@@ -47,9 +51,21 @@ export const Tags: CollectionConfig = {
         description: 'Cor do badge no site',
       },
       validate: (value: unknown) => {
-        if (!value || (typeof value === 'string' && value.trim() === '')) return true
-        const stringValue = Array.isArray(value) ? value[0] : value
-        if (typeof stringValue !== 'string') return true
+        if (!value) return true
+
+        let stringValue: string
+        if (Array.isArray(value)) {
+          if (typeof value[0] !== 'string') {
+            return 'Cor deve estar no formato hexadecimal (ex: #B68863 ou #B65)'
+          }
+          stringValue = value[0]
+        } else if (typeof value === 'string') {
+          stringValue = value
+        } else {
+          return 'Cor deve estar no formato hexadecimal (ex: #B68863 ou #B65)'
+        }
+
+        stringValue = stringValue.trim()
         const hexRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/
         if (!hexRegex.test(stringValue)) {
           return 'Cor deve estar no formato hexadecimal (ex: #B68863 ou #B65)'

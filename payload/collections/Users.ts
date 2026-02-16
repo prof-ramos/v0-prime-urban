@@ -1,26 +1,70 @@
-import type { CollectionConfig } from 'payload'
+import type { Access, CollectionBeforeChangeHook, CollectionConfig } from 'payload'
+
 import { isAdmin } from '../access/is-admin'
+import {
+  normalizeBrazilianPhone,
+  normalizeCreci,
+  validateBrazilianPhone,
+  validateCreci,
+} from '../hooks/validators'
+
+const normalizeUserContactFields: CollectionBeforeChangeHook = async ({ data, originalDoc }) => {
+  if (!data) return data
+
+  if (typeof data.phone === 'string') {
+    data.phone = normalizeBrazilianPhone(data.phone)
+  }
+
+  const resolvedRole =
+    typeof data.role === 'string'
+      ? data.role
+      : typeof originalDoc?.role === 'string'
+        ? originalDoc.role
+        : undefined
+
+  if (resolvedRole !== 'agent') {
+    data.creci = null
+    return data
+  }
+
+  if (typeof data.creci === 'string' && data.creci.trim().length > 0) {
+    data.creci = normalizeCreci(data.creci)
+  }
+
+  return data
+}
+
+const isSelfOrAdmin: Access = ({ req, id }) => {
+  if (isAdmin({ req })) return true
+  if (!req.user || id === undefined || id === null) return false
+
+  return String(req.user.id) === String(id)
+}
 
 export const Users: CollectionConfig = {
   slug: 'users',
+  labels: {
+    singular: 'Usuário',
+    plural: 'Usuários',
+  },
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'email', 'role', 'active'],
-    group: 'CRM',
+    group: 'Configurações',
   },
   access: {
     create: isAdmin,
-    read: isAdmin,
-    update: ({ req, id }) => {
-      if (req.user?.role === 'admin') return true
-      return req.user?.id === id
-    },
+    read: isSelfOrAdmin,
+    update: isSelfOrAdmin,
     delete: isAdmin,
   },
   auth: {
     tokenExpiration: 7200, // 2 hours
     maxLoginAttempts: 5,
     lockTime: 600000, // 10 minutes
+  },
+  hooks: {
+    beforeChange: [normalizeUserContactFields],
   },
   fields: [
     {
@@ -46,13 +90,28 @@ export const Users: CollectionConfig = {
       name: 'phone',
       type: 'text',
       label: 'Telefone',
+      validate: validateBrazilianPhone,
     },
     {
       name: 'creci',
       type: 'text',
       label: 'CRECI',
+      validate: (
+        value: unknown,
+        { siblingData }: { siblingData?: { role?: string } } = {}
+      ) => {
+        if (siblingData?.role === 'agent') {
+          const rawValue = typeof value === 'string' ? value.trim() : ''
+          if (!rawValue) {
+            return 'CRECI é obrigatório para usuários com função Corretor.'
+          }
+        }
+
+        return validateCreci(value)
+      },
       admin: {
         condition: (data) => data?.role === 'agent',
+        description: 'Formato aceito: UF12345, UF-12345, 12345UF ou 12345-UF.',
       },
     },
     {

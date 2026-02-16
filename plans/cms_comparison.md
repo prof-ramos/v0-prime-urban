@@ -401,7 +401,9 @@
 
 ---
 
-## 9. Feather CMS
+## CMS descartados por incompatibilidade de stack
+
+### 9. Feather CMS
 
 **Licença:** MIT
 **Site:** https://feathercms.com
@@ -434,6 +436,8 @@
    - CMS básico
 
 ### Adequação ao Projeto: ⭐ (1/5)
+
+**Motivo de descarte:** Swift/Vapor — incompatível com stack Node.js/Next.js do projeto.
 
 ---
 
@@ -493,10 +497,10 @@
 
 ### Por que Payload é o vencedor?
 
-1. **Único que atende TODOS os requisitos:**
+1. **Atende a maioria dos requisitos críticos:**
    - ✅ 100% configuração via código
    - ✅ Integração nativa com Next.js App Router
-   - ✅ CMS + CRM no mesmo sistema
+   - ⚠️ CMS + CRM no mesmo sistema (CRM não é pronto; deve ser modelado em `Collections`/relations no Payload)
    - ✅ TypeScript end-to-end
    - ✅ Auth RBAC completo
    - ✅ Deploy na Vercel
