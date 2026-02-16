@@ -10,7 +10,10 @@ import { formatCurrency } from "@/lib/utils"
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
@@ -91,24 +94,32 @@ function FilterContent({ localFilters, updateFilter, onFilterChange, onReset, ha
             <SelectValue placeholder="Todas as regiões" />
           </SelectTrigger>
           <SelectContent>
-            <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Distrito Federal</div>
-            {NEIGHBORHOODS_DF.map((n) => (
-              <SelectItem key={n.value} value={n.value}>
-                {n.label}
-              </SelectItem>
-            ))}
-            <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1 pt-2">Entorno - Goiás</div>
-            {NEIGHBORHOODS_GO.map((n) => (
-              <SelectItem key={n.value} value={n.value}>
-                {n.label}
-              </SelectItem>
-            ))}
-            <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1 pt-2">Entorno - Minas Gerais</div>
-            {NEIGHBORHOODS_MG.map((n) => (
-              <SelectItem key={n.value} value={n.value}>
-                {n.label}
-              </SelectItem>
-            ))}
+            <SelectGroup>
+              <SelectLabel>Distrito Federal</SelectLabel>
+              {NEIGHBORHOODS_DF.map((n) => (
+                <SelectItem key={n.value} value={n.value}>
+                  {n.label}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+            <SelectSeparator />
+            <SelectGroup>
+              <SelectLabel>Entorno - Goiás</SelectLabel>
+              {NEIGHBORHOODS_GO.map((n) => (
+                <SelectItem key={n.value} value={n.value}>
+                  {n.label}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+            <SelectSeparator />
+            <SelectGroup>
+              <SelectLabel>Entorno - Minas Gerais</SelectLabel>
+              {NEIGHBORHOODS_MG.map((n) => (
+                <SelectItem key={n.value} value={n.value}>
+                  {n.label}
+                </SelectItem>
+              ))}
+            </SelectGroup>
           </SelectContent>
         </Select>
       </div>
@@ -301,24 +312,32 @@ export function PropertyFilters({ filters, onFilterChange, onReset }: PropertyFi
               <SelectValue placeholder="Região" />
             </SelectTrigger>
             <SelectContent>
-              <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Distrito Federal</div>
-              {NEIGHBORHOODS_DF.map((n) => (
-                <SelectItem key={n.value} value={n.value}>
-                  {n.label}
-                </SelectItem>
-              ))}
-              <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1 pt-2">Entorno - GO</div>
-              {NEIGHBORHOODS_GO.map((n) => (
-                <SelectItem key={n.value} value={n.value}>
-                  {n.label}
-                </SelectItem>
-              ))}
-              <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1 pt-2">Entorno - MG</div>
-              {NEIGHBORHOODS_MG.map((n) => (
-                <SelectItem key={n.value} value={n.value}>
-                  {n.label}
-                </SelectItem>
-              ))}
+              <SelectGroup>
+                <SelectLabel>Distrito Federal</SelectLabel>
+                {NEIGHBORHOODS_DF.map((n) => (
+                  <SelectItem key={n.value} value={n.value}>
+                    {n.label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+              <SelectSeparator />
+              <SelectGroup>
+                <SelectLabel>Entorno - GO</SelectLabel>
+                {NEIGHBORHOODS_GO.map((n) => (
+                  <SelectItem key={n.value} value={n.value}>
+                    {n.label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+              <SelectSeparator />
+              <SelectGroup>
+                <SelectLabel>Entorno - MG</SelectLabel>
+                {NEIGHBORHOODS_MG.map((n) => (
+                  <SelectItem key={n.value} value={n.value}>
+                    {n.label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
             </SelectContent>
           </Select>
 
