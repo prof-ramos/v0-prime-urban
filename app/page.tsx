@@ -1,5 +1,3 @@
-export const dynamic = "force-dynamic"
-
 import { Header } from "@/components/header"
 import { HeroSection } from "@/components/hero-section"
 import { FeaturedProperties } from "@/components/featured-properties"
