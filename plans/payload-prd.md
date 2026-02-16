@@ -1,7 +1,7 @@
 # Payload CMS - Especificação Técnica de Implementação
 
 **PrimeUrban - Configuração e Arquitetura**
-*Versão: 1.0 | Fevereiro 2026*
+_Versão: 1.0 | Fevereiro 2026_
 
 ---
 
@@ -16,7 +16,7 @@ npm install -D @payloadcms/bundler-webpack
 
 ### 1.2 Estrutura de Diretórios
 
-```
+```text
 primeUrban/
 ├── app/
 │   ├── (app)/                    # Rotas públicas do site
@@ -132,22 +132,9 @@ export default buildConfig({
     migrationDir: path.resolve(__dirname, './migrations'),
   }),
 
-  collections: [
-    Users,
-    Properties,
-    Neighborhoods,
-    Leads,
-    Deals,
-    Activities,
-    Media,
-    Tags,
-    Amenities,
-  ],
+  collections: [Users, Properties, Neighborhoods, Leads, Deals, Activities, Media, Tags, Amenities],
 
-  globals: [
-    Settings,
-    LGPDSettings,
-  ],
+  globals: [Settings, LGPDSettings],
 
   plugins: [
     cloudStorage({
@@ -178,13 +165,9 @@ export default buildConfig({
     schemaOutputFile: path.resolve(__dirname, '../generated-schema.graphql'),
   },
 
-  cors: [
-    process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000',
-  ].filter(Boolean),
+  cors: [process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'].filter(Boolean),
 
-  csrf: [
-    process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000',
-  ].filter(Boolean),
+  csrf: [process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'].filter(Boolean),
 })
 ```
 
@@ -354,14 +337,8 @@ export const Properties: CollectionConfig = {
     delete: isAdmin,
   },
   hooks: {
-    beforeChange: [
-      autoSlug('title'),
-      autoCode('PRM'),
-    ],
-    afterChange: [
-      revalidateProperty,
-      notifyInterestedLeads,
-    ],
+    beforeChange: [autoSlug('title'), autoCode('PRM')],
+    afterChange: [revalidateProperty, notifyInterestedLeads],
   },
   fields: [
     // ===== IDENTIFICAÇÃO =====
@@ -573,8 +550,7 @@ export const Properties: CollectionConfig = {
                       type: 'number',
                       label: 'Área Construída (m²)',
                       admin: {
-                        condition: (data, siblingData) =>
-                          siblingData.category === 'house',
+                        condition: (data, siblingData) => siblingData.category === 'house',
                       },
                     },
                     {
@@ -2122,13 +2098,19 @@ export const revalidateProperty = async ({ doc, req, operation, previousDoc }) =
     if (statusChanged && published) {
       // Revalidar página do imóvel
       try {
-        await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/revalidate?path=/imovel/${doc.slug}&secret=${process.env.REVALIDATE_SECRET}`)
+        await fetch(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/revalidate?path=/imovel/${doc.slug}&secret=${process.env.REVALIDATE_SECRET}`
+        )
 
         // Revalidar listagem
-        await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/revalidate?path=/imoveis&secret=${process.env.REVALIDATE_SECRET}`)
+        await fetch(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/revalidate?path=/imoveis&secret=${process.env.REVALIDATE_SECRET}`
+        )
 
         // Revalidar homepage
-        await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/revalidate?path=/&secret=${process.env.REVALIDATE_SECRET}`)
+        await fetch(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/revalidate?path=/&secret=${process.env.REVALIDATE_SECRET}`
+        )
       } catch (error) {
         req.payload.logger.error(`Erro ao revalidar ISR: ${error}`)
       }
@@ -2154,7 +2136,7 @@ export const notifyInterestedLeads = async ({ doc, req, operation, previousDoc }
         where: {
           and: [
             {
-              'preferredNeighborhoods': {
+              preferredNeighborhoods: {
                 equals: doc.address.neighborhood,
               },
             },
@@ -2233,10 +2215,7 @@ export const updateLeadScore = async ({ doc, req, operation }) => {
   const activities = await req.payload.find({
     collection: 'activities',
     where: {
-      and: [
-        { lead: { equals: doc.id } },
-        { type: { equals: 'visit' } },
-      ],
+      and: [{ lead: { equals: doc.id } }, { type: { equals: 'visit' } }],
     },
   })
   if (activities.totalDocs > 0) {
@@ -2287,10 +2266,7 @@ export const distributeLead = async ({ doc, req }) => {
   const agents = await req.payload.find({
     collection: 'users',
     where: {
-      and: [
-        { role: { equals: 'agent' } },
-        { active: { equals: true } },
-      ],
+      and: [{ role: { equals: 'agent' } }, { active: { equals: true } }],
     },
   })
 
@@ -2317,7 +2293,7 @@ export const distributeLead = async ({ doc, req }) => {
     assignedAgent = agents.docs[0]
   } else {
     const lastAssignedAgentId = lastLead.docs[0].assignedTo
-    const currentIndex = agents.docs.findIndex(a => a.id === lastAssignedAgentId)
+    const currentIndex = agents.docs.findIndex((a) => a.id === lastAssignedAgentId)
     const nextIndex = (currentIndex + 1) % agents.docs.length
     assignedAgent = agents.docs[nextIndex]
   }
@@ -2556,7 +2532,8 @@ export const Settings: GlobalConfig = {
               type: 'textarea',
               maxLength: 160,
               label: 'Descrição Padrão',
-              defaultValue: 'Encontre o imóvel dos seus sonhos com a PrimeUrban. Apartamentos, casas e coberturas nos melhores bairros de São Paulo.',
+              defaultValue:
+                'Encontre o imóvel dos seus sonhos com a PrimeUrban. Apartamentos, casas e coberturas nos melhores bairros de São Paulo.',
             },
             {
               name: 'seoImage',
@@ -3140,4 +3117,4 @@ npm run start
 
 ---
 
-*Payload CMS v3.x — PrimeUrban Technical Specification*
+#### Payload CMS v3.x — PrimeUrban Technical Specification

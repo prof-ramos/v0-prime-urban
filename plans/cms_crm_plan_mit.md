@@ -1,8 +1,8 @@
 # CMS e CRM - Product Requirements Document (PRD) — MIT/OpenSource Edition
 
 **PrimeUrban - Sistema Imobiliário Completo**
-*Última atualização: Fevereiro 2026*
-*Versão: 2.0-MIT*
+_Última atualização: Fevereiro 2026_
+_Versão: 2.0-MIT_
 
 ---
 
@@ -14,27 +14,28 @@ Sistema integrado de CMS e CRM para a PrimeUrban Imobiliária, utilizando EXCLUS
 
 ### 1.2 Stack Tecnológico
 
-| Camada | Tecnologia | Licença | Justificativa |
-|--------|-----------|---------|---------------|
-| Framework | Next.js 16 (App Router) | MIT | SSR/ISR nativo, Server Components |
-| Linguagem | TypeScript 5.x (strict) | Apache-2.0 | Segurança de tipos end-to-end |
-| Estilização | Tailwind CSS 4.1.9 + shadcn/ui | MIT | Design system consistente |
-| CMS | Payload CMS 3.x | MIT | Integração nativa Next.js, admin embutido |
-| Banco de Dados | PostgreSQL 16+ (Self-hosted) | PostgreSQL License (permissive) | Relacional, full-text search nativo |
-| Busca | PostgreSQL `tsvector` + `pg_trgm` | — | Busca fuzzy sem serviço externo |
-| Storage | MinIO (S3-compatible) | AGPLv3 | Object storage self-hosted, API compatível com AWS S3 |
-| Autenticação | Payload Auth (nativo) | MIT | Evita dependência extra; já integra roles, sessions e JWT |
-| Imagens | Sharp (processamento local) | Apache-2.0 | WebP/AVIF, resize, crop, otimização em Node.js |
-| E-mail | Nodemailer | MIT | SMTP padrão, zero dependências externas, suporte a OAuth2/DKIM |
-| Cache | Next.js ISR + `unstable_cache` | MIT | Revalidação sob demanda por webhook do Payload |
-| Error Tracking | GlitchTip (self-hosted) | MIT | Sentry-compatible API, error tracking + uptime monitoring |
-| Analytics | PostHog (self-hosted) | MIT | All-in-one: product analytics, session replay, feature flags |
-| Monitoring | Uptime Kuma | MIT | Status page + alertas de uptime |
-| Logs | Grafana Loki | AGPLv3 | Log aggregation, query language |
-| Reverse Proxy | Caddy | Apache-2.0 | HTTPS automático, configuração simples |
-| Connection Pool | pgBouncer | BSD-like | Pooling de conexões PostgreSQL |
+| Camada          | Tecnologia                        | Licença                         | Justificativa                                                  |
+| --------------- | --------------------------------- | ------------------------------- | -------------------------------------------------------------- |
+| Framework       | Next.js 16 (App Router)           | MIT                             | SSR/ISR nativo, Server Components                              |
+| Linguagem       | TypeScript 5.x (strict)           | Apache-2.0                      | Segurança de tipos end-to-end                                  |
+| Estilização     | Tailwind CSS 4.1.9 + shadcn/ui    | MIT                             | Design system consistente                                      |
+| CMS             | Payload CMS 3.x                   | MIT                             | Integração nativa Next.js, admin embutido                      |
+| Banco de Dados  | PostgreSQL 16+ (Self-hosted)      | PostgreSQL License (permissive) | Relacional, full-text search nativo                            |
+| Busca           | PostgreSQL `tsvector` + `pg_trgm` | —                               | Busca fuzzy sem serviço externo                                |
+| Storage         | MinIO (S3-compatible)             | AGPLv3                          | Object storage self-hosted, API compatível com AWS S3          |
+| Autenticação    | Payload Auth (nativo)             | MIT                             | Evita dependência extra; já integra roles, sessions e JWT      |
+| Imagens         | Sharp (processamento local)       | Apache-2.0                      | WebP/AVIF, resize, crop, otimização em Node.js                 |
+| E-mail          | Nodemailer                        | MIT                             | SMTP padrão, zero dependências externas, suporte a OAuth2/DKIM |
+| Cache           | Next.js ISR + `unstable_cache`    | MIT                             | Revalidação sob demanda por webhook do Payload                 |
+| Error Tracking  | GlitchTip (self-hosted)           | MIT                             | Sentry-compatible API, error tracking + uptime monitoring      |
+| Analytics       | PostHog (self-hosted)             | MIT                             | All-in-one: product analytics, session replay, feature flags   |
+| Monitoring      | Uptime Kuma                       | MIT                             | Status page + alertas de uptime                                |
+| Logs            | Grafana Loki                      | AGPLv3                          | Log aggregation, query language                                |
+| Reverse Proxy   | Caddy                             | Apache-2.0                      | HTTPS automático, configuração simples                         |
+| Connection Pool | pgBouncer                         | BSD-like                        | Pooling de conexões PostgreSQL                                 |
 
 **Licenças Utilizadas:**
+
 - **MIT License:** 12 componentes (Next.js, Payload, Nodemailer, PostHog, Uptime Kuma, etc.)
 - **Apache 2.0:** 3 componentes (TypeScript, Sharp, Caddy)
 - **AGPLv3:** 2 componentes (MinIO, Loki) — permitido, não afeta código proprietário quando usado como serviço
@@ -42,7 +43,7 @@ Sistema integrado de CMS e CRM para a PrimeUrban Imobiliária, utilizando EXCLUS
 
 ### 1.3 Arquitetura de Deployment (VPS Self-Hosted)
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────┐
 │                        VPS (Docker Compose)                      │
 │                                                                 │
@@ -114,7 +115,7 @@ Sistema integrado de CMS e CRM para a PrimeUrban Imobiliária, utilizando EXCLUS
 
 **Fluxo (Jornada de Compra):**
 
-```
+```text
 Entrada              Busca/Filtros          Detalhes do Imóvel     Contato/Conversão
 ──────────────────   ──────────────────     ──────────────────     ──────────────────
 • SEO Orgânico       • Tipo (V/L)           • Galeria de fotos     • Formulário
@@ -129,29 +130,29 @@ Entrada              Busca/Filtros          Detalhes do Imóvel     Contato/Conv
 
 **Filtros de Busca:**
 
-| # | Filtro | Tipo de Input | Observação |
-|---|--------|--------------|------------|
-| 1 | Tipo | Toggle: Comprar / Alugar | Obrigatório |
-| 2 | Categoria | Multi-select chips | Apartamento, Casa, Comercial, Terreno, Cobertura, Studio |
-| 3 | Bairro | Multi-select com busca | Populados dinamicamente do CMS |
-| 4 | Preço | Range slider (min/max) | Formatado em R$ |
-| 5 | Quartos | Botões: 1+, 2+, 3+, 4+, 5+ | - |
-| 6 | Banheiros | Botões: 1+, 2+, 3+, 4+ | - |
-| 7 | Vagas | Botões: 1+, 2+, 3+, 4+ | - |
-| 8 | Área (m²) | Range slider | - |
-| 9 | Características | Multi-select chips | Piscina, Academia, etc. |
-| 10 | Palavra-chave | Text input com debounce 300ms | Busca em título, código, descrição |
+| #   | Filtro          | Tipo de Input                 | Observação                                               |
+| --- | --------------- | ----------------------------- | -------------------------------------------------------- |
+| 1   | Tipo            | Toggle: Comprar / Alugar      | Obrigatório                                              |
+| 2   | Categoria       | Multi-select chips            | Apartamento, Casa, Comercial, Terreno, Cobertura, Studio |
+| 3   | Bairro          | Multi-select com busca        | Populados dinamicamente do CMS                           |
+| 4   | Preço           | Range slider (min/max)        | Formatado em R$                                          |
+| 5   | Quartos         | Botões: 1+, 2+, 3+, 4+, 5+    | -                                                        |
+| 6   | Banheiros       | Botões: 1+, 2+, 3+, 4+        | -                                                        |
+| 7   | Vagas           | Botões: 1+, 2+, 3+, 4+        | -                                                        |
+| 8   | Área (m²)       | Range slider                  | -                                                        |
+| 9   | Características | Multi-select chips            | Piscina, Academia, etc.                                  |
+| 10  | Palavra-chave   | Text input com debounce 300ms | Busca em título, código, descrição                       |
 
 **Ordenação:** Mais recentes · Menor preço · Maior preço · Maior área · Mais visualizados
 
 **Pontos de Conversão → CRM:**
 
-| Ação do Usuário | Evento no CRM |
-|-----------------|---------------|
-| Visualiza imóvel | Registro anônimo de interesse (cookie-based) + PostHog event |
-| Clica WhatsApp | Lead criado automaticamente (source: `whatsapp`) + PostHog capture |
-| Preenche formulário | Lead qualificado (source: `website`) + PostHog identify |
-| Agenda visita | Oportunidade criada, atividade gerada + PostHog event |
+| Ação do Usuário     | Evento no CRM                                                      |
+| ------------------- | ------------------------------------------------------------------ |
+| Visualiza imóvel    | Registro anônimo de interesse (cookie-based) + PostHog event       |
+| Clica WhatsApp      | Lead criado automaticamente (source: `whatsapp`) + PostHog capture |
+| Preenche formulário | Lead qualificado (source: `website`) + PostHog identify            |
+| Agenda visita       | Oportunidade criada, atividade gerada + PostHog event              |
 
 ---
 
@@ -169,7 +170,7 @@ Entrada              Busca/Filtros          Detalhes do Imóvel     Contato/Conv
 
 **Fluxo do Administrador:**
 
-```
+```text
 Login (Payload Auth)    Dashboard             Gestão de Conteúdo    Ações de CRM
 ──────────────────      ──────────────────    ──────────────────    ──────────────────
 • Payload Auth nativo   • KPIs:               • CRUD Imóveis        • Pipeline vendas
@@ -182,18 +183,18 @@ Login (Payload Auth)    Dashboard             Gestão de Conteúdo    Ações de
 
 **Permissões por Role:**
 
-| Recurso | admin | agent | assistant |
-|---------|-------|-------|-----------|
-| Imóveis — CRUD completo | ✅ | ✅ | Somente leitura |
-| Imóveis — Publicar/Despublicar | ✅ | ❌ | ❌ |
-| Leads — Visualizar todos | ✅ | Somente atribuídos | ❌ |
-| Leads — Criar/Editar | ✅ | ✅ | ✅ |
-| Pipeline — Mover estágios | ✅ | ✅ | ❌ |
-| Relatórios | ✅ | Parcial | ❌ |
-| Configurações do sistema | ✅ | ❌ | ❌ |
-| Usuários — Gerenciar | ✅ | ❌ | ❌ |
-| PostHog — Analytics completo | ✅ | Dashboard simplificado | ❌ |
-| GlitchTip — Error logs | ✅ | ❌ | ❌ |
+| Recurso                        | admin | agent                  | assistant       |
+| ------------------------------ | ----- | ---------------------- | --------------- |
+| Imóveis — CRUD completo        | ✅    | ✅                     | Somente leitura |
+| Imóveis — Publicar/Despublicar | ✅    | ❌                     | ❌              |
+| Leads — Visualizar todos       | ✅    | Somente atribuídos     | ❌              |
+| Leads — Criar/Editar           | ✅    | ✅                     | ✅              |
+| Pipeline — Mover estágios      | ✅    | ✅                     | ❌              |
+| Relatórios                     | ✅    | Parcial                | ❌              |
+| Configurações do sistema       | ✅    | ❌                     | ❌              |
+| Usuários — Gerenciar           | ✅    | ❌                     | ❌              |
+| PostHog — Analytics completo   | ✅    | Dashboard simplificado | ❌              |
+| GlitchTip — Error logs         | ✅    | ❌                     | ❌              |
 
 ---
 
@@ -203,103 +204,103 @@ Login (Payload Auth)    Dashboard             Gestão de Conteúdo    Ações de
 
 ```typescript
 interface Property {
-  id: string;
+  id: string
 
   // Identificação
-  title: string;
-  slug: string; // auto-generated, unique
-  code: string; // Código interno (ex: PRM-001), auto-increment
-  status: 'draft' | 'published' | 'sold' | 'rented' | 'paused';
+  title: string
+  slug: string // auto-generated, unique
+  code: string // Código interno (ex: PRM-001), auto-increment
+  status: 'draft' | 'published' | 'sold' | 'rented' | 'paused'
 
   // Tipo e Categoria
-  type: 'sale' | 'rent';
-  category: 'apartment' | 'house' | 'commercial' | 'land' | 'penthouse' | 'studio';
+  type: 'sale' | 'rent'
+  category: 'apartment' | 'house' | 'commercial' | 'land' | 'penthouse' | 'studio'
 
   // Preço
-  price: number;
-  condominiumFee?: number;
-  iptu?: number;
+  price: number
+  condominiumFee?: number
+  iptu?: number
 
   // Características Principais
-  bedrooms: number;
-  suites?: number;
-  bathrooms: number;
-  parkingSpots: number;
-  totalArea: number;        // m²
-  privateArea?: number;     // m² — área privativa
-  builtArea?: number;       // m² — casas
-  usableArea?: number;      // m² — apartamentos
+  bedrooms: number
+  suites?: number
+  bathrooms: number
+  parkingSpots: number
+  totalArea: number // m²
+  privateArea?: number // m² — área privativa
+  builtArea?: number // m² — casas
+  usableArea?: number // m² — apartamentos
 
   // Características Detalhadas
-  floor?: number;
-  totalFloors?: number;
-  constructionYear?: number;
-  propertyAge?: 'new' | 'under_construction' | 'used' | 'renovated';
-  facing?: 'north' | 'south' | 'east' | 'west';
-  position?: 'front' | 'back' | 'side';
+  floor?: number
+  totalFloors?: number
+  constructionYear?: number
+  propertyAge?: 'new' | 'under_construction' | 'used' | 'renovated'
+  facing?: 'north' | 'south' | 'east' | 'west'
+  position?: 'front' | 'back' | 'side'
 
   // Localização
   address: {
-    street: string;
-    number: string;
-    complement?: string;
-    neighborhood: Relationship<Neighborhood>; // FK
-    city: string;
-    state: string;
-    zipCode: string;
-    latitude?: number;
-    longitude?: number;
-  };
+    street: string
+    number: string
+    complement?: string
+    neighborhood: Relationship<Neighborhood> // FK
+    city: string
+    state: string
+    zipCode: string
+    latitude?: number
+    longitude?: number
+  }
 
   // Descrições
-  shortDescription: string; // max 160 chars (listagens + meta description fallback)
-  fullDescription: RichText; // Payload Rich Text (Lexical)
+  shortDescription: string // max 160 chars (listagens + meta description fallback)
+  fullDescription: RichText // Payload Rich Text (Lexical)
 
   // Mídia (armazenada no MinIO)
-  featuredImage: Relationship<Media>; // FK
-  gallery: Relationship<Media>[]; // FK[]
-  videoUrl?: string; // YouTube/Vimeo URL
+  featuredImage: Relationship<Media> // FK
+  gallery: Relationship<Media>[] // FK[]
+  videoUrl?: string // YouTube/Vimeo URL
 
   // Comodidades e Características
-  amenities: Relationship<Amenity>[]; // FK[] — collection separada para i18n futuro
-  buildingFeatures?: Relationship<Amenity>[];
+  amenities: Relationship<Amenity>[] // FK[] — collection separada para i18n futuro
+  buildingFeatures?: Relationship<Amenity>[]
 
   // Acabamentos
-  flooring?: 'ceramic' | 'porcelain' | 'laminate' | 'hardwood' | 'vinyl' | 'other';
-  windowType?: 'aluminum' | 'pvc' | 'wood' | 'iron';
+  flooring?: 'ceramic' | 'porcelain' | 'laminate' | 'hardwood' | 'vinyl' | 'other'
+  windowType?: 'aluminum' | 'pvc' | 'wood' | 'iron'
 
   // Tags e Destaques
-  tags?: Relationship<Tag>[]; // "Novo", "Oportunidade", "Exclusivo"
-  featured: boolean; // Exibir na homepage
-  highlightText?: string; // "Últimas unidades", "Aceita permuta"
+  tags?: Relationship<Tag>[] // "Novo", "Oportunidade", "Exclusivo"
+  featured: boolean // Exibir na homepage
+  highlightText?: string // "Últimas unidades", "Aceita permuta"
 
   // Relacionamentos
-  agent: Relationship<User>; // Corretor responsável
+  agent: Relationship<User> // Corretor responsável
 
   // SEO (Payload SEO Plugin)
   meta: {
-    title?: string;
-    description?: string;
-    image?: Relationship<Media>;
-  };
+    title?: string
+    description?: string
+    image?: Relationship<Media>
+  }
 
   // Analytics (PostHog event tracking)
-  viewCount: number; // Incrementado via API route + PostHog event
-  contactCount: number; // Incrementado ao gerar lead + PostHog capture
+  viewCount: number // Incrementado via API route + PostHog event
+  contactCount: number // Incrementado ao gerar lead + PostHog capture
 
   // Timestamps (Payload auto)
-  createdAt: Date;
-  updatedAt: Date;
-  publishedAt?: Date;
+  createdAt: Date
+  updatedAt: Date
+  publishedAt?: Date
 
   // Busca (campo virtual, populado por hook)
-  _searchIndex?: string; // tsvector: title + description + neighborhood + code
+  _searchIndex?: string // tsvector: title + description + neighborhood + code
 }
 ```
 
 ### 3.1.1 Campos Exibidos no Card de Imóvel (Listagem)
 
-```
+```text
 ┌─────────────────────────────────────────────┐
 │ [Imagem Destaque]           [Tag: Exclusivo] │
 │ [Badge: Venda]  [Badge: Apartamento]        │
@@ -356,23 +357,23 @@ interface Property {
 
 ```typescript
 interface Neighborhood {
-  id: string;
-  name: string;
-  slug: string; // unique
-  description?: RichText;
-  featuredImage?: Relationship<Media>; // MinIO storage
-  averagePrice?: number; // Calculado por hook (média dos imóveis ativos)
-  propertyCount?: number; // Virtual field — count de imóveis ativos
-  city: string;
-  state: string;
-  active: boolean;
+  id: string
+  name: string
+  slug: string // unique
+  description?: RichText
+  featuredImage?: Relationship<Media> // MinIO storage
+  averagePrice?: number // Calculado por hook (média dos imóveis ativos)
+  propertyCount?: number // Virtual field — count de imóveis ativos
+  city: string
+  state: string
+  active: boolean
   // SEO
   meta?: {
-    title?: string;
-    description?: string;
-  };
-  createdAt: Date;
-  updatedAt: Date;
+    title?: string
+    description?: string
+  }
+  createdAt: Date
+  updatedAt: Date
 }
 ```
 
@@ -380,28 +381,28 @@ interface Neighborhood {
 
 ```typescript
 interface Media {
-  id: string;
-  filename: string;
-  alt: string;
-  mimeType: string;
-  filesize: number;
-  width?: number;
-  height?: number;
-  url: string; // MinIO S3 URL (ex: https://minio.primeUrban.com/properties/PRM-001/image.webp)
-  thumbnailURL?: string; // Gerado via Sharp (WebP, 400x300)
-  focalX?: number; // Payload focal point
-  focalY?: number;
-  folder?: string; // Organização: "properties/PRM-001", "neighborhoods"
+  id: string
+  filename: string
+  alt: string
+  mimeType: string
+  filesize: number
+  width?: number
+  height?: number
+  url: string // MinIO S3 URL (ex: https://minio.primeUrban.com/properties/PRM-001/image.webp)
+  thumbnailURL?: string // Gerado via Sharp (WebP, 400x300)
+  focalX?: number // Payload focal point
+  focalY?: number
+  folder?: string // Organização: "properties/PRM-001", "neighborhoods"
 
   // Metadados Sharp (gerados no upload hook)
   formats?: {
-    webp: { url: string; size: number };
-    avif: { url: string; size: number }; // fallback format
-    thumbnail: { url: string; size: number };
-  };
+    webp: { url: string; size: number }
+    avif: { url: string; size: number } // fallback format
+    thumbnail: { url: string; size: number }
+  }
 
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Date
+  updatedAt: Date
 }
 ```
 
@@ -409,64 +410,71 @@ interface Media {
 
 ```javascript
 // Hook de beforeChange para otimizar imagens no upload
-import sharp from 'sharp';
-import { PutObjectCommand } from '@aws-sdk/client-s3'; // MinIO client
+import sharp from 'sharp'
+import { PutObjectCommand } from '@aws-sdk/client-s3' // MinIO client
 
 export const processImageHook = {
   beforeChange: async ({ data, req }) => {
-    if (!data.file) return data;
+    if (!data.file) return data
 
-    const buffer = await data.file.buffer;
+    const buffer = await data.file.buffer
 
     // Gerar versão WebP otimizada
     const webpBuffer = await sharp(buffer)
       .resize(1920, 1080, { fit: 'inside', withoutEnlargement: true })
       .webp({ quality: 85, effort: 6 })
-      .toBuffer();
+      .toBuffer()
 
     // Gerar thumbnail
     const thumbBuffer = await sharp(buffer)
       .resize(400, 300, { fit: 'cover' })
       .webp({ quality: 80 })
-      .toBuffer();
+      .toBuffer()
 
     // Upload para MinIO
-    const minioClient = getMinioClient();
-    const folder = data.folder || 'uploads';
+    const minioClient = getMinioClient()
+    const folder = data.folder || 'uploads'
 
-    await minioClient.send(new PutObjectCommand({
-      Bucket: 'primeUrban',
-      Key: `${folder}/${data.filename}.webp`,
-      Body: webpBuffer,
-      ContentType: 'image/webp',
-    }));
+    await minioClient.send(
+      new PutObjectCommand({
+        Bucket: 'primeUrban',
+        Key: `${folder}/${data.filename}.webp`,
+        Body: webpBuffer,
+        ContentType: 'image/webp',
+      })
+    )
 
-    await minioClient.send(new PutObjectCommand({
-      Bucket: 'primeUrban',
-      Key: `${folder}/thumb-${data.filename}.webp`,
-      Body: thumbBuffer,
-      ContentType: 'image/webp',
-    }));
+    await minioClient.send(
+      new PutObjectCommand({
+        Bucket: 'primeUrban',
+        Key: `${folder}/thumb-${data.filename}.webp`,
+        Body: thumbBuffer,
+        ContentType: 'image/webp',
+      })
+    )
 
     data.formats = {
       webp: { url: `${MINIO_URL}/${folder}/${data.filename}.webp`, size: webpBuffer.length },
-      thumbnail: { url: `${MINIO_URL}/${folder}/thumb-${data.filename}.webp`, size: thumbBuffer.length },
-    };
+      thumbnail: {
+        url: `${MINIO_URL}/${folder}/thumb-${data.filename}.webp`,
+        size: thumbBuffer.length,
+      },
+    }
 
-    return data;
+    return data
   },
-};
+}
 ```
 
 ### 3.4 Tags
 
 ```typescript
 interface Tag {
-  id: string;
-  label: string; // "Novo", "Oportunidade", "Exclusivo", "Últimas unidades"
-  slug: string;
-  color: string; // Hex color para badge
-  active: boolean;
+  id: string
+  label: string // "Novo", "Oportunidade", "Exclusivo", "Últimas unidades"
+  slug: string
+  color: string // Hex color para badge
+  active: boolean
 }
 ```
 
@@ -474,12 +482,12 @@ interface Tag {
 
 ```typescript
 interface Amenity {
-  id: string;
-  label: string; // "Piscina", "Academia"
-  slug: string; // "pool", "gym"
-  icon: string; // Nome do ícone Lucide (ex: "waves", "dumbbell")
-  category: 'property' | 'building'; // Comodidade do imóvel ou do condomínio
-  active: boolean;
+  id: string
+  label: string // "Piscina", "Academia"
+  slug: string // "pool", "gym"
+  icon: string // Nome do ícone Lucide (ex: "waves", "dumbbell")
+  category: 'property' | 'building' // Comodidade do imóvel ou do condomínio
+  active: boolean
 }
 ```
 
@@ -487,55 +495,71 @@ interface Amenity {
 
 ```typescript
 interface Lead {
-  id: string;
+  id: string
 
   // Dados Pessoais
-  name: string;
-  email?: string;
-  phone: string; // Obrigatório — principal canal de contato
-  whatsapp?: string; // Se diferente do phone
+  name: string
+  email?: string
+  phone: string // Obrigatório — principal canal de contato
+  whatsapp?: string // Se diferente do phone
 
   // Origem
-  source: 'website' | 'whatsapp' | 'facebook' | 'instagram' | 'google_ads' | 'indication' | 'portal' | 'other';
-  sourceDetails?: string; // URL da página, nome da campanha, UTM params
-  utmSource?: string;
-  utmMedium?: string;
-  utmCampaign?: string;
+  source:
+    | 'website'
+    | 'whatsapp'
+    | 'facebook'
+    | 'instagram'
+    | 'google_ads'
+    | 'indication'
+    | 'portal'
+    | 'other'
+  sourceDetails?: string // URL da página, nome da campanha, UTM params
+  utmSource?: string
+  utmMedium?: string
+  utmCampaign?: string
 
   // PostHog Integration
-  posthogDistinctId?: string; // Para vincular sessão PostHog ao lead
-  posthogSessionId?: string;
+  posthogDistinctId?: string // Para vincular sessão PostHog ao lead
+  posthogSessionId?: string
 
   // Interesse
-  interestType: 'buy' | 'rent' | 'sell' | 'invest';
-  budget?: { min?: number; max?: number }; // Range em vez de valor único
-  preferredNeighborhoods?: Relationship<Neighborhood>[];
-  preferredCategories?: Property['category'][]; // Tipos de imóvel de interesse
+  interestType: 'buy' | 'rent' | 'sell' | 'invest'
+  budget?: { min?: number; max?: number } // Range em vez de valor único
+  preferredNeighborhoods?: Relationship<Neighborhood>[]
+  preferredCategories?: Property['category'][] // Tipos de imóvel de interesse
 
   // Imóveis Visualizados/Interessados
-  viewedProperties?: Relationship<Property>[]; // Rastreio de interesse via PostHog events
-  favoriteProperties?: Relationship<Property>[]; // Marcados explicitamente
+  viewedProperties?: Relationship<Property>[] // Rastreio de interesse via PostHog events
+  favoriteProperties?: Relationship<Property>[] // Marcados explicitamente
 
   // Status do Funil
-  status: 'new' | 'contacted' | 'qualified' | 'visit_scheduled' | 'proposal_sent' | 'negotiation' | 'closed_won' | 'closed_lost';
-  priority: 'low' | 'medium' | 'high' | 'hot';
-  lostReason?: 'price' | 'location' | 'timing' | 'competitor' | 'no_response' | 'other';
-  lostReasonDetails?: string;
+  status:
+    | 'new'
+    | 'contacted'
+    | 'qualified'
+    | 'visit_scheduled'
+    | 'proposal_sent'
+    | 'negotiation'
+    | 'closed_won'
+    | 'closed_lost'
+  priority: 'low' | 'medium' | 'high' | 'hot'
+  lostReason?: 'price' | 'location' | 'timing' | 'competitor' | 'no_response' | 'other'
+  lostReasonDetails?: string
 
   // Atribuição
-  assignedTo?: Relationship<User>; // Corretor responsável
+  assignedTo?: Relationship<User> // Corretor responsável
 
   // Consentimento (LGPD)
-  lgpdConsent: boolean;
-  consentDate: Date;
-  consentIP?: string;
+  lgpdConsent: boolean
+  consentDate: Date
+  consentIP?: string
 
   // Score (calculado com base em eventos PostHog)
-  score?: number; // 0-100, baseado em engajamento (page views, time on site, form submits)
+  score?: number // 0-100, baseado em engajamento (page views, time on site, form submits)
 
-  createdAt: Date;
-  updatedAt: Date;
-  lastContactAt?: Date; // Atualizado por hook ao registrar atividade
+  createdAt: Date
+  updatedAt: Date
+  lastContactAt?: Date // Atualizado por hook ao registrar atividade
 }
 ```
 
@@ -543,33 +567,40 @@ interface Lead {
 
 ```typescript
 interface Deal {
-  id: string;
-  lead: Relationship<Lead>;
-  property: Relationship<Property>;
-  type: 'sale' | 'rent';
+  id: string
+  lead: Relationship<Lead>
+  property: Relationship<Property>
+  type: 'sale' | 'rent'
 
   // Valores
-  askingPrice: number; // Preço pedido
-  offerPrice?: number; // Proposta do cliente
-  finalPrice?: number; // Preço fechado
+  askingPrice: number // Preço pedido
+  offerPrice?: number // Proposta do cliente
+  finalPrice?: number // Preço fechado
 
   // Status
-  stage: 'interest' | 'visit' | 'proposal' | 'negotiation' | 'documentation' | 'closed_won' | 'closed_lost';
-  probability?: number; // % de chance de fechar
+  stage:
+    | 'interest'
+    | 'visit'
+    | 'proposal'
+    | 'negotiation'
+    | 'documentation'
+    | 'closed_won'
+    | 'closed_lost'
+  probability?: number // % de chance de fechar
 
   // Comissão
-  commissionRate?: number;
-  commissionValue?: number; // Calculado: finalPrice * commissionRate
+  commissionRate?: number
+  commissionValue?: number // Calculado: finalPrice * commissionRate
 
   // Datas
-  expectedCloseDate?: Date;
-  closedAt?: Date;
+  expectedCloseDate?: Date
+  closedAt?: Date
 
-  agent: Relationship<User>;
-  notes?: string;
+  agent: Relationship<User>
+  notes?: string
 
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Date
+  updatedAt: Date
 }
 ```
 
@@ -577,18 +608,18 @@ interface Deal {
 
 ```typescript
 interface Activity {
-  id: string;
-  lead: Relationship<Lead>;
-  deal?: Relationship<Deal>;
-  type: 'call' | 'whatsapp' | 'email' | 'visit' | 'note' | 'task' | 'proposal' | 'system';
-  description: string;
-  scheduledAt?: Date;
-  completedAt?: Date;
-  dueAt?: Date; // Para tarefas
-  result?: 'success' | 'no_answer' | 'callback' | 'not_interested' | 'rescheduled' | 'other';
-  isOverdue?: boolean; // Virtual field: dueAt < now && !completedAt
-  createdBy: Relationship<User>;
-  createdAt: Date;
+  id: string
+  lead: Relationship<Lead>
+  deal?: Relationship<Deal>
+  type: 'call' | 'whatsapp' | 'email' | 'visit' | 'note' | 'task' | 'proposal' | 'system'
+  description: string
+  scheduledAt?: Date
+  completedAt?: Date
+  dueAt?: Date // Para tarefas
+  result?: 'success' | 'no_answer' | 'callback' | 'not_interested' | 'rescheduled' | 'other'
+  isOverdue?: boolean // Virtual field: dueAt < now && !completedAt
+  createdBy: Relationship<User>
+  createdAt: Date
 }
 ```
 
@@ -596,25 +627,25 @@ interface Activity {
 
 ```typescript
 interface User {
-  id: string;
-  email: string; // Unique, usado para login (Payload Auth)
-  name: string;
-  role: 'admin' | 'agent' | 'assistant';
-  phone?: string;
-  avatar?: Relationship<Media>; // MinIO storage
-  creci?: string; // Registro profissional do corretor
-  bio?: string; // Exibido na página do imóvel
-  active: boolean;
-  commissionRate?: number; // % padrão para corretores
+  id: string
+  email: string // Unique, usado para login (Payload Auth)
+  name: string
+  role: 'admin' | 'agent' | 'assistant'
+  phone?: string
+  avatar?: Relationship<Media> // MinIO storage
+  creci?: string // Registro profissional do corretor
+  bio?: string // Exibido na página do imóvel
+  active: boolean
+  commissionRate?: number // % padrão para corretores
 
   // PostHog user properties
-  posthogDistinctId?: string; // Para tracking de ações no admin
+  posthogDistinctId?: string // Para tracking de ações no admin
 
   // Payload Auth fields (automáticos)
   // hash, salt, loginAttempts, lockUntil, etc.
 
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Date
+  updatedAt: Date
 }
 ```
 
@@ -671,7 +702,7 @@ interface User {
 
 #### 4.2.1 Pipeline de Vendas
 
-```
+```text
 Novo → Contactado → Qualificado → Visita Agendada → Proposta Enviada → Negociação → Fechado (Ganho/Perdido)
 ```
 
@@ -736,14 +767,14 @@ Novo → Contactado → Qualificado → Visita Agendada → Proposta Enviada →
 
 ### 5.1 Rotas Públicas (Frontend)
 
-| Método | Rota | Descrição | PostHog Tracking |
-|--------|------|-----------|------------------|
-| GET | `/api/properties` | Listagem com filtros, paginação, ordenação | Event: `properties_listed` |
-| GET | `/api/properties/[slug]` | Detalhes do imóvel | Event: `property_viewed` |
-| GET | `/api/neighborhoods` | Lista de bairros ativos | - |
-| POST | `/api/leads` | Criação de lead (formulário de contato) | Event: `lead_created`, Identify user |
-| POST | `/api/properties/[id]/view` | Incrementar view count | Event: `property_detail_viewed` |
-| GET | `/api/search` | Full-text search com `pg_trgm` | Event: `search_performed` |
+| Método | Rota                        | Descrição                                  | PostHog Tracking                     |
+| ------ | --------------------------- | ------------------------------------------ | ------------------------------------ |
+| GET    | `/api/properties`           | Listagem com filtros, paginação, ordenação | Event: `properties_listed`           |
+| GET    | `/api/properties/[slug]`    | Detalhes do imóvel                         | Event: `property_viewed`             |
+| GET    | `/api/neighborhoods`        | Lista de bairros ativos                    | -                                    |
+| POST   | `/api/leads`                | Criação de lead (formulário de contato)    | Event: `lead_created`, Identify user |
+| POST   | `/api/properties/[id]/view` | Incrementar view count                     | Event: `property_detail_viewed`      |
+| GET    | `/api/search`               | Full-text search com `pg_trgm`             | Event: `search_performed`            |
 
 ### 5.2 Rotas Autenticadas (Admin — Payload REST/Local API)
 
@@ -751,22 +782,22 @@ Payload CMS expõe automaticamente REST API para todas as collections em `/api/{
 
 ### 5.3 Webhooks (Payload Hooks)
 
-| Evento | Ação |
-|--------|------|
+| Evento                             | Ação                                                                                       |
+| ---------------------------------- | ------------------------------------------------------------------------------------------ |
 | `properties.afterChange` (publish) | Revalidar ISR da página, notificar leads com interesse similar (Nodemailer), PostHog event |
-| `leads.afterCreate` | Enviar e-mail para corretor (Nodemailer), distribuir via round-robin, PostHog identify |
-| `activities.afterCreate` | Atualizar `lastContactAt` do lead, PostHog event |
-| `leads.afterChange` (closed_lost) | Validar preenchimento de `lostReason`, PostHog event |
-| `media.beforeChange` | Processar imagem com Sharp, fazer upload para MinIO |
+| `leads.afterCreate`                | Enviar e-mail para corretor (Nodemailer), distribuir via round-robin, PostHog identify     |
+| `activities.afterCreate`           | Atualizar `lastContactAt` do lead, PostHog event                                           |
+| `leads.afterChange` (closed_lost)  | Validar preenchimento de `lostReason`, PostHog event                                       |
+| `media.beforeChange`               | Processar imagem com Sharp, fazer upload para MinIO                                        |
 
 ### 5.4 Rate Limiting
 
-| Rota | Limite | Implementação |
-|------|--------|---------------|
-| `POST /api/leads` | 5 req/min por IP | `express-rate-limit` ou custom middleware |
-| `POST /api/properties/[id]/view` | 1 req/min por IP+imóvel | Custom middleware |
-| `GET /api/properties` | 60 req/min por IP | `express-rate-limit` |
-| `GET /api/search` | 30 req/min por IP | `express-rate-limit` |
+| Rota                             | Limite                  | Implementação                             |
+| -------------------------------- | ----------------------- | ----------------------------------------- |
+| `POST /api/leads`                | 5 req/min por IP        | `express-rate-limit` ou custom middleware |
+| `POST /api/properties/[id]/view` | 1 req/min por IP+imóvel | Custom middleware                         |
+| `GET /api/properties`            | 60 req/min por IP       | `express-rate-limit`                      |
+| `GET /api/search`                | 30 req/min por IP       | `express-rate-limit`                      |
 
 ---
 
@@ -774,12 +805,12 @@ Payload CMS expõe automaticamente REST API para todas as collections em `/api/{
 
 ### 6.1 ISR (Incremental Static Regeneration)
 
-| Página | Estratégia | Revalidação |
-|--------|-----------|-------------|
-| Homepage | ISR | 60s + on-demand via webhook |
-| Listagem `/imoveis` | SSR com cache | `unstable_cache` 30s |
-| Detalhe `/imovel/[slug]` | ISR | On-demand via `revalidatePath` no Payload hook |
-| Bairros | ISR | 3600s |
+| Página                   | Estratégia    | Revalidação                                    |
+| ------------------------ | ------------- | ---------------------------------------------- |
+| Homepage                 | ISR           | 60s + on-demand via webhook                    |
+| Listagem `/imoveis`      | SSR com cache | `unstable_cache` 30s                           |
+| Detalhe `/imovel/[slug]` | ISR           | On-demand via `revalidatePath` no Payload hook |
+| Bairros                  | ISR           | 3600s                                          |
 
 ### 6.2 Banco de Dados
 
@@ -822,9 +853,7 @@ reserve_pool_timeout = 3
 5. `next/image` com `sizes` prop para responsive
 6. Lazy loading nativo
 
-**Exemplo de URL gerada:**
-
-```
+```text
 Original: https://minio.primeUrban.com/properties/PRM-001/hero.jpg
 WebP: https://minio.primeUrban.com/properties/PRM-001/hero.webp (processado)
 Thumb: https://minio.primeUrban.com/properties/PRM-001/thumb-hero.webp
@@ -846,7 +875,7 @@ Thumb: https://minio.primeUrban.com/properties/PRM-001/thumb-hero.webp
 **Configuração SMTP:**
 
 ```javascript
-import nodemailer from 'nodemailer';
+import nodemailer from 'nodemailer'
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST, // ex: smtp.gmail.com, smtp-relay.brevo.com
@@ -856,7 +885,7 @@ const transporter = nodemailer.createTransport({
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
   },
-});
+})
 
 // Opcional: DKIM signing para deliverability
 const transporterDKIM = nodemailer.createTransport({
@@ -866,33 +895,31 @@ const transporterDKIM = nodemailer.createTransport({
     keySelector: 'default',
     privateKey: fs.readFileSync('./dkim-private.key', 'utf8'),
   },
-});
+})
 ```
 
-| Trigger | Template | Destinatário |
-|---------|----------|-------------|
-| Novo lead | "Novo lead recebido" | Corretor atribuído |
-| Lead sem contato >24h | "Alerta: lead pendente" | Corretor + Admin |
-| Tarefa próxima (1h) | "Lembrete de tarefa" | Corretor |
-| Imóvel publicado | "Novo imóvel disponível" | Leads com interesse similar |
-| Visita agendada | "Confirmação de visita" | Lead + Corretor |
+| Trigger               | Template                 | Destinatário                |
+| --------------------- | ------------------------ | --------------------------- |
+| Novo lead             | "Novo lead recebido"     | Corretor atribuído          |
+| Lead sem contato >24h | "Alerta: lead pendente"  | Corretor + Admin            |
+| Tarefa próxima (1h)   | "Lembrete de tarefa"     | Corretor                    |
+| Imóvel publicado      | "Novo imóvel disponível" | Leads com interesse similar |
+| Visita agendada       | "Confirmação de visita"  | Lead + Corretor             |
 
 **Templates React Email (MIT):**
 
 ```jsx
 // emails/new-lead.tsx
-import { Html, Button, Text } from '@react-email/components';
+import { Html, Button, Text } from '@react-email/components'
 
 export default function NewLeadEmail({ lead, property }) {
   return (
     <Html>
       <Text>Novo lead: {lead.name}</Text>
       <Text>Interesse: {property.title}</Text>
-      <Button href={`https://admin.primeUrban.com/leads/${lead.id}`}>
-        Ver Lead
-      </Button>
+      <Button href={`https://admin.primeUrban.com/leads/${lead.id}`}>Ver Lead</Button>
     </Html>
-  );
+  )
 }
 ```
 
@@ -903,12 +930,11 @@ export default function NewLeadEmail({ lead, property }) {
 - **react-leaflet:** Componente React para mapas interativos
 
 ```jsx
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-
-<MapContainer center={[property.address.latitude, property.address.longitude]} zoom={15}>
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+;<MapContainer center={[property.address.latitude, property.address.longitude]} zoom={15}>
   <TileLayer
     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-    attribution='&copy; OpenStreetMap contributors'
+    attribution="&copy; OpenStreetMap contributors"
   />
   <Marker position={[property.address.latitude, property.address.longitude]}>
     <Popup>{property.title}</Popup>
@@ -922,7 +948,7 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 
 ```javascript
 // lib/posthog.ts
-import posthog from 'posthog-js';
+import posthog from 'posthog-js'
 
 if (typeof window !== 'undefined') {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
@@ -935,7 +961,7 @@ if (typeof window !== 'undefined') {
       maskAllInputs: false, // LGPD: only mask sensitive fields
       maskTextSelector: '[data-sensitive]',
     },
-  });
+  })
 }
 ```
 
@@ -950,7 +976,7 @@ posthog.capture('property_viewed', {
   property_type: property.type,
   property_category: property.category,
   neighborhood: property.address.neighborhood.name,
-});
+})
 
 // Exemplo: tracking de lead creation com identify
 posthog.identify(lead.email || lead.phone, {
@@ -959,13 +985,13 @@ posthog.identify(lead.email || lead.phone, {
   phone: lead.phone,
   interest_type: lead.interestType,
   source: lead.source,
-});
+})
 
 posthog.capture('lead_created', {
   source: lead.source,
   interest_type: lead.interestType,
   budget_range: lead.budget,
-});
+})
 ```
 
 ---
@@ -974,7 +1000,7 @@ posthog.capture('lead_created', {
 
 ### 8.1 Captura e Distribuição de Leads
 
-```
+```text
 Lead criado (formulário/WhatsApp)
   → PostHog identify + capture event
   → Verificar duplicidade (phone + email)
@@ -993,37 +1019,53 @@ Lead criado (formulário/WhatsApp)
 const calculateLeadScore = async (leadId) => {
   const events = await posthog.api.getEvents({
     distinct_id: lead.posthogDistinctId,
-    event: ['property_viewed', 'property_detail_viewed', 'whatsapp_clicked', 'form_submitted', 'visit_scheduled'],
-  });
+    event: [
+      'property_viewed',
+      'property_detail_viewed',
+      'whatsapp_clicked',
+      'form_submitted',
+      'visit_scheduled',
+    ],
+  })
 
-  let score = 0;
+  let score = 0
 
   events.forEach((event) => {
     switch (event.event) {
-      case 'property_viewed': score += 10; break;
-      case 'property_detail_viewed': score += 15; break;
-      case 'whatsapp_clicked': score += 20; break;
-      case 'form_submitted': score += 30; break;
-      case 'visit_scheduled': score += 40; break;
+      case 'property_viewed':
+        score += 10
+        break
+      case 'property_detail_viewed':
+        score += 15
+        break
+      case 'whatsapp_clicked':
+        score += 20
+        break
+      case 'form_submitted':
+        score += 30
+        break
+      case 'visit_scheduled':
+        score += 40
+        break
     }
-  });
+  })
 
   // Penalizar inatividade
-  const daysSinceLastEvent = (Date.now() - new Date(events[0].timestamp)) / (1000 * 60 * 60 * 24);
-  if (daysSinceLastEvent > 7) score -= 20;
-  if (daysSinceLastEvent > 30) score -= 50;
+  const daysSinceLastEvent = (Date.now() - new Date(events[0].timestamp)) / (1000 * 60 * 60 * 24)
+  if (daysSinceLastEvent > 7) score -= 20
+  if (daysSinceLastEvent > 30) score -= 50
 
   // Session duration bonus
-  const sessionDuration = events.reduce((acc, e) => acc + (e.properties.$session_duration || 0), 0);
-  if (sessionDuration > 300) score += 15; // >5 min
+  const sessionDuration = events.reduce((acc, e) => acc + (e.properties.$session_duration || 0), 0)
+  if (sessionDuration > 300) score += 15 // >5 min
 
-  return Math.max(0, Math.min(100, score));
-};
+  return Math.max(0, Math.min(100, score))
+}
 ```
 
 ### 8.3 Notificação de Novos Imóveis
 
-```
+```text
 Imóvel publicado
   → PostHog event: property_published
   → Buscar leads com interesse similar (bairro + faixa de preço + categoria)
@@ -1090,16 +1132,16 @@ uptime.primeUrban.com {
 
 ### 9.2 LGPD Compliance
 
-| Requisito | Implementação |
-|-----------|--------------|
-| Consentimento explícito | Checkbox obrigatório no formulário + timestamp + IP + PostHog consent event |
-| Direito de acesso | API route `/api/lgpd/export?email=` — exporta dados do lead em JSON + eventos PostHog |
-| Direito de exclusão | API route `/api/lgpd/delete?email=` — anonimiza dados (não deleta para integridade referencial) + apaga dados PostHog |
-| Retenção de dados | Leads inativos >24 meses: anonimização automática via cron job |
-| Portabilidade | Export CSV/JSON dos dados pessoais + eventos PostHog |
-| DPO | Configurável nas settings do Payload (nome + e-mail do encarregado) |
-| Política de Privacidade | Página `/privacidade` com texto completo |
-| Cookie consent | Banner de cookies com opt-in (analytics) — PostHog consent mode |
+| Requisito               | Implementação                                                                                                         |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Consentimento explícito | Checkbox obrigatório no formulário + timestamp + IP + PostHog consent event                                           |
+| Direito de acesso       | API route `/api/lgpd/export?email=` — exporta dados do lead em JSON + eventos PostHog                                 |
+| Direito de exclusão     | API route `/api/lgpd/delete?email=` — anonimiza dados (não deleta para integridade referencial) + apaga dados PostHog |
+| Retenção de dados       | Leads inativos >24 meses: anonimização automática via cron job                                                        |
+| Portabilidade           | Export CSV/JSON dos dados pessoais + eventos PostHog                                                                  |
+| DPO                     | Configurável nas settings do Payload (nome + e-mail do encarregado)                                                   |
+| Política de Privacidade | Página `/privacidade` com texto completo                                                                              |
+| Cookie consent          | Banner de cookies com opt-in (analytics) — PostHog consent mode                                                       |
 
 **Anonimização LGPD:**
 
@@ -1145,12 +1187,12 @@ export async function anonymizeLead(email: string) {
 
 ### 10.1 Estratégia
 
-| Tipo | Ferramenta | Escopo |
-|------|-----------|--------|
-| Unit | Vitest | Utils, hooks, formatters |
-| Integration | Vitest + Testing Library | Componentes com estado, formulários |
-| E2E | Playwright | Fluxos críticos: busca, contato, login admin, CRUD imóvel |
-| Visual | Playwright screenshots | Regressão visual de páginas-chave |
+| Tipo        | Ferramenta               | Escopo                                                    |
+| ----------- | ------------------------ | --------------------------------------------------------- |
+| Unit        | Vitest                   | Utils, hooks, formatters                                  |
+| Integration | Vitest + Testing Library | Componentes com estado, formulários                       |
+| E2E         | Playwright               | Fluxos críticos: busca, contato, login admin, CRUD imóvel |
+| Visual      | Playwright screenshots   | Regressão visual de páginas-chave                         |
 
 ### 10.2 Fluxos E2E Críticos
 
@@ -1164,13 +1206,13 @@ export async function anonymizeLead(email: string) {
 
 ## 11. Monitoramento e Observabilidade
 
-| Aspecto | Ferramenta | Métrica | Licença |
-|---------|-----------|---------|---------|
-| Erros | GlitchTip (self-hosted) | Error rate, stack traces, breadcrumbs | MIT |
-| Performance | PostHog (self-hosted) | TTFB, FCP, LCP, CLS, INP via performance events | MIT |
-| Uptime | Uptime Kuma | Uptime %, response time, alertas | MIT |
-| Logs | Grafana Loki + Promtail | Request logs, error logs, query language | AGPLv3 |
-| Business | Dashboard CRM + PostHog | Leads/dia, conversão, receita, funnels | - |
+| Aspecto     | Ferramenta              | Métrica                                         | Licença |
+| ----------- | ----------------------- | ----------------------------------------------- | ------- |
+| Erros       | GlitchTip (self-hosted) | Error rate, stack traces, breadcrumbs           | MIT     |
+| Performance | PostHog (self-hosted)   | TTFB, FCP, LCP, CLS, INP via performance events | MIT     |
+| Uptime      | Uptime Kuma             | Uptime %, response time, alertas                | MIT     |
+| Logs        | Grafana Loki + Promtail | Request logs, error logs, query language        | AGPLv3  |
+| Business    | Dashboard CRM + PostHog | Leads/dia, conversão, receita, funnels          | -       |
 
 **Alertas:**
 
@@ -1191,7 +1233,7 @@ glitchtip:
     PORT: 8080
     EMAIL_URL: smtp://smtp.primeUrban.com:587
   ports:
-    - "8080:8080"
+    - '8080:8080'
 ```
 
 **Configuração Loki:**
@@ -1201,7 +1243,7 @@ glitchtip:
 loki:
   image: grafana/loki:latest
   ports:
-    - "3100:3100"
+    - '3100:3100'
   volumes:
     - ./loki-config.yaml:/etc/loki/local-config.yaml
     - loki-data:/loki
@@ -1272,7 +1314,7 @@ promtail:
 
 **Objetivo:** CMS funcionando com dados reais no site.
 
-**Semana 1: Setup e Estrutura**
+#### Semana 1: Setup e Estrutura
 
 - [ ] Instalar Payload CMS 3.x no projeto existente
 - [ ] Configurar PostgreSQL 16+ (Docker) + pgBouncer
@@ -1283,7 +1325,7 @@ promtail:
 - [ ] Configurar GlitchTip para error tracking
 - [ ] Seed: migrar dados mockados atuais para o banco
 
-**Semana 2: CMS Core**
+#### Semana 2: CMS Core
 
 - [ ] Formulário multi-etapas de cadastro de imóvel
 - [ ] Upload de imagens com drag-and-drop e reordenação
@@ -1293,7 +1335,7 @@ promtail:
 - [ ] SEO plugin configurado
 - [ ] Ações em lote (publicar, pausar)
 
-**Semana 3: Frontend Integration**
+#### Semana 3: Frontend Integration
 
 - [ ] Conectar listagem ao Payload Local API
 - [ ] Página de detalhes dinâmica com ISR
@@ -1307,7 +1349,7 @@ promtail:
 
 **Objetivo:** Captura e gestão de leads.
 
-**Semana 4: Leads e Captura**
+#### Semana 4: Leads e Captura
 
 - [ ] Collection Leads + Deals
 - [ ] Formulário de contato com LGPD consent
@@ -1317,7 +1359,7 @@ promtail:
 - [ ] API routes com rate limiting (`express-rate-limit`)
 - [ ] PostHog self-hosted deployment (Docker)
 
-**Semana 5: Pipeline e Atividades**
+#### Semana 5: Pipeline e Atividades
 
 - [ ] Kanban de pipeline (drag-and-drop)
 - [ ] Collection Activities
@@ -1327,7 +1369,7 @@ promtail:
 - [ ] Notificações por e-mail (Nodemailer + React Email templates)
 - [ ] PostHog event tracking (frontend + backend)
 
-**Semana 6: Analytics e Relatórios**
+#### Semana 6: Analytics e Relatórios
 
 - [ ] Dashboard de métricas no admin (PostHog Insights embed)
 - [ ] Relatórios exportáveis (CSV)
@@ -1341,7 +1383,7 @@ promtail:
 
 **Objetivo:** Automações, LGPD completo, preparação para escala.
 
-**Semana 7: Automações e LGPD**
+#### Semana 7: Automações e LGPD
 
 - [ ] Workflow: notificar leads sobre novos imóveis (Nodemailer)
 - [ ] Workflow: escalar leads sem contato >24h
@@ -1351,7 +1393,7 @@ promtail:
 - [ ] Política de privacidade
 - [ ] Uptime Kuma deployment e configuração de alertas
 
-**Semana 8: Preparação para Escala**
+#### Semana 8: Preparação para Escala
 
 - [ ] Dockerização completa (docker-compose.yml final)
 - [ ] Scripts de backup automatizado (pg_dump → MinIO bucket privado)
@@ -1367,7 +1409,7 @@ promtail:
 
 ## 14. Modelo de Dados Relacional
 
-```
+```text
 ┌──────────────┐       ┌──────────────────────────┐       ┌──────────────┐
 │    Users     │       │       Properties          │       │Neighborhoods │
 ├──────────────┤       ├──────────────────────────┤       ├──────────────┤
@@ -1572,8 +1614,8 @@ services:
     volumes:
       - minio-data:/data
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - '9000:9000'
+      - '9001:9001'
     networks:
       - primeUrban-net
 
@@ -1680,8 +1722,8 @@ services:
     container_name: primeUrban-caddy
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy-data:/data
@@ -1706,26 +1748,26 @@ networks:
 
 ## 17. Comparação: Proprietário vs. MIT/OpenSource
 
-| Aspecto | Stack Proprietária (Original) | Stack MIT/OpenSource |
-|---------|-------------------------------|---------------------|
-| **Custo Mensal (estimado)** | $180-300/mês (Vercel Pro + Neon + Cloudinary + Resend + Sentry) | $40-80/mês (VPS 8GB RAM + domínio) |
-| **Custo Anual** | $2.160-3.600 | $480-960 |
-| **Economia em 3 anos** | - | $5.040-7.920 |
-| **Controle de Dados** | Dados em múltiplos provedores (EUA) | 100% self-hosted (Brasil) |
-| **LGPD Compliance** | DPA necessário com cada provedor | Simplificado (dados locais) |
-| **Vendor Lock-in** | Alto (APIs proprietárias) | Zero (padrões abertos) |
-| **Escalabilidade** | Baseada em uso ($$) | Baseada em VPS (upgrade simples) |
-| **Customização** | Limitada (planos e APIs) | Ilimitada (código aberto) |
-| **Latência (Brasil)** | 80-150ms (EUA → BR) | 10-30ms (local) |
-| **Backup/Restore** | Dependente de provedor | Controle total (pg_dump + MinIO) |
-| **Portabilidade** | Complexa (migração de dados) | Simples (Docker export/import) |
-| **Analytics Depth** | Básico (Vercel Analytics) | Profundo (PostHog: session replay, heatmaps, funnels, A/B testing) |
-| **Error Tracking** | Robusto (Sentry SaaS) | Equivalente (GlitchTip: Sentry-compatible API) |
-| **Image Processing** | CDN global + transformações (Cloudinary) | Local + cache (Sharp + MinIO + Caddy) |
-| **Email Deliverability** | Alta (Resend infra) | Alta (SMTP + DKIM configurado) |
-| **Deploy Complexity** | Baixa (git push) | Média (Docker + Caddy setup inicial) |
-| **Manutenção** | Mínima (managed services) | Média (updates, backups, monitoring) |
-| **Licenciamento** | Proprietário | MIT/Apache/AGPLv3 (100% open-source) |
+| Aspecto                     | Stack Proprietária (Original)                                   | Stack MIT/OpenSource                                               |
+| --------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------ |
+| **Custo Mensal (estimado)** | $180-300/mês (Vercel Pro + Neon + Cloudinary + Resend + Sentry) | $40-80/mês (VPS 8GB RAM + domínio)                                 |
+| **Custo Anual**             | $2.160-3.600                                                    | $480-960                                                           |
+| **Economia em 3 anos**      | -                                                               | $5.040-7.920                                                       |
+| **Controle de Dados**       | Dados em múltiplos provedores (EUA)                             | 100% self-hosted (Brasil)                                          |
+| **LGPD Compliance**         | DPA necessário com cada provedor                                | Simplificado (dados locais)                                        |
+| **Vendor Lock-in**          | Alto (APIs proprietárias)                                       | Zero (padrões abertos)                                             |
+| **Escalabilidade**          | Baseada em uso ($$)                                             | Baseada em VPS (upgrade simples)                                   |
+| **Customização**            | Limitada (planos e APIs)                                        | Ilimitada (código aberto)                                          |
+| **Latência (Brasil)**       | 80-150ms (EUA → BR)                                             | 10-30ms (local)                                                    |
+| **Backup/Restore**          | Dependente de provedor                                          | Controle total (pg_dump + MinIO)                                   |
+| **Portabilidade**           | Complexa (migração de dados)                                    | Simples (Docker export/import)                                     |
+| **Analytics Depth**         | Básico (Vercel Analytics)                                       | Profundo (PostHog: session replay, heatmaps, funnels, A/B testing) |
+| **Error Tracking**          | Robusto (Sentry SaaS)                                           | Equivalente (GlitchTip: Sentry-compatible API)                     |
+| **Image Processing**        | CDN global + transformações (Cloudinary)                        | Local + cache (Sharp + MinIO + Caddy)                              |
+| **Email Deliverability**    | Alta (Resend infra)                                             | Alta (SMTP + DKIM configurado)                                     |
+| **Deploy Complexity**       | Baixa (git push)                                                | Média (Docker + Caddy setup inicial)                               |
+| **Manutenção**              | Mínima (managed services)                                       | Média (updates, backups, monitoring)                               |
+| **Licenciamento**           | Proprietário                                                    | MIT/Apache/AGPLv3 (100% open-source)                               |
 
 **Vantagens da Stack MIT/OpenSource:**
 
@@ -1746,4 +1788,4 @@ networks:
 
 ---
 
-*PRD v2.0-MIT — PrimeUrban CMS+CRM. Stack: Next.js 16 + Payload CMS 3.x + PostgreSQL + Sharp + MinIO + PostHog + GlitchTip + Nodemailer. 100% MIT/OpenSource (exceto VPS).*
+_PRD v2.0-MIT — PrimeUrban CMS+CRM. Stack: Next.js 16 + Payload CMS 3.x + PostgreSQL + Sharp + MinIO + PostHog + GlitchTip + Nodemailer. 100% MIT/OpenSource (exceto VPS)._

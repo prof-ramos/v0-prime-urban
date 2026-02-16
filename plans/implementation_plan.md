@@ -1,8 +1,8 @@
 # Plano de Implementação - PrimeUrban CMS+CRM MIT/OpenSource
 
 **Roadmap Executável para Claude Code**
-*Base: cms_crm_plan_mit.md*
-*Duração estimada: 8 semanas*
+_Base: cms_crm_plan_mit.md_
+_Duração estimada: 8 semanas_
 
 ---
 
@@ -113,12 +113,12 @@ services:
       POSTGRES_DB: primeUrban
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_INITDB_ARGS: "-E UTF8"
+      POSTGRES_INITDB_ARGS: '-E UTF8'
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER}']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -148,7 +148,7 @@ services:
     volumes:
       - redis-data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ['CMD', 'redis-cli', 'ping']
       interval: 10s
       timeout: 3s
       retries: 5
@@ -163,14 +163,14 @@ services:
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
-      MINIO_BROWSER: "on"
+      MINIO_BROWSER: 'on'
     volumes:
       - minio-data:/data
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - '9000:9000'
+      - '9001:9001'
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:9000/minio/health/live']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -194,7 +194,7 @@ services:
       MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
       NEXT_PUBLIC_SERVER_URL: http://localhost:3000
     ports:
-      - "3000:3000"
+      - '3000:3000'
     depends_on:
       pgbouncer:
         condition: service_started
@@ -290,9 +290,9 @@ const nextConfig = {
       bodySizeLimit: '10mb',
     },
   },
-};
+}
 
-export default nextConfig;
+export default nextConfig
 ```
 
 **Validação:**
@@ -342,25 +342,28 @@ pnpm add -D @types/nodemailer
 #### `payload.config.ts`
 
 ```typescript
-import { buildConfig } from 'payload/config';
-import { postgresAdapter } from '@payloadcms/db-postgres';
-import { lexicalEditor } from '@payloadcms/richtext-lexical';
-import { s3Storage } from '@payloadcms/storage-s3';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { buildConfig } from 'payload/config'
+import { postgresAdapter } from '@payloadcms/db-postgres'
+import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { s3Storage } from '@payloadcms/storage-s3'
+import path from 'path'
+import { fileURLToPath } from 'url'
 
-const filename = fileURLToPath(import.meta.url);
-const dirname = path.dirname(filename);
+const filename = fileURLToPath(import.meta.url)
+const dirname = path.dirname(filename)
 
 export default buildConfig({
   serverURL: process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000',
   admin: {
     user: 'users',
-    autoLogin: process.env.NODE_ENV === 'development' ? {
-      email: 'admin@primeUrban.com',
-      password: 'admin123',
-      prefillOnly: true,
-    } : false,
+    autoLogin:
+      process.env.NODE_ENV === 'development'
+        ? {
+            email: 'admin@primeUrban.com',
+            password: 'admin123',
+            prefillOnly: true,
+          }
+        : false,
   },
   collections: [
     // Será populado na próxima fase
@@ -395,49 +398,47 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
-});
+})
 ```
 
 #### `app/(payload)/admin/[[...segments]]/page.tsx`
 
 ```typescript
-import { RootLayout, RootPage, generatePageMetadata } from '@payloadcms/next/views';
-import { Metadata } from 'next';
-import config from '@/payload.config';
+import { RootLayout, RootPage, generatePageMetadata } from '@payloadcms/next/views'
+import { Metadata } from 'next'
+import config from '@/payload.config'
 
-export const generateMetadata = (): Promise<Metadata> =>
-  generatePageMetadata({ config });
+export const generateMetadata = (): Promise<Metadata> => generatePageMetadata({ config })
 
-const Page = RootPage;
-const Layout = RootLayout;
+const Page = RootPage
+const Layout = RootLayout
 
-export { Layout, Page };
+export { Layout, Page }
 ```
 
 #### `app/(payload)/admin/[[...segments]]/not-found.tsx`
 
 ```typescript
-import { NotFoundPage, generatePageMetadata } from '@payloadcms/next/views';
-import { Metadata } from 'next';
-import config from '@/payload.config';
+import { NotFoundPage, generatePageMetadata } from '@payloadcms/next/views'
+import { Metadata } from 'next'
+import config from '@/payload.config'
 
-export const generateMetadata = (): Promise<Metadata> =>
-  generatePageMetadata({ config });
+export const generateMetadata = (): Promise<Metadata> => generatePageMetadata({ config })
 
-const NotFound = NotFoundPage;
+const NotFound = NotFoundPage
 
-export default NotFound;
+export default NotFound
 ```
 
 #### `app/api/(payload)/[...slug]/route.ts`
 
 ```typescript
-import { REST_GET, REST_POST, REST_PATCH, REST_DELETE } from '@payloadcms/next/routes';
+import { REST_GET, REST_POST, REST_PATCH, REST_DELETE } from '@payloadcms/next/routes'
 
-export const GET = REST_GET;
-export const POST = REST_POST;
-export const PATCH = REST_PATCH;
-export const DELETE = REST_DELETE;
+export const GET = REST_GET
+export const POST = REST_POST
+export const PATCH = REST_PATCH
+export const DELETE = REST_DELETE
 ```
 
 **Validação:**
@@ -462,7 +463,7 @@ docker compose restart app
 **Arquivo:** `payload/collections/Users.ts`
 
 ```typescript
-import { CollectionConfig } from 'payload/types';
+import { CollectionConfig } from 'payload/types'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -475,10 +476,10 @@ export const Users: CollectionConfig = {
     read: () => true,
     create: ({ req: { user } }) => user?.role === 'admin',
     update: ({ req: { user } }) => {
-      if (user?.role === 'admin') return true;
+      if (user?.role === 'admin') return true
       return {
         id: { equals: user?.id },
-      };
+      }
     },
     delete: ({ req: { user } }) => user?.role === 'admin',
   },
@@ -532,7 +533,7 @@ export const Users: CollectionConfig = {
       },
     },
   ],
-};
+}
 ```
 
 ### 3.2 Collection: Media (com Sharp processing)
@@ -540,7 +541,7 @@ export const Users: CollectionConfig = {
 **Arquivo:** `payload/collections/Media.ts`
 
 ```typescript
-import { CollectionConfig } from 'payload/types';
+import { CollectionConfig } from 'payload/types'
 
 export const Media: CollectionConfig = {
   slug: 'media',
@@ -593,7 +594,7 @@ export const Media: CollectionConfig = {
     beforeChange: [
       async ({ data, req }) => {
         // Sharp processing customizado será adicionado na próxima fase
-        return data;
+        return data
       },
     ],
   },
@@ -611,7 +612,7 @@ export const Media: CollectionConfig = {
       },
     },
   ],
-};
+}
 ```
 
 ### 3.3 Collection: Neighborhoods
@@ -619,7 +620,7 @@ export const Media: CollectionConfig = {
 **Arquivo:** `payload/collections/Neighborhoods.ts`
 
 ```typescript
-import { CollectionConfig } from 'payload/types';
+import { CollectionConfig } from 'payload/types'
 
 export const Neighborhoods: CollectionConfig = {
   slug: 'neighborhoods',
@@ -701,13 +702,13 @@ export const Neighborhoods: CollectionConfig = {
             .normalize('NFD')
             .replace(/[\u0300-\u036f]/g, '')
             .replace(/[^a-z0-9]+/g, '-')
-            .replace(/(^-|-$)/g, '');
+            .replace(/(^-|-$)/g, '')
         }
-        return data;
+        return data
       },
     ],
   },
-};
+}
 ```
 
 ### 3.4 Collections: Tags e Amenities
@@ -715,7 +716,7 @@ export const Neighborhoods: CollectionConfig = {
 **Arquivo:** `payload/collections/Tags.ts`
 
 ```typescript
-import { CollectionConfig } from 'payload/types';
+import { CollectionConfig } from 'payload/types'
 
 export const Tags: CollectionConfig = {
   slug: 'tags',
@@ -766,19 +767,19 @@ export const Tags: CollectionConfig = {
             .toLowerCase()
             .normalize('NFD')
             .replace(/[\u0300-\u036f]/g, '')
-            .replace(/[^a-z0-9]+/g, '-');
+            .replace(/[^a-z0-9]+/g, '-')
         }
-        return data;
+        return data
       },
     ],
   },
-};
+}
 ```
 
 **Arquivo:** `payload/collections/Amenities.ts`
 
 ```typescript
-import { CollectionConfig } from 'payload/types';
+import { CollectionConfig } from 'payload/types'
 
 export const Amenities: CollectionConfig = {
   slug: 'amenities',
@@ -838,34 +839,28 @@ export const Amenities: CollectionConfig = {
             .toLowerCase()
             .normalize('NFD')
             .replace(/[\u0300-\u036f]/g, '')
-            .replace(/[^a-z0-9]+/g, '-');
+            .replace(/[^a-z0-9]+/g, '-')
         }
-        return data;
+        return data
       },
     ],
   },
-};
+}
 ```
 
 ### 3.5 Atualizar payload.config.ts
 
 ```typescript
-import { Users } from './payload/collections/Users';
-import { Media } from './payload/collections/Media';
-import { Neighborhoods } from './payload/collections/Neighborhoods';
-import { Tags } from './payload/collections/Tags';
-import { Amenities } from './payload/collections/Amenities';
+import { Users } from './payload/collections/Users'
+import { Media } from './payload/collections/Media'
+import { Neighborhoods } from './payload/collections/Neighborhoods'
+import { Tags } from './payload/collections/Tags'
+import { Amenities } from './payload/collections/Amenities'
 
 export default buildConfig({
   // ... configurações anteriores
-  collections: [
-    Users,
-    Media,
-    Neighborhoods,
-    Tags,
-    Amenities,
-  ],
-});
+  collections: [Users, Media, Neighborhoods, Tags, Amenities],
+})
 ```
 
 **Validação:**
@@ -891,7 +886,7 @@ docker compose restart app
 **Arquivo:** `payload/collections/Properties.ts`
 
 ```typescript
-import { CollectionConfig } from 'payload/types';
+import { CollectionConfig } from 'payload/types'
 
 export const Properties: CollectionConfig = {
   slug: 'properties',
@@ -904,9 +899,9 @@ export const Properties: CollectionConfig = {
       if (!user) {
         return {
           status: { equals: 'published' },
-        };
+        }
       }
-      return true;
+      return true
     },
     create: ({ req: { user } }) => !!user,
     update: ({ req: { user } }) => !!user,
@@ -1341,7 +1336,7 @@ export const Properties: CollectionConfig = {
         if (operation === 'create' && !data.code) {
           // Buscar último code e incrementar
           // Implementar na próxima iteração
-          data.code = `PRM-${Date.now().toString().slice(-6)}`;
+          data.code = `PRM-${Date.now().toString().slice(-6)}`
         }
 
         // Auto-gerar slug
@@ -1351,20 +1346,20 @@ export const Properties: CollectionConfig = {
             .normalize('NFD')
             .replace(/[\u0300-\u036f]/g, '')
             .replace(/[^a-z0-9]+/g, '-')
-            .replace(/(^-|-$)/g, '');
+            .replace(/(^-|-$)/g, '')
         }
 
-        return data;
+        return data
       },
     ],
   },
-};
+}
 ```
 
 **Atualizar payload.config.ts:**
 
 ```typescript
-import { Properties } from './payload/collections/Properties';
+import { Properties } from './payload/collections/Properties'
 
 export default buildConfig({
   collections: [
@@ -1375,7 +1370,7 @@ export default buildConfig({
     Amenities,
     Properties, // Adicionar
   ],
-});
+})
 ```
 
 **Validação:**
@@ -1400,8 +1395,8 @@ docker compose restart app
 **Arquivo:** `lib/sharp/process-image.ts`
 
 ```typescript
-import sharp from 'sharp';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import sharp from 'sharp'
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 
 const s3Client = new S3Client({
   credentials: {
@@ -1411,18 +1406,18 @@ const s3Client = new S3Client({
   region: 'us-east-1',
   endpoint: `http://${process.env.MINIO_ENDPOINT}:${process.env.MINIO_PORT}`,
   forcePathStyle: true,
-});
+})
 
 export interface ProcessImageOptions {
-  buffer: Buffer;
-  filename: string;
-  folder?: string;
+  buffer: Buffer
+  filename: string
+  folder?: string
 }
 
 export interface ProcessedImage {
-  webp: { url: string; size: number };
-  thumbnail: { url: string; size: number };
-  avif?: { url: string; size: number };
+  webp: { url: string; size: number }
+  thumbnail: { url: string; size: number }
+  avif?: { url: string; size: number }
 }
 
 export async function processAndUploadImage({
@@ -1430,23 +1425,23 @@ export async function processAndUploadImage({
   filename,
   folder = 'uploads',
 }: ProcessImageOptions): Promise<ProcessedImage> {
-  const bucket = process.env.MINIO_BUCKET!;
-  const baseFilename = filename.replace(/\.[^/.]+$/, '');
+  const bucket = process.env.MINIO_BUCKET!
+  const baseFilename = filename.replace(/\.[^/.]+$/, '')
 
   // Processar WebP principal
   const webpBuffer = await sharp(buffer)
     .resize(1920, 1080, { fit: 'inside', withoutEnlargement: true })
     .webp({ quality: 85, effort: 6 })
-    .toBuffer();
+    .toBuffer()
 
   // Processar thumbnail
   const thumbBuffer = await sharp(buffer)
     .resize(400, 300, { fit: 'cover', position: 'centre' })
     .webp({ quality: 80 })
-    .toBuffer();
+    .toBuffer()
 
   // Upload WebP
-  const webpKey = `${folder}/${baseFilename}.webp`;
+  const webpKey = `${folder}/${baseFilename}.webp`
   await s3Client.send(
     new PutObjectCommand({
       Bucket: bucket,
@@ -1454,10 +1449,10 @@ export async function processAndUploadImage({
       Body: webpBuffer,
       ContentType: 'image/webp',
     })
-  );
+  )
 
   // Upload thumbnail
-  const thumbKey = `${folder}/thumb-${baseFilename}.webp`;
+  const thumbKey = `${folder}/thumb-${baseFilename}.webp`
   await s3Client.send(
     new PutObjectCommand({
       Bucket: bucket,
@@ -1465,9 +1460,9 @@ export async function processAndUploadImage({
       Body: thumbBuffer,
       ContentType: 'image/webp',
     })
-  );
+  )
 
-  const endpoint = `http://${process.env.MINIO_ENDPOINT}:${process.env.MINIO_PORT}`;
+  const endpoint = `http://${process.env.MINIO_ENDPOINT}:${process.env.MINIO_PORT}`
 
   return {
     webp: {
@@ -1478,7 +1473,7 @@ export async function processAndUploadImage({
       url: `${endpoint}/${bucket}/${thumbKey}`,
       size: thumbBuffer.length,
     },
-  };
+  }
 }
 ```
 
@@ -1487,37 +1482,33 @@ export async function processAndUploadImage({
 **Arquivo:** `payload/hooks/processImageHook.ts`
 
 ```typescript
-import { CollectionBeforeChangeHook } from 'payload/types';
-import { processAndUploadImage } from '@/lib/sharp/process-image';
+import { CollectionBeforeChangeHook } from 'payload/types'
+import { processAndUploadImage } from '@/lib/sharp/process-image'
 
-export const processImageHook: CollectionBeforeChangeHook = async ({
-  data,
-  req,
-  operation,
-}) => {
+export const processImageHook: CollectionBeforeChangeHook = async ({ data, req, operation }) => {
   if (operation === 'create' && req.file) {
     try {
-      const folder = data.folder || 'properties';
+      const folder = data.folder || 'properties'
       const processed = await processAndUploadImage({
         buffer: req.file.buffer,
         filename: req.file.name,
         folder,
-      });
+      })
 
-      data.formats = processed;
+      data.formats = processed
     } catch (error) {
-      req.payload.logger.error('Failed to process image:', error);
+      req.payload.logger.error('Failed to process image:', error)
     }
   }
 
-  return data;
-};
+  return data
+}
 ```
 
 **Atualizar Media collection:**
 
 ```typescript
-import { processImageHook } from '../hooks/processImageHook';
+import { processImageHook } from '../hooks/processImageHook'
 
 export const Media: CollectionConfig = {
   // ... campos anteriores
@@ -1535,7 +1526,7 @@ export const Media: CollectionConfig = {
       },
     },
   ],
-};
+}
 ```
 
 **Validação:**
@@ -1560,7 +1551,7 @@ docker compose restart app
 **Arquivo:** `payload/collections/Leads.ts`
 
 ```typescript
-import { CollectionConfig } from 'payload/types';
+import { CollectionConfig } from 'payload/types'
 
 export const Leads: CollectionConfig = {
   slug: 'leads',
@@ -1570,13 +1561,13 @@ export const Leads: CollectionConfig = {
   },
   access: {
     read: ({ req: { user } }) => {
-      if (user?.role === 'admin') return true;
+      if (user?.role === 'admin') return true
       if (user?.role === 'agent') {
         return {
           assignedTo: { equals: user.id },
-        };
+        }
       }
-      return false;
+      return false
     },
     create: ({ req: { user } }) => !!user,
     update: ({ req: { user } }) => !!user,
@@ -1821,11 +1812,11 @@ export const Leads: CollectionConfig = {
           // TODO: Enviar email para corretor
           // TODO: Distribuir round-robin
         }
-        return doc;
+        return doc
       },
     ],
   },
-};
+}
 ```
 
 ### 6.2 Collections: Deals e Activities
@@ -1855,33 +1846,33 @@ docker compose restart app
 **Arquivo:** `app/api/properties/route.ts`
 
 ```typescript
-import { getPayloadHMR } from '@payloadcms/next/utilities';
-import configPromise from '@payload-config';
-import { NextRequest, NextResponse } from 'next/server';
+import { getPayloadHMR } from '@payloadcms/next/utilities'
+import configPromise from '@payload-config'
+import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
-  const payload = await getPayloadHMR({ config: configPromise });
-  const searchParams = request.nextUrl.searchParams;
+  const payload = await getPayloadHMR({ config: configPromise })
+  const searchParams = request.nextUrl.searchParams
 
-  const page = Number(searchParams.get('page')) || 1;
-  const limit = Number(searchParams.get('limit')) || 12;
-  const type = searchParams.get('type');
-  const category = searchParams.get('category');
-  const neighborhood = searchParams.get('neighborhood');
-  const minPrice = Number(searchParams.get('minPrice'));
-  const maxPrice = Number(searchParams.get('maxPrice'));
-  const bedrooms = Number(searchParams.get('bedrooms'));
+  const page = Number(searchParams.get('page')) || 1
+  const limit = Number(searchParams.get('limit')) || 12
+  const type = searchParams.get('type')
+  const category = searchParams.get('category')
+  const neighborhood = searchParams.get('neighborhood')
+  const minPrice = Number(searchParams.get('minPrice'))
+  const maxPrice = Number(searchParams.get('maxPrice'))
+  const bedrooms = Number(searchParams.get('bedrooms'))
 
   const where: any = {
     status: { equals: 'published' },
-  };
+  }
 
-  if (type) where.type = { equals: type };
-  if (category) where.category = { equals: category };
-  if (neighborhood) where['address.neighborhood'] = { equals: neighborhood };
-  if (minPrice) where.price = { ...where.price, greater_than_equal: minPrice };
-  if (maxPrice) where.price = { ...where.price, less_than_equal: maxPrice };
-  if (bedrooms) where.bedrooms = { greater_than_equal: bedrooms };
+  if (type) where.type = { equals: type }
+  if (category) where.category = { equals: category }
+  if (neighborhood) where['address.neighborhood'] = { equals: neighborhood }
+  if (minPrice) where.price = { ...where.price, greater_than_equal: minPrice }
+  if (maxPrice) where.price = { ...where.price, less_than_equal: maxPrice }
+  if (bedrooms) where.bedrooms = { greater_than_equal: bedrooms }
 
   const properties = await payload.find({
     collection: 'properties',
@@ -1889,24 +1880,21 @@ export async function GET(request: NextRequest) {
     page,
     limit,
     sort: '-createdAt',
-  });
+  })
 
-  return NextResponse.json(properties);
+  return NextResponse.json(properties)
 }
 ```
 
 **Arquivo:** `app/api/properties/[slug]/route.ts`
 
 ```typescript
-import { getPayloadHMR } from '@payloadcms/next/utilities';
-import configPromise from '@payload-config';
-import { NextRequest, NextResponse } from 'next/server';
+import { getPayloadHMR } from '@payloadcms/next/utilities'
+import configPromise from '@payload-config'
+import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { slug: string } }
-) {
-  const payload = await getPayloadHMR({ config: configPromise });
+export async function GET(request: NextRequest, { params }: { params: { slug: string } }) {
+  const payload = await getPayloadHMR({ config: configPromise })
 
   const properties = await payload.find({
     collection: 'properties',
@@ -1915,13 +1903,13 @@ export async function GET(
       status: { equals: 'published' },
     },
     limit: 1,
-  });
+  })
 
   if (properties.docs.length === 0) {
-    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    return NextResponse.json({ error: 'Not found' }, { status: 404 })
   }
 
-  return NextResponse.json(properties.docs[0]);
+  return NextResponse.json(properties.docs[0])
 }
 ```
 
@@ -1990,7 +1978,7 @@ http://localhost:3000/imovel/apartamento-lago-sul
 **Arquivo:** `lib/email/transporter.ts`
 
 ```typescript
-import nodemailer from 'nodemailer';
+import nodemailer from 'nodemailer'
 
 export const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -2000,16 +1988,16 @@ export const transporter = nodemailer.createTransport({
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
   },
-});
+})
 
 export async function sendEmail({
   to,
   subject,
   html,
 }: {
-  to: string;
-  subject: string;
-  html: string;
+  to: string
+  subject: string
+  html: string
 }) {
   try {
     await transporter.sendMail({
@@ -2017,11 +2005,11 @@ export async function sendEmail({
       to,
       subject,
       html,
-    });
-    return { success: true };
+    })
+    return { success: true }
   } catch (error) {
-    console.error('Failed to send email:', error);
-    return { success: false, error };
+    console.error('Failed to send email:', error)
+    return { success: false, error }
   }
 }
 ```
@@ -2040,40 +2028,40 @@ export async function sendEmail({
 ### 9.1 Adicionar ao docker-compose.yml
 
 ```yaml
-  posthog:
-    image: posthog/posthog:latest
-    container_name: primeUrban-posthog
-    restart: unless-stopped
-    environment:
-      DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@postgres:5432/posthog
-      REDIS_URL: redis://redis:6379
-      SECRET_KEY: ${POSTHOG_SECRET_KEY}
-      SITE_URL: http://localhost:8000
-      POSTHOG_DB_TYPE: postgres
-    depends_on:
-      - postgres
-      - redis
-    ports:
-      - "8000:8000"
-    networks:
-      - primeUrban-net
+posthog:
+  image: posthog/posthog:latest
+  container_name: primeUrban-posthog
+  restart: unless-stopped
+  environment:
+    DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@postgres:5432/posthog
+    REDIS_URL: redis://redis:6379
+    SECRET_KEY: ${POSTHOG_SECRET_KEY}
+    SITE_URL: http://localhost:8000
+    POSTHOG_DB_TYPE: postgres
+  depends_on:
+    - postgres
+    - redis
+  ports:
+    - '8000:8000'
+  networks:
+    - primeUrban-net
 
-  glitchtip-web:
-    image: glitchtip/glitchtip:latest
-    container_name: primeUrban-glitchtip
-    restart: unless-stopped
-    environment:
-      DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@postgres:5432/glitchtip
-      REDIS_URL: redis://redis:6379
-      SECRET_KEY: ${GLITCHTIP_SECRET_KEY}
-      PORT: 8080
-    depends_on:
-      - postgres
-      - redis
-    ports:
-      - "8080:8080"
-    networks:
-      - primeUrban-net
+glitchtip-web:
+  image: glitchtip/glitchtip:latest
+  container_name: primeUrban-glitchtip
+  restart: unless-stopped
+  environment:
+    DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@postgres:5432/glitchtip
+    REDIS_URL: redis://redis:6379
+    SECRET_KEY: ${GLITCHTIP_SECRET_KEY}
+    PORT: 8080
+  depends_on:
+    - postgres
+    - redis
+  ports:
+    - '8080:8080'
+  networks:
+    - primeUrban-net
 ```
 
 ### 9.2 Integrar no Frontend
@@ -2081,17 +2069,17 @@ export async function sendEmail({
 **Arquivo:** `lib/posthog.ts`
 
 ```typescript
-import posthog from 'posthog-js';
+import posthog from 'posthog-js'
 
 if (typeof window !== 'undefined') {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
     api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST || 'http://localhost:8000',
     autocapture: true,
     capture_pageview: true,
-  });
+  })
 }
 
-export default posthog;
+export default posthog
 ```
 
 **Validação:**
@@ -2113,22 +2101,22 @@ docker compose up -d posthog glitchtip-web
 ### 10.1 Adicionar Caddy ao docker-compose.yml
 
 ```yaml
-  caddy:
-    image: caddy:2-alpine
-    container_name: primeUrban-caddy
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-      - "443:443/udp"
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - caddy-data:/data
-      - caddy-config:/config
-    depends_on:
-      - app
-    networks:
-      - primeUrban-net
+caddy:
+  image: caddy:2-alpine
+  container_name: primeUrban-caddy
+  restart: unless-stopped
+  ports:
+    - '80:80'
+    - '443:443'
+    - '443:443/udp'
+  volumes:
+    - ./Caddyfile:/etc/caddy/Caddyfile:ro
+    - caddy-data:/data
+    - caddy-config:/config
+  depends_on:
+    - app
+  networks:
+    - primeUrban-net
 ```
 
 ### 10.2 Criar Caddyfile
@@ -2189,12 +2177,14 @@ docker compose ps
 ## Checklist Final de Validação
 
 ### Infraestrutura
+
 - [ ] Docker Compose rodando com todos os serviços
 - [ ] PostgreSQL acessível via pgBouncer
 - [ ] MinIO console acessível e bucket criado
 - [ ] Caddy com certificados Let's Encrypt válidos
 
 ### Payload CMS
+
 - [ ] Admin acessível em /admin
 - [ ] 9 collections funcionais (Users, Media, Neighborhoods, Tags, Amenities, Properties, Leads, Deals, Activities)
 - [ ] Upload de imagens com processamento Sharp
@@ -2202,6 +2192,7 @@ docker compose ps
 - [ ] Auto-geração de slugs e codes
 
 ### Frontend
+
 - [ ] Homepage renderizando
 - [ ] Listagem de imóveis com filtros
 - [ ] Página de detalhes com ISR
@@ -2209,17 +2200,19 @@ docker compose ps
 - [ ] WhatsApp tracking funcionando
 
 ### Integrações
+
 - [ ] Nodemailer enviando emails
 - [ ] PostHog capturando eventos
 - [ ] GlitchTip recebendo erros
 - [ ] Sharp processando imagens para WebP
 
 ### Performance
+
 - [ ] TTFB < 200ms (páginas ISR)
 - [ ] Imagens servidas em WebP
 - [ ] Lighthouse score > 90
 
 ---
 
-*Plano de Implementação v1.0 - PrimeUrban MIT/OpenSource Stack*
-*Baseado em: cms_crm_plan_mit.md*
+_Plano de Implementação v1.0 - PrimeUrban MIT/OpenSource Stack_
+_Baseado em: cms_crm_plan_mit.md_

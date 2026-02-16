@@ -1,8 +1,8 @@
 # Requisitos de VPS - PrimeUrban Stack MIT/OpenSource
 
 **Documento Técnico de Especificação de Infraestrutura**
-*Última atualização: Fevereiro 2026*
-*Versão: 1.0*
+_Última atualização: Fevereiro 2026_
+_Versão: 1.0_
 
 ---
 
@@ -11,6 +11,7 @@
 Este documento especifica os requisitos de hardware, software e rede para deployment da stack PrimeUrban CMS+CRM 100% MIT/OpenSource em VPS self-hosted.
 
 **Stack Completa:**
+
 - Next.js 16 (App) + Payload CMS 3.x (Admin)
 - PostgreSQL 16 + pgBouncer
 - MinIO (S3-compatible storage)
@@ -27,6 +28,7 @@ Este documento especifica os requisitos de hardware, software e rede para deploy
 ### 2.1 Perfil de Uso Estimado
 
 **Cenário Base (MVP):**
+
 - 5.000 imóveis cadastrados
 - 500 imóveis com galeria completa (15 fotos/imóvel = 7.500 imagens)
 - 100 leads novos/mês
@@ -36,6 +38,7 @@ Este documento especifica os requisitos de hardware, software e rede para deploy
 - 50GB de mídia (imagens WebP otimizadas)
 
 **Cenário Crescimento (12 meses):**
+
 - 10.000 imóveis cadastrados
 - 2.000 leads novos/mês
 - 5.000 visitantes únicos/mês
@@ -45,40 +48,40 @@ Este documento especifica os requisitos de hardware, software e rede para deploy
 
 ### 2.2 Configuração Mínima (MVP - 6 meses)
 
-| Componente | Especificação | Justificativa |
-|-----------|---------------|---------------|
-| **vCPU** | 4 cores | Next.js (2), PostgreSQL (1), PostHog (1) |
-| **RAM** | 8 GB | PostgreSQL (2GB), Next.js (2GB), PostHog (2GB), MinIO (1GB), sistema (1GB) |
-| **Storage** | 100 GB SSD NVMe | Sistema (20GB), PostgreSQL (15GB), MinIO (50GB), logs (10GB), backups (5GB) |
-| **Bandwidth** | 2 TB/mês | Imagens (1.5TB), API (300GB), backups (200GB) |
-| **Network** | 1 Gbps | - |
-| **Tipo** | Dedicated vCPU | Evitar CPU steal em ambientes compartilhados |
+| Componente    | Especificação   | Justificativa                                                               |
+| ------------- | --------------- | --------------------------------------------------------------------------- |
+| **vCPU**      | 4 cores         | Next.js (2), PostgreSQL (1), PostHog (1)                                    |
+| **RAM**       | 8 GB            | PostgreSQL (2GB), Next.js (2GB), PostHog (2GB), MinIO (1GB), sistema (1GB)  |
+| **Storage**   | 100 GB SSD NVMe | Sistema (20GB), PostgreSQL (15GB), MinIO (50GB), logs (10GB), backups (5GB) |
+| **Bandwidth** | 2 TB/mês        | Imagens (1.5TB), API (300GB), backups (200GB)                               |
+| **Network**   | 1 Gbps          | -                                                                           |
+| **Tipo**      | Dedicated vCPU  | Evitar CPU steal em ambientes compartilhados                                |
 
 **Custo Estimado:** $40-60/mês (Hetzner, DigitalOcean, Vultr)
 
 ### 2.3 Configuração Recomendada (Produção - 12+ meses)
 
-| Componente | Especificação | Justificativa |
-|-----------|---------------|---------------|
-| **vCPU** | 8 cores | Next.js (3), PostgreSQL (2), PostHog (2), Sharp (1) |
-| **RAM** | 16 GB | PostgreSQL (4GB), Next.js (4GB), PostHog (4GB), MinIO (2GB), sistema (2GB) |
-| **Storage** | 300 GB SSD NVMe | Sistema (20GB), PostgreSQL (50GB), MinIO (180GB), logs (30GB), backups (20GB) |
-| **Bandwidth** | 5 TB/mês | Imagens (4TB), API (600GB), backups (400GB) |
-| **Network** | 1 Gbps | - |
-| **Tipo** | Dedicated vCPU | - |
+| Componente    | Especificação   | Justificativa                                                                 |
+| ------------- | --------------- | ----------------------------------------------------------------------------- |
+| **vCPU**      | 8 cores         | Next.js (3), PostgreSQL (2), PostHog (2), Sharp (1)                           |
+| **RAM**       | 16 GB           | PostgreSQL (4GB), Next.js (4GB), PostHog (4GB), MinIO (2GB), sistema (2GB)    |
+| **Storage**   | 300 GB SSD NVMe | Sistema (20GB), PostgreSQL (50GB), MinIO (180GB), logs (30GB), backups (20GB) |
+| **Bandwidth** | 5 TB/mês        | Imagens (4TB), API (600GB), backups (400GB)                                   |
+| **Network**   | 1 Gbps          | -                                                                             |
+| **Tipo**      | Dedicated vCPU  | -                                                                             |
 
 **Custo Estimado:** $80-120/mês (Hetzner CPX51, DigitalOcean Premium)
 
 ### 2.4 Configuração Enterprise (Alta Demanda)
 
-| Componente | Especificação | Justificativa |
-|-----------|---------------|---------------|
-| **vCPU** | 16 cores | Separação de workloads, alto paralelismo |
-| **RAM** | 32 GB | Cache PostgreSQL (8GB), Next.js (8GB), PostHog (8GB), MinIO (4GB), sistema (4GB) |
-| **Storage** | 500 GB SSD NVMe | PostgreSQL (100GB), MinIO (300GB), logs (50GB), backups (50GB) |
-| **Bandwidth** | 10 TB/mês | - |
-| **Network** | 1 Gbps | - |
-| **Tipo** | Dedicated vCPU | - |
+| Componente    | Especificação   | Justificativa                                                                    |
+| ------------- | --------------- | -------------------------------------------------------------------------------- |
+| **vCPU**      | 16 cores        | Separação de workloads, alto paralelismo                                         |
+| **RAM**       | 32 GB           | Cache PostgreSQL (8GB), Next.js (8GB), PostHog (8GB), MinIO (4GB), sistema (4GB) |
+| **Storage**   | 500 GB SSD NVMe | PostgreSQL (100GB), MinIO (300GB), logs (50GB), backups (50GB)                   |
+| **Bandwidth** | 10 TB/mês       | -                                                                                |
+| **Network**   | 1 Gbps          | -                                                                                |
+| **Tipo**      | Dedicated vCPU  | -                                                                                |
 
 **Custo Estimado:** $150-220/mês
 
@@ -88,14 +91,15 @@ Este documento especifica os requisitos de hardware, software e rede para deploy
 
 ### 3.1 Next.js 16 + Payload CMS
 
-| Métrica | MVP | Produção | Enterprise |
-|---------|-----|----------|-----------|
-| vCPU | 2 cores | 3 cores | 6 cores |
-| RAM | 2 GB | 4 GB | 8 GB |
-| Storage | 5 GB | 10 GB | 20 GB |
-| Portas | 3000 | 3000 | 3000 |
+| Métrica | MVP     | Produção | Enterprise |
+| ------- | ------- | -------- | ---------- |
+| vCPU    | 2 cores | 3 cores  | 6 cores    |
+| RAM     | 2 GB    | 4 GB     | 8 GB       |
+| Storage | 5 GB    | 10 GB    | 20 GB      |
+| Portas  | 3000    | 3000     | 3000       |
 
 **Justificativa:**
+
 - Next.js standalone build (~30MB)
 - Payload admin bundle (~10MB)
 - Node.js heap: 512MB base + 1.5GB working set
@@ -103,14 +107,15 @@ Este documento especifica os requisitos de hardware, software e rede para deploy
 
 ### 3.2 PostgreSQL 16
 
-| Métrica | MVP | Produção | Enterprise |
-|---------|-----|----------|-----------|
-| vCPU | 1 core | 2 cores | 4 cores |
-| RAM | 2 GB | 4 GB | 8 GB |
-| Storage | 15 GB | 50 GB | 100 GB |
-| Portas | 5432 | 5432 | 5432 |
+| Métrica | MVP    | Produção | Enterprise |
+| ------- | ------ | -------- | ---------- |
+| vCPU    | 1 core | 2 cores  | 4 cores    |
+| RAM     | 2 GB   | 4 GB     | 8 GB       |
+| Storage | 15 GB  | 50 GB    | 100 GB     |
+| Portas  | 5432   | 5432     | 5432       |
 
 **Justificativa:**
+
 - shared_buffers: 25% RAM (500MB → 1GB → 2GB)
 - effective_cache_size: 50% RAM (1GB → 2GB → 4GB)
 - work_mem: 16MB × 10 conexões = 160MB
@@ -140,28 +145,30 @@ shared_preload_libraries = 'pg_trgm'
 
 ### 3.3 pgBouncer
 
-| Métrica | MVP | Produção | Enterprise |
-|---------|-----|----------|-----------|
-| vCPU | 0.5 core | 0.5 core | 1 core |
-| RAM | 256 MB | 512 MB | 1 GB |
-| Storage | 100 MB | 100 MB | 100 MB |
-| Portas | 6432 | 6432 | 6432 |
+| Métrica | MVP      | Produção | Enterprise |
+| ------- | -------- | -------- | ---------- |
+| vCPU    | 0.5 core | 0.5 core | 1 core     |
+| RAM     | 256 MB   | 512 MB   | 1 GB       |
+| Storage | 100 MB   | 100 MB   | 100 MB     |
+| Portas  | 6432     | 6432     | 6432       |
 
 **Justificativa:**
+
 - Lightweight proxy (~50MB footprint)
 - Transaction pooling: 1000 client → 25 server connections
 - Reduced PostgreSQL connection overhead
 
 ### 3.4 MinIO
 
-| Métrica | MVP | Produção | Enterprise |
-|---------|-----|----------|-----------|
-| vCPU | 0.5 core | 1 core | 2 cores |
-| RAM | 1 GB | 2 GB | 4 GB |
-| Storage | 50 GB | 180 GB | 300 GB |
-| Portas | 9000, 9001 | 9000, 9001 | 9000, 9001 |
+| Métrica | MVP        | Produção   | Enterprise |
+| ------- | ---------- | ---------- | ---------- |
+| vCPU    | 0.5 core   | 1 core     | 2 cores    |
+| RAM     | 1 GB       | 2 GB       | 4 GB       |
+| Storage | 50 GB      | 180 GB     | 300 GB     |
+| Portas  | 9000, 9001 | 9000, 9001 | 9000, 9001 |
 
 **Justificativa:**
+
 - 7.500 imagens × 5MB avg (original) = 37.5GB
 - Sharp processed (WebP 85%): 7.500 × 2MB = 15GB
 - Thumbnails: 7.500 × 200KB = 1.5GB
@@ -184,14 +191,15 @@ MINIO_DOMAIN=minio.primeUrban.com
 
 ### 3.5 PostHog (Self-Hosted)
 
-| Métrica | MVP | Produção | Enterprise |
-|---------|-----|----------|-----------|
-| vCPU | 1 core | 2 cores | 4 cores |
-| RAM | 2 GB | 4 GB | 8 GB |
-| Storage | 5 GB | 15 GB | 30 GB |
-| Portas | 8000 | 8000 | 8000 |
+| Métrica | MVP    | Produção | Enterprise |
+| ------- | ------ | -------- | ---------- |
+| vCPU    | 1 core | 2 cores  | 4 cores    |
+| RAM     | 2 GB   | 4 GB     | 8 GB       |
+| Storage | 5 GB   | 15 GB    | 30 GB      |
+| Portas  | 8000   | 8000     | 8000       |
 
 **Justificativa:**
+
 - ClickHouse (analytics DB): 1GB RAM base
 - Redis (queue): 512MB
 - PostHog app: 512MB
@@ -199,61 +207,66 @@ MINIO_DOMAIN=minio.primeUrban.com
 - Events storage: 10GB/100K events/mês
 
 **Dependências:**
+
 - Redis (512MB RAM)
 - ClickHouse ou PostgreSQL (compartilhado)
 
 ### 3.6 GlitchTip
 
-| Métrica | MVP | Produção | Enterprise |
-|---------|-----|----------|-----------|
-| vCPU | 0.5 core | 1 core | 2 cores |
-| RAM | 512 MB | 1 GB | 2 GB |
-| Storage | 2 GB | 5 GB | 10 GB |
-| Portas | 8080 | 8080 | 8080 |
+| Métrica | MVP      | Produção | Enterprise |
+| ------- | -------- | -------- | ---------- |
+| vCPU    | 0.5 core | 1 core   | 2 cores    |
+| RAM     | 512 MB   | 1 GB     | 2 GB       |
+| Storage | 2 GB     | 5 GB     | 10 GB      |
+| Portas  | 8080     | 8080     | 8080       |
 
 **Justificativa:**
+
 - Django app: 256MB
 - Celery workers: 256MB
 - Error storage: 1GB/10K errors
 
 ### 3.7 Uptime Kuma
 
-| Métrica | MVP | Produção | Enterprise |
-|---------|-----|----------|-----------|
-| vCPU | 0.25 core | 0.25 core | 0.5 core |
-| RAM | 256 MB | 512 MB | 512 MB |
-| Storage | 500 MB | 1 GB | 2 GB |
-| Portas | 3001 | 3001 | 3001 |
+| Métrica | MVP       | Produção  | Enterprise |
+| ------- | --------- | --------- | ---------- |
+| vCPU    | 0.25 core | 0.25 core | 0.5 core   |
+| RAM     | 256 MB    | 512 MB    | 512 MB     |
+| Storage | 500 MB    | 1 GB      | 2 GB       |
+| Portas  | 3001      | 3001      | 3001       |
 
 **Justificativa:**
+
 - Node.js app: 128MB
 - SQLite database: 100MB
 - Monitoring de 10-20 endpoints
 
 ### 3.8 Grafana Loki + Promtail
 
-| Métrica | MVP | Produção | Enterprise |
-|---------|-----|----------|-----------|
-| vCPU | 0.5 core | 1 core | 2 cores |
-| RAM | 512 MB | 1 GB | 2 GB |
-| Storage | 5 GB | 20 GB | 40 GB |
-| Portas | 3100 (Loki) | 3100 | 3100 |
+| Métrica | MVP         | Produção | Enterprise |
+| ------- | ----------- | -------- | ---------- |
+| vCPU    | 0.5 core    | 1 core   | 2 cores    |
+| RAM     | 512 MB      | 1 GB     | 2 GB       |
+| Storage | 5 GB        | 20 GB    | 40 GB      |
+| Portas  | 3100 (Loki) | 3100     | 3100       |
 
 **Justificativa:**
+
 - Loki: 256MB base
 - Log retention: 7 dias (5GB/dia em produção)
 - Promtail: 128MB
 
 ### 3.9 Caddy
 
-| Métrica | MVP | Produção | Enterprise |
-|---------|-----|----------|-----------|
-| vCPU | 0.5 core | 1 core | 2 cores |
-| RAM | 256 MB | 512 MB | 1 GB |
-| Storage | 500 MB | 1 GB | 2 GB |
-| Portas | 80, 443 | 80, 443 | 80, 443 |
+| Métrica | MVP      | Produção | Enterprise |
+| ------- | -------- | -------- | ---------- |
+| vCPU    | 0.5 core | 1 core   | 2 cores    |
+| RAM     | 256 MB   | 512 MB   | 1 GB       |
+| Storage | 500 MB   | 1 GB     | 2 GB       |
+| Portas  | 80, 443  | 80, 443  | 80, 443    |
 
 **Justificativa:**
+
 - Lightweight reverse proxy (~50MB)
 - TLS termination: cert cache (100MB)
 - Access logs: 1MB/dia × 30 = 30MB
@@ -264,46 +277,46 @@ MINIO_DOMAIN=minio.primeUrban.com
 
 ### 4.1 PostgreSQL Database
 
-| Tabela | MVP | Produção | Observação |
-|--------|-----|----------|-----------|
-| properties | 5.000 × 10KB = 50MB | 10.000 × 10KB = 100MB | Inclui full-text tsvector |
-| media | 7.500 × 2KB = 15MB | 30.000 × 2KB = 60MB | Metadata apenas |
-| leads | 600 × 5KB = 3MB | 3.000 × 5KB = 15MB | 6 meses de histórico |
-| activities | 2.000 × 2KB = 4MB | 10.000 × 2KB = 20MB | - |
-| deals | 100 × 3KB = 300KB | 500 × 3KB = 1.5MB | - |
-| neighborhoods | 50 × 5KB = 250KB | 100 × 5KB = 500KB | - |
-| users | 10 × 2KB = 20KB | 20 × 2KB = 40KB | - |
-| **Índices** | ~30MB | ~90MB | 30% do tamanho total |
-| **WAL** | 1GB | 2GB | Write-ahead logs |
-| **PostHog DB** | 3GB | 10GB | Events + session replays |
-| **GlitchTip DB** | 1GB | 3GB | Error events |
-| **Total** | ~15GB | ~50GB | - |
+| Tabela           | MVP                 | Produção              | Observação                |
+| ---------------- | ------------------- | --------------------- | ------------------------- |
+| properties       | 5.000 × 10KB = 50MB | 10.000 × 10KB = 100MB | Inclui full-text tsvector |
+| media            | 7.500 × 2KB = 15MB  | 30.000 × 2KB = 60MB   | Metadata apenas           |
+| leads            | 600 × 5KB = 3MB     | 3.000 × 5KB = 15MB    | 6 meses de histórico      |
+| activities       | 2.000 × 2KB = 4MB   | 10.000 × 2KB = 20MB   | -                         |
+| deals            | 100 × 3KB = 300KB   | 500 × 3KB = 1.5MB     | -                         |
+| neighborhoods    | 50 × 5KB = 250KB    | 100 × 5KB = 500KB     | -                         |
+| users            | 10 × 2KB = 20KB     | 20 × 2KB = 40KB       | -                         |
+| **Índices**      | ~30MB               | ~90MB                 | 30% do tamanho total      |
+| **WAL**          | 1GB                 | 2GB                   | Write-ahead logs          |
+| **PostHog DB**   | 3GB                 | 10GB                  | Events + session replays  |
+| **GlitchTip DB** | 1GB                 | 3GB                   | Error events              |
+| **Total**        | ~15GB               | ~50GB                 | -                         |
 
 ### 4.2 MinIO Storage
 
-| Tipo de Arquivo | Quantidade | Tamanho Médio | Total |
-|----------------|-----------|---------------|-------|
-| Imagens originais | 7.500 | 5 MB | 37.5 GB |
-| WebP otimizadas | 7.500 | 2 MB | 15 GB |
-| Thumbnails | 7.500 | 200 KB | 1.5 GB |
-| AVIF fallback | 7.500 | 1.5 MB | 11.25 GB |
-| **Subtotal (imagens)** | - | - | **~65 GB** |
-| Backups PostgreSQL | 7 daily | 2 GB | 14 GB |
-| Backups comprimidos | - | - | 7 GB |
-| **Total MVP** | - | - | **~86 GB** → **100 GB** (com margem) |
-| **Total Produção** | - | - | **~180 GB** |
+| Tipo de Arquivo        | Quantidade | Tamanho Médio | Total                                |
+| ---------------------- | ---------- | ------------- | ------------------------------------ |
+| Imagens originais      | 7.500      | 5 MB          | 37.5 GB                              |
+| WebP otimizadas        | 7.500      | 2 MB          | 15 GB                                |
+| Thumbnails             | 7.500      | 200 KB        | 1.5 GB                               |
+| AVIF fallback          | 7.500      | 1.5 MB        | 11.25 GB                             |
+| **Subtotal (imagens)** | -          | -             | **~65 GB**                           |
+| Backups PostgreSQL     | 7 daily    | 2 GB          | 14 GB                                |
+| Backups comprimidos    | -          | -             | 7 GB                                 |
+| **Total MVP**          | -          | -             | **~86 GB** → **100 GB** (com margem) |
+| **Total Produção**     | -          | -             | **~180 GB**                          |
 
 ### 4.3 Logs (Loki)
 
-| Fonte | Volume/Dia | Retenção | Total |
-|-------|-----------|----------|-------|
-| Next.js access | 1 MB | 7 dias | 7 MB |
-| Next.js error | 500 KB | 7 dias | 3.5 MB |
-| PostgreSQL | 2 MB | 7 dias | 14 MB |
-| Caddy access | 5 MB | 7 dias | 35 MB |
-| PostHog | 10 MB | 7 dias | 70 MB |
-| **Total MVP** | ~20 MB/dia | 7 dias | **~150 MB** |
-| **Total Produção** | ~100 MB/dia | 7 dias | **~700 MB** |
+| Fonte              | Volume/Dia  | Retenção | Total       |
+| ------------------ | ----------- | -------- | ----------- |
+| Next.js access     | 1 MB        | 7 dias   | 7 MB        |
+| Next.js error      | 500 KB      | 7 dias   | 3.5 MB      |
+| PostgreSQL         | 2 MB        | 7 dias   | 14 MB       |
+| Caddy access       | 5 MB        | 7 dias   | 35 MB       |
+| PostHog            | 10 MB       | 7 dias   | 70 MB       |
+| **Total MVP**      | ~20 MB/dia  | 7 dias   | **~150 MB** |
+| **Total Produção** | ~100 MB/dia | 7 dias   | **~700 MB** |
 
 ---
 
@@ -313,60 +326,60 @@ MINIO_DOMAIN=minio.primeUrban.com
 
 **MVP (1.000 visitantes/mês, 10.000 page views):**
 
-| Tipo de Tráfego | Por Request | Requests/Mês | Total |
-|----------------|-------------|--------------|-------|
-| HTML (SSR) | 50 KB | 10.000 | 500 MB |
-| CSS/JS | 300 KB | 10.000 | 3 GB |
-| Imagens (WebP) | 2 MB × 3/page | 30.000 | 60 GB |
-| Thumbnails | 200 KB × 10/listagem | 50.000 | 10 GB |
-| API calls | 5 KB | 50.000 | 250 MB |
-| PostHog events | 2 KB | 100.000 | 200 MB |
-| **Downstream Total** | - | - | **~74 GB** |
-| Admin uploads (incoming) | - | - | 5 GB |
-| Backups (egress) | - | - | 10 GB |
-| **Total Mensal** | - | - | **~90 GB** |
+| Tipo de Tráfego          | Por Request          | Requests/Mês | Total      |
+| ------------------------ | -------------------- | ------------ | ---------- |
+| HTML (SSR)               | 50 KB                | 10.000       | 500 MB     |
+| CSS/JS                   | 300 KB               | 10.000       | 3 GB       |
+| Imagens (WebP)           | 2 MB × 3/page        | 30.000       | 60 GB      |
+| Thumbnails               | 200 KB × 10/listagem | 50.000       | 10 GB      |
+| API calls                | 5 KB                 | 50.000       | 250 MB     |
+| PostHog events           | 2 KB                 | 100.000      | 200 MB     |
+| **Downstream Total**     | -                    | -            | **~74 GB** |
+| Admin uploads (incoming) | -                    | -            | 5 GB       |
+| Backups (egress)         | -                    | -            | 10 GB      |
+| **Total Mensal**         | -                    | -            | **~90 GB** |
 
 **Com margem de segurança:** 2 TB/mês (22x overhead para picos)
 
 **Produção (5.000 visitantes/mês, 50.000 page views):**
 
-| Tipo de Tráfego | Total |
-|----------------|-------|
-| HTML + Assets | 25 GB |
-| Imagens | 300 GB |
-| API | 1.25 GB |
-| PostHog | 1 GB |
+| Tipo de Tráfego      | Total       |
+| -------------------- | ----------- |
+| HTML + Assets        | 25 GB       |
+| Imagens              | 300 GB      |
+| API                  | 1.25 GB     |
+| PostHog              | 1 GB        |
 | **Downstream Total** | **~327 GB** |
-| Uploads + Backups | 30 GB |
-| **Total Mensal** | **~360 GB** |
+| Uploads + Backups    | 30 GB       |
+| **Total Mensal**     | **~360 GB** |
 
 **Com margem de segurança:** 5 TB/mês
 
 ### 5.2 Latência
 
-| Métrica | Alvo | Observação |
-|---------|------|-----------|
-| VPS → User (Brasil) | < 30ms | Escolher datacenter São Paulo ou Brasil |
-| PostgreSQL query | < 50ms | Com índices otimizados |
-| MinIO GET | < 100ms | Disk I/O + network |
-| PostHog event | < 20ms | Async, non-blocking |
-| Sharp processing | < 3s | WebP conversion 1920×1080 |
+| Métrica             | Alvo    | Observação                              |
+| ------------------- | ------- | --------------------------------------- |
+| VPS → User (Brasil) | < 30ms  | Escolher datacenter São Paulo ou Brasil |
+| PostgreSQL query    | < 50ms  | Com índices otimizados                  |
+| MinIO GET           | < 100ms | Disk I/O + network                      |
+| PostHog event       | < 20ms  | Async, non-blocking                     |
+| Sharp processing    | < 3s    | WebP conversion 1920×1080               |
 
 ### 5.3 Portas Expostas
 
-| Serviço | Porta | Protocolo | Acesso Público |
-|---------|-------|-----------|----------------|
-| Caddy HTTP | 80 | TCP | ✅ (redirect to 443) |
-| Caddy HTTPS | 443 | TCP | ✅ |
-| SSH | 22 | TCP | ✅ (firewall whitelist) |
-| PostgreSQL | 5432 | TCP | ❌ (internal only) |
-| pgBouncer | 6432 | TCP | ❌ (internal only) |
-| MinIO API | 9000 | TCP | ❌ (via Caddy reverse proxy) |
-| MinIO Console | 9001 | TCP | ❌ (via Caddy reverse proxy) |
-| PostHog | 8000 | TCP | ❌ (via Caddy reverse proxy) |
-| GlitchTip | 8080 | TCP | ❌ (via Caddy reverse proxy) |
-| Uptime Kuma | 3001 | TCP | ❌ (via Caddy reverse proxy) |
-| Loki | 3100 | TCP | ❌ (internal only) |
+| Serviço       | Porta | Protocolo | Acesso Público               |
+| ------------- | ----- | --------- | ---------------------------- |
+| Caddy HTTP    | 80    | TCP       | ✅ (redirect to 443)         |
+| Caddy HTTPS   | 443   | TCP       | ✅                           |
+| SSH           | 22    | TCP       | ✅ (firewall whitelist)      |
+| PostgreSQL    | 5432  | TCP       | ❌ (internal only)           |
+| pgBouncer     | 6432  | TCP       | ❌ (internal only)           |
+| MinIO API     | 9000  | TCP       | ❌ (via Caddy reverse proxy) |
+| MinIO Console | 9001  | TCP       | ❌ (via Caddy reverse proxy) |
+| PostHog       | 8000  | TCP       | ❌ (via Caddy reverse proxy) |
+| GlitchTip     | 8080  | TCP       | ❌ (via Caddy reverse proxy) |
+| Uptime Kuma   | 3001  | TCP       | ❌ (via Caddy reverse proxy) |
+| Loki          | 3100  | TCP       | ❌ (internal only)           |
 
 **Firewall (UFW) Rules:**
 
@@ -388,6 +401,7 @@ ufw enable
 **Ubuntu Server 22.04 LTS** ou **24.04 LTS**
 
 **Justificativa:**
+
 - Suporte de longo prazo (5 anos)
 - Compatibilidade Docker nativa
 - Repositórios atualizados
@@ -395,23 +409,24 @@ ufw enable
 - Caddy, PostgreSQL 16, Node.js 20 disponíveis via APT
 
 **Alternativas:**
+
 - Debian 12 (mais estável, menos pacotes recentes)
 - Rocky Linux 9 (RHEL-based, mais enterprise)
 
 ### 6.2 Software Base Necessário
 
-| Pacote | Versão Mínima | Uso |
-|--------|---------------|-----|
-| Docker | 24.x | Container runtime |
-| Docker Compose | 2.x | Orchestração |
-| Node.js | 20.x | Next.js runtime (se não-dockerizado) |
-| PostgreSQL Client | 16.x | Backup scripts |
-| curl/wget | Latest | Health checks |
-| git | Latest | Deploy via CI/CD |
-| htop | Latest | Monitoring |
-| ncdu | Latest | Disk usage analysis |
-| fail2ban | Latest | SSH brute-force protection |
-| ufw | Latest | Firewall |
+| Pacote            | Versão Mínima | Uso                                  |
+| ----------------- | ------------- | ------------------------------------ |
+| Docker            | 24.x          | Container runtime                    |
+| Docker Compose    | 2.x           | Orchestração                         |
+| Node.js           | 20.x          | Next.js runtime (se não-dockerizado) |
+| PostgreSQL Client | 16.x          | Backup scripts                       |
+| curl/wget         | Latest        | Health checks                        |
+| git               | Latest        | Deploy via CI/CD                     |
+| htop              | Latest        | Monitoring                           |
+| ncdu              | Latest        | Disk usage analysis                  |
+| fail2ban          | Latest        | SSH brute-force protection           |
+| ufw               | Latest        | Firewall                             |
 
 ---
 
@@ -419,38 +434,39 @@ ufw enable
 
 ### 7.1 Brasil (Latência < 20ms)
 
-| Provider | Plano | Especificação | Preço/Mês | Observações |
-|----------|-------|---------------|-----------|-------------|
-| **HostGator VPS** | VPS 2 | 4 vCPU, 8GB RAM, 120GB SSD | R$ 180 | Datacenter Brasil, bom suporte PT-BR |
-| **Locaweb VPS** | Cloud VPS M | 4 vCPU, 8GB RAM, 100GB SSD | R$ 250 | Datacenter São Paulo |
-| **AWS Lightsail** | $40 plan | 2 vCPU, 8GB RAM, 160GB SSD | R$ 200 | São Paulo region, managed |
-| **KingHost VPS** | VPS 8GB | 4 vCPU, 8GB RAM, 120GB SSD | R$ 220 | Datacenter Porto Alegre |
+| Provider          | Plano       | Especificação              | Preço/Mês | Observações                          |
+| ----------------- | ----------- | -------------------------- | --------- | ------------------------------------ |
+| **HostGator VPS** | VPS 2       | 4 vCPU, 8GB RAM, 120GB SSD | R$ 180    | Datacenter Brasil, bom suporte PT-BR |
+| **Locaweb VPS**   | Cloud VPS M | 4 vCPU, 8GB RAM, 100GB SSD | R$ 250    | Datacenter São Paulo                 |
+| **AWS Lightsail** | $40 plan    | 2 vCPU, 8GB RAM, 160GB SSD | R$ 200    | São Paulo region, managed            |
+| **KingHost VPS**  | VPS 8GB     | 4 vCPU, 8GB RAM, 120GB SSD | R$ 220    | Datacenter Porto Alegre              |
 
 **Recomendação:** HostGator VPS 2 (melhor custo-benefício, latência local)
 
 ### 7.2 Internacional (Custo < Latência)
 
-| Provider | Plano | Especificação | Preço/Mês | Observações |
-|----------|-------|---------------|-----------|-------------|
-| **Hetzner** | CPX31 | 4 vCPU, 8GB RAM, 160GB SSD | $15 (€14) | Datacenter Finlândia, 180ms BR |
-| **DigitalOcean** | Basic Droplet | 4 vCPU, 8GB RAM, 160GB SSD | $48 | Datacenter NY, 120ms BR |
-| **Vultr** | High Frequency | 4 vCPU, 8GB RAM, 128GB SSD | $48 | Datacenter Miami, 60ms BR |
-| **Linode** | Linode 8GB | 4 vCPU, 8GB RAM, 160GB SSD | $48 | Datacenter Atlanta, 100ms BR |
-| **Contabo** | VPS M | 6 vCPU, 16GB RAM, 400GB SSD | €13 (~$14) | Datacenter Alemanha, 200ms BR |
+| Provider         | Plano          | Especificação               | Preço/Mês  | Observações                    |
+| ---------------- | -------------- | --------------------------- | ---------- | ------------------------------ |
+| **Hetzner**      | CPX31          | 4 vCPU, 8GB RAM, 160GB SSD  | $15 (€14)  | Datacenter Finlândia, 180ms BR |
+| **DigitalOcean** | Basic Droplet  | 4 vCPU, 8GB RAM, 160GB SSD  | $48        | Datacenter NY, 120ms BR        |
+| **Vultr**        | High Frequency | 4 vCPU, 8GB RAM, 128GB SSD  | $48        | Datacenter Miami, 60ms BR      |
+| **Linode**       | Linode 8GB     | 4 vCPU, 8GB RAM, 160GB SSD  | $48        | Datacenter Atlanta, 100ms BR   |
+| **Contabo**      | VPS M          | 6 vCPU, 16GB RAM, 400GB SSD | €13 (~$14) | Datacenter Alemanha, 200ms BR  |
 
 **Recomendação:** Vultr Miami (melhor latência internacional) ou Contabo (melhor custo, mas latência alta)
 
 ### 7.3 Critérios de Escolha
 
-| Critério | Peso | Provider Ideal |
-|----------|------|---------------|
-| Latência Brasil | 40% | HostGator, Locaweb, AWS São Paulo |
-| Custo | 30% | Hetzner, Contabo |
-| Bandwidth incluído | 15% | Hetzner (20TB), Contabo (32TB) |
-| Suporte PT-BR | 10% | HostGator, Locaweb |
-| Snapshots/Backups | 5% | DigitalOcean, AWS Lightsail |
+| Critério           | Peso | Provider Ideal                    |
+| ------------------ | ---- | --------------------------------- |
+| Latência Brasil    | 40%  | HostGator, Locaweb, AWS São Paulo |
+| Custo              | 30%  | Hetzner, Contabo                  |
+| Bandwidth incluído | 15%  | Hetzner (20TB), Contabo (32TB)    |
+| Suporte PT-BR      | 10%  | HostGator, Locaweb                |
+| Snapshots/Backups  | 5%   | DigitalOcean, AWS Lightsail       |
 
 **Recomendação Final:**
+
 - **Prioridade Latência:** HostGator VPS 2 (R$ 180/mês)
 - **Prioridade Custo:** Hetzner CPX31 ($15/mês) ou Contabo VPS M (€13/mês)
 - **Balanceado:** Vultr High Frequency Miami ($48/mês)
@@ -489,14 +505,14 @@ ufw enable
 
 ### 8.2 Storage Necessário para Backups
 
-| Tipo | Frequência | Tamanho | Retenção | Total |
-|------|-----------|---------|----------|-------|
-| PostgreSQL | Diário | 2 GB | 7 dias | 14 GB |
-| PostgreSQL | Semanal | 2 GB | 4 semanas | 8 GB |
-| PostgreSQL | Mensal | 2 GB | 3 meses | 6 GB |
-| MinIO (imagens) | Semanal | 50 GB | 2 semanas | 100 GB |
-| Volumes Docker | Semanal | 5 GB | 4 semanas | 20 GB |
-| **Total** | - | - | - | **~150 GB** |
+| Tipo            | Frequência | Tamanho | Retenção  | Total       |
+| --------------- | ---------- | ------- | --------- | ----------- |
+| PostgreSQL      | Diário     | 2 GB    | 7 dias    | 14 GB       |
+| PostgreSQL      | Semanal    | 2 GB    | 4 semanas | 8 GB        |
+| PostgreSQL      | Mensal     | 2 GB    | 3 meses   | 6 GB        |
+| MinIO (imagens) | Semanal    | 50 GB   | 2 semanas | 100 GB      |
+| Volumes Docker  | Semanal    | 5 GB    | 4 semanas | 20 GB       |
+| **Total**       | -          | -       | -         | **~150 GB** |
 
 **Recomendação:** Usar bucket MinIO separado ou S3-compatible storage externo (Backblaze B2, Wasabi)
 
@@ -576,38 +592,38 @@ ufw enable
 
 ### 10.1 Stack Completa (MVP)
 
-| Item | Custo | Observação |
-|------|-------|-----------|
-| **VPS** (4 vCPU, 8GB, 100GB) | $40-60 | Hetzner, DigitalOcean, Vultr |
-| **Domínio** (.com) | $1.50 | Namecheap, Cloudflare Registrar |
-| **SMTP** (Transacional) | $0 | Gmail SMTP grátis até 500/dia, ou Brevo free tier |
-| **Backup Offsite** (opcional) | $0-5 | Backblaze B2: $0.005/GB/mês (100GB = $0.50) |
-| **Total Mensal** | **$41.50-66.50** | **R$ 205-330** |
+| Item                          | Custo            | Observação                                        |
+| ----------------------------- | ---------------- | ------------------------------------------------- |
+| **VPS** (4 vCPU, 8GB, 100GB)  | $40-60           | Hetzner, DigitalOcean, Vultr                      |
+| **Domínio** (.com)            | $1.50            | Namecheap, Cloudflare Registrar                   |
+| **SMTP** (Transacional)       | $0               | Gmail SMTP grátis até 500/dia, ou Brevo free tier |
+| **Backup Offsite** (opcional) | $0-5             | Backblaze B2: $0.005/GB/mês (100GB = $0.50)       |
+| **Total Mensal**              | **$41.50-66.50** | **R$ 205-330**                                    |
 
 ### 10.2 Stack Completa (Produção)
 
-| Item | Custo | Observação |
-|------|-------|-----------|
-| **VPS** (8 vCPU, 16GB, 300GB) | $80-120 | Hetzner CPX51, DigitalOcean Premium |
-| **Domínio** (.com) | $1.50 | - |
-| **SMTP** (Transacional) | $0-10 | Brevo: 300/dia free, ou $25/mês 20K emails |
-| **Backup Offsite** | $1-2 | Backblaze B2: 200GB |
-| **Total Mensal** | **$82.50-133.50** | **R$ 410-660** |
+| Item                          | Custo             | Observação                                 |
+| ----------------------------- | ----------------- | ------------------------------------------ |
+| **VPS** (8 vCPU, 16GB, 300GB) | $80-120           | Hetzner CPX51, DigitalOcean Premium        |
+| **Domínio** (.com)            | $1.50             | -                                          |
+| **SMTP** (Transacional)       | $0-10             | Brevo: 300/dia free, ou $25/mês 20K emails |
+| **Backup Offsite**            | $1-2              | Backblaze B2: 200GB                        |
+| **Total Mensal**              | **$82.50-133.50** | **R$ 410-660**                             |
 
 ### 10.3 Comparação com Stack Proprietária (Original)
 
-| Item | Proprietária | MIT/OpenSource | Economia |
-|------|--------------|----------------|----------|
-| Hosting | Vercel Pro $20 | VPS $50 | -$30 |
-| Database | Neon Pro $25 | PostgreSQL included | +$25 |
-| Storage | Vercel Blob $20 | MinIO included | +$20 |
-| CDN/Imagens | Cloudinary $89 | Sharp + MinIO | +$89 |
-| E-mail | Resend $20 | Nodemailer SMTP $0 | +$20 |
-| Analytics | Vercel Analytics $10 | PostHog self-hosted | +$10 |
-| Error Tracking | Sentry $26 | GlitchTip self-hosted | +$26 |
-| **Total/Mês** | **$210** | **$50** | **+$160 (76%)** |
-| **Total/Ano** | **$2.520** | **$600** | **+$1.920** |
-| **Total/3 Anos** | **$7.560** | **$1.800** | **+$5.760** |
+| Item             | Proprietária         | MIT/OpenSource        | Economia        |
+| ---------------- | -------------------- | --------------------- | --------------- |
+| Hosting          | Vercel Pro $20       | VPS $50               | -$30            |
+| Database         | Neon Pro $25         | PostgreSQL included   | +$25            |
+| Storage          | Vercel Blob $20      | MinIO included        | +$20            |
+| CDN/Imagens      | Cloudinary $89       | Sharp + MinIO         | +$89            |
+| E-mail           | Resend $20           | Nodemailer SMTP $0    | +$20            |
+| Analytics        | Vercel Analytics $10 | PostHog self-hosted   | +$10            |
+| Error Tracking   | Sentry $26           | GlitchTip self-hosted | +$26            |
+| **Total/Mês**    | **$210**             | **$50**               | **+$160 (76%)** |
+| **Total/Ano**    | **$2.520**           | **$600**              | **+$1.920**     |
+| **Total/3 Anos** | **$7.560**           | **$1.800**            | **+$5.760**     |
 
 **ROI:** Economia de $5.760 em 3 anos, mesmo considerando 10 horas de setup inicial × $50/hora = $500.
 
@@ -662,22 +678,24 @@ docker exec -i primeUrban-db psql -U $DB_USER primeUrban < backup_20260216.sql
 
 ### 11.2 Alertas Críticos
 
-| Alerta | Threshold | Ação |
-|--------|-----------|------|
-| Disk usage > 80% | 80% | Limpar logs antigos (`find /data/logs -mtime +7 -delete`) |
-| RAM usage > 90% | 90% | Restart containers com memory leak |
-| PostgreSQL connections > 90 | 90/100 | Verificar pgBouncer, ajustar `max_connections` |
-| Error rate > 1% | 1% | Verificar GlitchTip, investigar stack trace |
-| Response time > 500ms | 500ms | Verificar slow queries (EXPLAIN ANALYZE), cache hit ratio |
+| Alerta                      | Threshold | Ação                                                      |
+| --------------------------- | --------- | --------------------------------------------------------- |
+| Disk usage > 80%            | 80%       | Limpar logs antigos (`find /data/logs -mtime +7 -delete`) |
+| RAM usage > 90%             | 90%       | Restart containers com memory leak                        |
+| PostgreSQL connections > 90 | 90/100    | Verificar pgBouncer, ajustar `max_connections`            |
+| Error rate > 1%             | 1%        | Verificar GlitchTip, investigar stack trace               |
+| Response time > 500ms       | 500ms     | Verificar slow queries (EXPLAIN ANALYZE), cache hit ratio |
 
 ### 11.3 Upgrade Path
 
 **Quando migrar para 16GB RAM:**
+
 - PostgreSQL queries > 100ms frequentes
 - Next.js OOM errors
 - PostHog session replay lag
 
 **Quando migrar para 300GB Storage:**
+
 - MinIO usage > 70% (70GB)
 - PostgreSQL growth > 30GB
 - Backup accumulation > 100GB
@@ -704,15 +722,15 @@ docker exec -i primeUrban-db psql -U $DB_USER primeUrban < backup_20260216.sql
 
 **Mitigação de Riscos:**
 
-| Risco | Probabilidade | Impacto | Mitigação |
-|-------|---------------|---------|-----------|
-| DDoS | Média | Alto | Cloudflare Free (proxy DNS), rate limiting Caddy |
-| Brute-force SSH | Alta | Médio | Fail2ban, SSH keys only |
-| SQL Injection | Baixa | Alto | Payload ORM (parameterized queries), input validation |
-| XSS | Baixa | Médio | React auto-escape, CSP headers |
-| Data breach | Baixa | Crítico | Encryption at rest (LUKS volumes), HTTPS only, PostgreSQL SSL |
+| Risco           | Probabilidade | Impacto | Mitigação                                                     |
+| --------------- | ------------- | ------- | ------------------------------------------------------------- |
+| DDoS            | Média         | Alto    | Cloudflare Free (proxy DNS), rate limiting Caddy              |
+| Brute-force SSH | Alta          | Médio   | Fail2ban, SSH keys only                                       |
+| SQL Injection   | Baixa         | Alto    | Payload ORM (parameterized queries), input validation         |
+| XSS             | Baixa         | Médio   | React auto-escape, CSP headers                                |
+| Data breach     | Baixa         | Crítico | Encryption at rest (LUKS volumes), HTTPS only, PostgreSQL SSL |
 
 ---
 
-*Documento de Requisitos VPS v1.0 — PrimeUrban Stack MIT/OpenSource*
-*Para dúvidas técnicas: consultar docker-compose.yml e documentação oficial de cada ferramenta*
+_Documento de Requisitos VPS v1.0 — PrimeUrban Stack MIT/OpenSource_
+_Para dúvidas técnicas: consultar docker-compose.yml e documentação oficial de cada ferramenta_

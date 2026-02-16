@@ -1,8 +1,8 @@
 # CMS e CRM - Product Requirements Document (PRD)
 
-**PrimeUrban - Sistema Imobiliário Completo (MIT/Open Source)**  
-*Última atualização: Fevereiro 2026*  
-*Versão: 3.1 (MIT Codex)*
+**PrimeUrban - Sistema Imobiliário Completo (MIT/Open Source)**
+_Última atualização: Fevereiro 2026_
+_Versão: 3.1 (MIT Codex)_
 
 ---
 
@@ -19,22 +19,22 @@ Sistema integrado de CMS + CRM para a PrimeUrban, com foco em:
 
 ### 1.2 Stack Tecnológico (MIT/Open Source)
 
-| Camada | Tecnologia | Licença | Justificativa |
-|---|---|---|---|
-| Framework web | Next.js 16 (App Router) | MIT | SSR/ISR, Route Handlers, cache tagging |
-| Linguagem | TypeScript 5.x | Open Source | Tipagem end-to-end |
-| UI | Tailwind CSS 4 + shadcn/ui + Radix | MIT | Design system consistente |
-| CMS/Admin | Payload CMS 3.x (integrado ao Next.js) | MIT | Admin pronto, collections tipadas, APIs REST/GraphQL |
-| ORM/Query | Payload DB Adapter + SQL nativo (Prisma opcional) | MIT / Apache-2.0 | Menos camadas no core; Prisma opcional para BI/relatórios |
-| Banco | PostgreSQL 16 + extensões `pg_trgm`/FTS | Open Source | Relacional, busca textual, consistência |
-| Cache/Filas | Redis 7 + BullMQ | BSD-3 / MIT | Jobs, retries, backoff, rate limiting |
-| Storage | MinIO (S3-compatible) | AGPLv3 | Armazenamento de mídia self-hosted |
-| Processamento de imagem | imgproxy | MIT | Resize/crop on-the-fly sem SaaS |
-| Auth | Payload Auth (roles/sessions/JWT) | MIT | RBAC nativo no admin e integração direta com collections |
-| E-mail transacional | Nodemailer + SMTP self-host (Postfix) | MIT / Open Source | Sem dependência de fornecedor proprietário |
-| Observabilidade | Prometheus + Grafana + Loki + Uptime Kuma | Open Source | Métricas, logs, alertas, uptime |
-| Reverse proxy/TLS | Caddy | Apache-2.0 | HTTPS automático e configuração simples |
-| Analytics web | Matomo self-hosted | GPL | Métricas de produto sem SaaS proprietário |
+| Camada                  | Tecnologia                                        | Licença           | Justificativa                                             |
+| ----------------------- | ------------------------------------------------- | ----------------- | --------------------------------------------------------- |
+| Framework web           | Next.js 16 (App Router)                           | MIT               | SSR/ISR, Route Handlers, cache tagging                    |
+| Linguagem               | TypeScript 5.x                                    | Open Source       | Tipagem end-to-end                                        |
+| UI                      | Tailwind CSS 4 + shadcn/ui + Radix                | MIT               | Design system consistente                                 |
+| CMS/Admin               | Payload CMS 3.x (integrado ao Next.js)            | MIT               | Admin pronto, collections tipadas, APIs REST/GraphQL      |
+| ORM/Query               | Payload DB Adapter + SQL nativo (Prisma opcional) | MIT / Apache-2.0  | Menos camadas no core; Prisma opcional para BI/relatórios |
+| Banco                   | PostgreSQL 16 + extensões `pg_trgm`/FTS           | Open Source       | Relacional, busca textual, consistência                   |
+| Cache/Filas             | Redis 7 + BullMQ                                  | BSD-3 / MIT       | Jobs, retries, backoff, rate limiting                     |
+| Storage                 | MinIO (S3-compatible)                             | AGPLv3            | Armazenamento de mídia self-hosted                        |
+| Processamento de imagem | imgproxy                                          | MIT               | Resize/crop on-the-fly sem SaaS                           |
+| Auth                    | Payload Auth (roles/sessions/JWT)                 | MIT               | RBAC nativo no admin e integração direta com collections  |
+| E-mail transacional     | Nodemailer + SMTP self-host (Postfix)             | MIT / Open Source | Sem dependência de fornecedor proprietário                |
+| Observabilidade         | Prometheus + Grafana + Loki + Uptime Kuma         | Open Source       | Métricas, logs, alertas, uptime                           |
+| Reverse proxy/TLS       | Caddy                                             | Apache-2.0        | HTTPS automático e configuração simples                   |
+| Analytics web           | Matomo self-hosted                                | GPL               | Métricas de produto sem SaaS proprietário                 |
 
 ### 1.3 Arquitetura de Deployment
 
@@ -96,18 +96,18 @@ Entrada (SEO/Ads/Indicação)
 
 **Filtros obrigatórios do catálogo:**
 
-| # | Filtro | Input |
-|---|---|---|
-| 1 | Tipo (Compra/Aluguel) | Toggle |
-| 2 | Categoria | Multi-select |
-| 3 | Bairro | Multi-select com busca |
-| 4 | Faixa de preço | Range |
-| 5 | Quartos | 1+, 2+, 3+, 4+ |
-| 6 | Banheiros | 1+, 2+, 3+ |
-| 7 | Vagas | 1+, 2+, 3+ |
-| 8 | Área | Range |
-| 9 | Características | Chips |
-| 10 | Palavra-chave | Input com debounce |
+| #   | Filtro                | Input                  |
+| --- | --------------------- | ---------------------- |
+| 1   | Tipo (Compra/Aluguel) | Toggle                 |
+| 2   | Categoria             | Multi-select           |
+| 3   | Bairro                | Multi-select com busca |
+| 4   | Faixa de preço        | Range                  |
+| 5   | Quartos               | 1+, 2+, 3+, 4+         |
+| 6   | Banheiros             | 1+, 2+, 3+             |
+| 7   | Vagas                 | 1+, 2+, 3+             |
+| 8   | Área                  | Range                  |
+| 9   | Características       | Chips                  |
+| 10  | Palavra-chave         | Input com debounce     |
 
 ### 2.2 Persona 2: Corretor/Admin
 
@@ -122,14 +122,14 @@ Entrada (SEO/Ads/Indicação)
 
 **Roles e permissões:**
 
-| Recurso | admin | agent | assistant |
-|---|---|---|---|
-| Imóveis CRUD | ✅ | ✅ | leitura |
-| Publicar/despublicar | ✅ | ❌ | ❌ |
-| Leads (todos) | ✅ | atribuídos | ❌ |
-| Pipeline (mover estágio) | ✅ | ✅ | ❌ |
-| Relatórios | ✅ | parcial | ❌ |
-| Configurações | ✅ | ❌ | ❌ |
+| Recurso                  | admin | agent      | assistant |
+| ------------------------ | ----- | ---------- | --------- |
+| Imóveis CRUD             | ✅    | ✅         | leitura   |
+| Publicar/despublicar     | ✅    | ❌         | ❌        |
+| Leads (todos)            | ✅    | atribuídos | ❌        |
+| Pipeline (mover estágio) | ✅    | ✅         | ❌        |
+| Relatórios               | ✅    | parcial    | ❌        |
+| Configurações            | ✅    | ❌         | ❌        |
 
 ---
 
@@ -139,63 +139,63 @@ Entrada (SEO/Ads/Indicação)
 
 ```ts
 interface Property {
-  id: string;
-  title: string;
-  slug: string;
-  code: string;
-  status: 'draft' | 'published' | 'sold' | 'rented' | 'paused';
+  id: string
+  title: string
+  slug: string
+  code: string
+  status: 'draft' | 'published' | 'sold' | 'rented' | 'paused'
 
-  type: 'sale' | 'rent';
-  category: 'apartment' | 'house' | 'commercial' | 'land' | 'penthouse' | 'studio';
+  type: 'sale' | 'rent'
+  category: 'apartment' | 'house' | 'commercial' | 'land' | 'penthouse' | 'studio'
 
-  price: number;
-  condominiumFee?: number;
-  iptu?: number;
+  price: number
+  condominiumFee?: number
+  iptu?: number
 
-  bedrooms: number;
-  suites?: number;
-  bathrooms: number;
-  parkingSpots: number;
-  totalArea: number;
-  privateArea?: number;
+  bedrooms: number
+  suites?: number
+  bathrooms: number
+  parkingSpots: number
+  totalArea: number
+  privateArea?: number
 
   address: {
-    street: string;
-    number: string;
-    complement?: string;
-    neighborhoodId: string;
-    city: string;
-    state: string;
-    zipCode: string;
-    latitude?: number;
-    longitude?: number;
-  };
+    street: string
+    number: string
+    complement?: string
+    neighborhoodId: string
+    city: string
+    state: string
+    zipCode: string
+    latitude?: number
+    longitude?: number
+  }
 
-  shortDescription: string;
-  fullDescription: string;
+  shortDescription: string
+  fullDescription: string
 
-  featuredImageId?: string;
-  galleryImageIds: string[];
-  videoUrl?: string;
+  featuredImageId?: string
+  galleryImageIds: string[]
+  videoUrl?: string
 
-  amenityIds: string[];
-  buildingFeatureIds?: string[];
-  tagIds?: string[];
+  amenityIds: string[]
+  buildingFeatureIds?: string[]
+  tagIds?: string[]
 
-  featured: boolean;
-  highlightText?: string;
+  featured: boolean
+  highlightText?: string
 
-  agentId: string;
+  agentId: string
 
-  seoTitle?: string;
-  seoDescription?: string;
+  seoTitle?: string
+  seoDescription?: string
 
-  viewCount: number;
-  contactCount: number;
+  viewCount: number
+  contactCount: number
 
-  createdAt: Date;
-  updatedAt: Date;
-  publishedAt?: Date;
+  createdAt: Date
+  updatedAt: Date
+  publishedAt?: Date
 }
 ```
 
@@ -230,15 +230,15 @@ Seções obrigatórias:
 
 ```ts
 interface Neighborhood {
-  id: string;
-  name: string;
-  slug: string;
-  city: string;
-  state: string;
-  description?: string;
-  averagePrice?: number;
-  propertyCount?: number;
-  active: boolean;
+  id: string
+  name: string
+  slug: string
+  city: string
+  state: string
+  description?: string
+  averagePrice?: number
+  propertyCount?: number
+  active: boolean
 }
 ```
 
@@ -246,16 +246,16 @@ interface Neighborhood {
 
 ```ts
 interface Media {
-  id: string;
-  filename: string;
-  alt: string;
-  mimeType: string;
-  filesize: number;
-  width?: number;
-  height?: number;
-  objectKey: string; // MinIO key
-  folder?: string;
-  createdAt: Date;
+  id: string
+  filename: string
+  alt: string
+  mimeType: string
+  filesize: number
+  width?: number
+  height?: number
+  objectKey: string // MinIO key
+  folder?: string
+  createdAt: Date
 }
 ```
 
@@ -263,11 +263,11 @@ interface Media {
 
 ```ts
 interface Tag {
-  id: string;
-  label: string;
-  slug: string;
-  color: string;
-  active: boolean;
+  id: string
+  label: string
+  slug: string
+  color: string
+  active: boolean
 }
 ```
 
@@ -275,12 +275,12 @@ interface Tag {
 
 ```ts
 interface Amenity {
-  id: string;
-  label: string;
-  slug: string;
-  icon: string;
-  category: 'property' | 'building';
-  active: boolean;
+  id: string
+  label: string
+  slug: string
+  icon: string
+  category: 'property' | 'building'
+  active: boolean
 }
 ```
 
@@ -288,42 +288,58 @@ interface Amenity {
 
 ```ts
 interface Lead {
-  id: string;
-  name: string;
-  email?: string;
-  phone: string;
-  whatsapp?: string;
+  id: string
+  name: string
+  email?: string
+  phone: string
+  whatsapp?: string
 
-  source: 'website' | 'whatsapp' | 'facebook' | 'instagram' | 'google_ads' | 'indication' | 'portal' | 'other';
-  sourceDetails?: string;
-  utmSource?: string;
-  utmMedium?: string;
-  utmCampaign?: string;
+  source:
+    | 'website'
+    | 'whatsapp'
+    | 'facebook'
+    | 'instagram'
+    | 'google_ads'
+    | 'indication'
+    | 'portal'
+    | 'other'
+  sourceDetails?: string
+  utmSource?: string
+  utmMedium?: string
+  utmCampaign?: string
 
-  interestType: 'buy' | 'rent' | 'sell' | 'invest';
-  budgetMin?: number;
-  budgetMax?: number;
+  interestType: 'buy' | 'rent' | 'sell' | 'invest'
+  budgetMin?: number
+  budgetMax?: number
 
-  preferredNeighborhoodIds?: string[];
-  preferredCategories?: string[];
+  preferredNeighborhoodIds?: string[]
+  preferredCategories?: string[]
 
-  viewedPropertyIds?: string[];
-  favoritePropertyIds?: string[];
+  viewedPropertyIds?: string[]
+  favoritePropertyIds?: string[]
 
-  status: 'new' | 'contacted' | 'qualified' | 'visit_scheduled' | 'proposal_sent' | 'negotiation' | 'closed_won' | 'closed_lost';
-  priority: 'low' | 'medium' | 'high' | 'hot';
-  lostReason?: 'price' | 'location' | 'timing' | 'competitor' | 'no_response' | 'other';
+  status:
+    | 'new'
+    | 'contacted'
+    | 'qualified'
+    | 'visit_scheduled'
+    | 'proposal_sent'
+    | 'negotiation'
+    | 'closed_won'
+    | 'closed_lost'
+  priority: 'low' | 'medium' | 'high' | 'hot'
+  lostReason?: 'price' | 'location' | 'timing' | 'competitor' | 'no_response' | 'other'
 
-  assignedToId?: string;
+  assignedToId?: string
 
-  lgpdConsent: boolean;
-  consentDate: Date;
-  consentIP?: string;
+  lgpdConsent: boolean
+  consentDate: Date
+  consentIP?: string
 
-  score?: number;
-  lastContactAt?: Date;
-  createdAt: Date;
-  updatedAt: Date;
+  score?: number
+  lastContactAt?: Date
+  createdAt: Date
+  updatedAt: Date
 }
 ```
 
@@ -331,26 +347,33 @@ interface Lead {
 
 ```ts
 interface Deal {
-  id: string;
-  leadId: string;
-  propertyId: string;
-  type: 'sale' | 'rent';
+  id: string
+  leadId: string
+  propertyId: string
+  type: 'sale' | 'rent'
 
-  askingPrice: number;
-  offerPrice?: number;
-  finalPrice?: number;
+  askingPrice: number
+  offerPrice?: number
+  finalPrice?: number
 
-  stage: 'interest' | 'visit' | 'proposal' | 'negotiation' | 'documentation' | 'closed_won' | 'closed_lost';
-  probability?: number;
+  stage:
+    | 'interest'
+    | 'visit'
+    | 'proposal'
+    | 'negotiation'
+    | 'documentation'
+    | 'closed_won'
+    | 'closed_lost'
+  probability?: number
 
-  commissionRate?: number;
-  commissionValue?: number;
+  commissionRate?: number
+  commissionValue?: number
 
-  expectedCloseDate?: Date;
-  closedAt?: Date;
+  expectedCloseDate?: Date
+  closedAt?: Date
 
-  agentId: string;
-  notes?: string;
+  agentId: string
+  notes?: string
 }
 ```
 
@@ -358,17 +381,17 @@ interface Deal {
 
 ```ts
 interface Activity {
-  id: string;
-  leadId: string;
-  dealId?: string;
-  type: 'call' | 'whatsapp' | 'email' | 'visit' | 'note' | 'task' | 'proposal' | 'system';
-  description: string;
-  scheduledAt?: Date;
-  dueAt?: Date;
-  completedAt?: Date;
-  result?: 'success' | 'no_answer' | 'callback' | 'not_interested' | 'rescheduled' | 'other';
-  createdById: string;
-  createdAt: Date;
+  id: string
+  leadId: string
+  dealId?: string
+  type: 'call' | 'whatsapp' | 'email' | 'visit' | 'note' | 'task' | 'proposal' | 'system'
+  description: string
+  scheduledAt?: Date
+  dueAt?: Date
+  completedAt?: Date
+  result?: 'success' | 'no_answer' | 'callback' | 'not_interested' | 'rescheduled' | 'other'
+  createdById: string
+  createdAt: Date
 }
 ```
 
@@ -376,17 +399,17 @@ interface Activity {
 
 ```ts
 interface User {
-  id: string;
-  email: string;
-  passwordHash: string;
-  name: string;
-  role: 'admin' | 'agent' | 'assistant';
-  phone?: string;
-  creci?: string;
-  bio?: string;
-  active: boolean;
-  commissionRate?: number;
-  createdAt: Date;
+  id: string
+  email: string
+  passwordHash: string
+  name: string
+  role: 'admin' | 'agent' | 'assistant'
+  phone?: string
+  creci?: string
+  bio?: string
+  active: boolean
+  commissionRate?: number
+  createdAt: Date
 }
 ```
 
@@ -477,25 +500,25 @@ Novo -> Contactado -> Qualificado -> Visita -> Proposta -> Negociação -> Fecha
 
 ### 5.1 Rotas públicas
 
-| Método | Rota | Descrição |
-|---|---|---|
-| GET | `/api/properties` | Listagem com filtros/paginação |
-| GET | `/api/properties/[slug]` | Detalhes do imóvel |
-| GET | `/api/neighborhoods` | Bairros ativos |
-| POST | `/api/leads` | Criação de lead |
-| POST | `/api/properties/[id]/view` | Incrementa visualização |
-| GET | `/api/search` | Busca full-text/fuzzy |
+| Método | Rota                        | Descrição                      |
+| ------ | --------------------------- | ------------------------------ |
+| GET    | `/api/properties`           | Listagem com filtros/paginação |
+| GET    | `/api/properties/[slug]`    | Detalhes do imóvel             |
+| GET    | `/api/neighborhoods`        | Bairros ativos                 |
+| POST   | `/api/leads`                | Criação de lead                |
+| POST   | `/api/properties/[id]/view` | Incrementa visualização        |
+| GET    | `/api/search`               | Busca full-text/fuzzy          |
 
 ### 5.2 Rotas autenticadas (admin)
 
-| Método | Rota | Escopo |
-|---|---|---|
-| GET/POST/PATCH/DELETE | `/api/properties` | CRUD imóveis (Payload REST + ACL) |
-| GET/POST/PATCH/DELETE | `/api/leads` | Gestão de leads (Payload REST + ACL) |
-| PATCH | `/api/leads/[id]` | Atualização de estágio/motivo de perda |
-| GET/POST/PATCH/DELETE | `/api/deals` | Oportunidades |
-| GET/POST/PATCH/DELETE | `/api/activities` | Atividades e tarefas |
-| GET | `/api/admin/reports/*` | Relatórios agregados customizados |
+| Método                | Rota                   | Escopo                                 |
+| --------------------- | ---------------------- | -------------------------------------- |
+| GET/POST/PATCH/DELETE | `/api/properties`      | CRUD imóveis (Payload REST + ACL)      |
+| GET/POST/PATCH/DELETE | `/api/leads`           | Gestão de leads (Payload REST + ACL)   |
+| PATCH                 | `/api/leads/[id]`      | Atualização de estágio/motivo de perda |
+| GET/POST/PATCH/DELETE | `/api/deals`           | Oportunidades                          |
+| GET/POST/PATCH/DELETE | `/api/activities`      | Atividades e tarefas                   |
+| GET                   | `/api/admin/reports/*` | Relatórios agregados customizados      |
 
 ### 5.3 Revalidação e eventos
 
@@ -505,12 +528,12 @@ Novo -> Contactado -> Qualificado -> Visita -> Proposta -> Negociação -> Fecha
 
 ### 5.4 Rate limiting
 
-| Rota | Limite |
-|---|---|
-| `POST /api/leads` | 5 req/min por IP |
+| Rota                             | Limite                  |
+| -------------------------------- | ----------------------- |
+| `POST /api/leads`                | 5 req/min por IP        |
 | `POST /api/properties/[id]/view` | 1 req/min por IP+imóvel |
-| `GET /api/properties` | 60 req/min por IP |
-| `GET /api/search` | 30 req/min por IP |
+| `GET /api/properties`            | 60 req/min por IP       |
+| `GET /api/search`                | 30 req/min por IP       |
 
 ---
 
@@ -522,12 +545,12 @@ Novo -> Contactado -> Qualificado -> Visita -> Proposta -> Negociação -> Fecha
 - Revalidação por evento usando `revalidatePath` e `revalidateTag`
 - Cache com tags de domínio (`property:{id}`, `neighborhood:{id}`)
 
-| Página | Estratégia | Revalidação |
-|---|---|---|
-| Home | ISR | 60s + on-demand |
-| `/imoveis` | SSR com cache curto | 30s |
-| `/imovel/[slug]` | ISR | on-demand após update |
-| `/bairros/[slug]` | ISR | 1h |
+| Página            | Estratégia          | Revalidação           |
+| ----------------- | ------------------- | --------------------- |
+| Home              | ISR                 | 60s + on-demand       |
+| `/imoveis`        | SSR com cache curto | 30s                   |
+| `/imovel/[slug]`  | ISR                 | on-demand após update |
+| `/bairros/[slug]` | ISR                 | 1h                    |
 
 ### 6.2 Banco de dados (base Context7 + Payload/PostgreSQL)
 
@@ -555,11 +578,11 @@ Novo -> Contactado -> Qualificado -> Visita -> Proposta -> Negociação -> Fecha
 
 ### 7.2 E-mail
 
-| Trigger | Ação |
-|---|---|
-| Novo lead | Notifica corretor responsável |
-| Sem contato >24h | Escala para admin |
-| Tarefa próxima | Lembrete para responsável |
+| Trigger          | Ação                              |
+| ---------------- | --------------------------------- |
+| Novo lead        | Notifica corretor responsável     |
+| Sem contato >24h | Escala para admin                 |
+| Tarefa próxima   | Lembrete para responsável         |
 | Imóvel publicado | Notifica leads com perfil similar |
 
 ### 7.3 Analytics e mapas
@@ -616,13 +639,13 @@ Lead criado
 
 ### 9.2 LGPD
 
-| Requisito | Implementação |
-|---|---|
-| Consentimento | Checkbox obrigatório + timestamp + IP |
-| Acesso do titular | Export JSON/CSV por e-mail verificado |
+| Requisito             | Implementação                                          |
+| --------------------- | ------------------------------------------------------ |
+| Consentimento         | Checkbox obrigatório + timestamp + IP                  |
+| Acesso do titular     | Export JSON/CSV por e-mail verificado                  |
 | Exclusão/anonimização | Job de anonimização preservando integridade relacional |
-| Retenção | Anonimização automática após período configurável |
-| Registro de operações | Audit log de leitura/edição/exportação |
+| Retenção              | Anonimização automática após período configurável      |
+| Registro de operações | Audit log de leitura/edição/exportação                 |
 
 ---
 
@@ -630,13 +653,13 @@ Lead criado
 
 ### 10.1 Estratégia
 
-| Tipo | Ferramenta | Escopo |
-|---|---|---|
-| Unit | Vitest | regras de negócio e utilitários |
-| Integration | Vitest + Testing Library | componentes e formulários |
-| API | Supertest (ou equivalente) | rotas e auth |
-| E2E | Playwright | fluxos críticos ponta a ponta |
-| Carga | k6 | endpoints e concorrência |
+| Tipo        | Ferramenta                 | Escopo                          |
+| ----------- | -------------------------- | ------------------------------- |
+| Unit        | Vitest                     | regras de negócio e utilitários |
+| Integration | Vitest + Testing Library   | componentes e formulários       |
+| API         | Supertest (ou equivalente) | rotas e auth                    |
+| E2E         | Playwright                 | fluxos críticos ponta a ponta   |
+| Carga       | k6                         | endpoints e concorrência        |
 
 ### 10.2 Fluxos E2E críticos
 
@@ -650,13 +673,13 @@ Lead criado
 
 ## 11. Monitoramento e Observabilidade
 
-| Camada | Ferramenta | Métrica-chave |
-|---|---|---|
-| Uptime | Uptime Kuma | disponibilidade e latência |
-| Métricas | Prometheus | CPU, RAM, conexões, filas |
-| Dashboards | Grafana | visão técnica + negócio |
-| Logs | Loki | erros, requests, jobs |
-| Produto | Matomo + CRM | conversão, origem, receita |
+| Camada     | Ferramenta   | Métrica-chave              |
+| ---------- | ------------ | -------------------------- |
+| Uptime     | Uptime Kuma  | disponibilidade e latência |
+| Métricas   | Prometheus   | CPU, RAM, conexões, filas  |
+| Dashboards | Grafana      | visão técnica + negócio    |
+| Logs       | Loki         | erros, requests, jobs      |
+| Produto    | Matomo + CRM | conversão, origem, receita |
 
 **Alertas mínimos:**
 
@@ -703,21 +726,21 @@ Lead criado
 
 ### Fase 1 - Base CMS (Semanas 1-3)
 
-**Semana 1**
+#### Semana 1
 
 - [ ] Setup de infraestrutura local e VPS
 - [ ] Payload CMS + PostgreSQL + migrações iniciais
 - [ ] Payload Auth + RBAC
 - [ ] Modelos: users, properties, neighborhoods, media, tags, amenities
 
-**Semana 2**
+#### Semana 2
 
 - [ ] CRUD completo de imóveis
 - [ ] Upload MinIO + processamento imgproxy
 - [ ] Preview e publicação
 - [ ] Busca com filtros principais
 
-**Semana 3**
+#### Semana 3
 
 - [ ] Página de listagem + detalhe em ISR
 - [ ] SEO técnico base
@@ -725,19 +748,19 @@ Lead criado
 
 ### Fase 2 - CRM (Semanas 4-6)
 
-**Semana 4**
+#### Semana 4
 
 - [ ] Leads + formulário + consentimento LGPD
 - [ ] Round-robin de distribuição
 - [ ] Deduplicação de lead
 
-**Semana 5**
+#### Semana 5
 
 - [ ] Pipeline Kanban
 - [ ] Deals + Activities
 - [ ] SLA de contato e alertas
 
-**Semana 6**
+#### Semana 6
 
 - [ ] Relatórios operacionais
 - [ ] Exportações CSV
@@ -745,13 +768,13 @@ Lead criado
 
 ### Fase 3 - Hardening e escala (Semanas 7-8)
 
-**Semana 7**
+#### Semana 7
 
 - [ ] BullMQ completo (retries, backoff, DLQ)
 - [ ] Rotinas LGPD automatizadas
 - [ ] Auditoria de segurança
 
-**Semana 8**
+#### Semana 8
 
 - [ ] Testes de carga
 - [ ] Otimização de queries
@@ -823,11 +846,11 @@ Regras:
 
 ### 16.1 Perfil de capacidade recomendado
 
-| Perfil | vCPU | RAM | Disco | Uso |
-|---|---|---|---|---|
-| Mínimo (MVP) | 4 vCPU | 8 GB | 160 GB NVMe | validação inicial |
-| Recomendado (produção inicial) | 8 vCPU | 16 GB | 320 GB NVMe | operação estável |
-| Escala (produção) | 12-16 vCPU | 32 GB | 500+ GB NVMe | tráfego alto e mais mídia |
+| Perfil                         | vCPU       | RAM   | Disco        | Uso                       |
+| ------------------------------ | ---------- | ----- | ------------ | ------------------------- |
+| Mínimo (MVP)                   | 4 vCPU     | 8 GB  | 160 GB NVMe  | validação inicial         |
+| Recomendado (produção inicial) | 8 vCPU     | 16 GB | 320 GB NVMe  | operação estável          |
+| Escala (produção)              | 12-16 vCPU | 32 GB | 500+ GB NVMe | tráfego alto e mais mídia |
 
 ### 16.2 Requisitos de sistema
 
@@ -888,13 +911,13 @@ Regras:
 
 ### 17.2 Outras opções viáveis
 
-| Stack | Licença | DockerHub / instalação | Compatível com Portainer + Traefik | Observação |
-|---|---|---|---|---|
-| Next.js + Payload + Twenty CRM | MIT + GPLv3 | `twentycrm/twenty` + app Payload custom | ✅ | Boa separação CMS e CRM; exige SSO/integr. |
-| Next.js + Payload + EspoCRM | MIT + AGPLv3 | `espocrm/espocrm` | ✅ | CRM estável e maduro; integração via API/webhook. |
-| Next.js + Strapi + CRM separado | OSS (com módulos enterprise em licença própria) | Strapi com Dockerfile próprio + Postgres/Redis oficiais | ✅ | Válido, mas requer mais cuidado de versionamento e plugins. |
-| Appwrite + Next.js + CRM custom | BSD-3 + OSS | `appwrite/appwrite` + app Next.js | ✅ | Forte em backend BaaS; CMS editorial exige customização. |
-| Directus + CRM separado | BSL 1.1 (source-available) | `directus/directus` | ✅ | Tecnicamente excelente, mas não é licença OSI clássica. |
+| Stack                           | Licença                                         | DockerHub / instalação                                  | Compatível com Portainer + Traefik | Observação                                                  |
+| ------------------------------- | ----------------------------------------------- | ------------------------------------------------------- | ---------------------------------- | ----------------------------------------------------------- |
+| Next.js + Payload + Twenty CRM  | MIT + GPLv3                                     | `twentycrm/twenty` + app Payload custom                 | ✅                                 | Boa separação CMS e CRM; exige SSO/integr.                  |
+| Next.js + Payload + EspoCRM     | MIT + AGPLv3                                    | `espocrm/espocrm`                                       | ✅                                 | CRM estável e maduro; integração via API/webhook.           |
+| Next.js + Strapi + CRM separado | OSS (com módulos enterprise em licença própria) | Strapi com Dockerfile próprio + Postgres/Redis oficiais | ✅                                 | Válido, mas requer mais cuidado de versionamento e plugins. |
+| Appwrite + Next.js + CRM custom | BSD-3 + OSS                                     | `appwrite/appwrite` + app Next.js                       | ✅                                 | Forte em backend BaaS; CMS editorial exige customização.    |
+| Directus + CRM separado         | BSL 1.1 (source-available)                      | `directus/directus`                                     | ✅                                 | Tecnicamente excelente, mas não é licença OSI clássica.     |
 
 ### 17.3 Regras de escolha prática
 
@@ -914,11 +937,11 @@ Exemplo de labels (serviço web):
 
 ```yaml
 labels:
-  - "traefik.enable=true"
-  - "traefik.http.routers.primeurban.rule=Host(`app.seudominio.com`)"
-  - "traefik.http.routers.primeurban.entrypoints=websecure"
-  - "traefik.http.routers.primeurban.tls.certresolver=letsencrypt"
-  - "traefik.http.services.primeurban.loadbalancer.server.port=3000"
+  - 'traefik.enable=true'
+  - 'traefik.http.routers.primeurban.rule=Host(`app.seudominio.com`)'
+  - 'traefik.http.routers.primeurban.entrypoints=websecure'
+  - 'traefik.http.routers.primeurban.tls.certresolver=letsencrypt'
+  - 'traefik.http.services.primeurban.loadbalancer.server.port=3000'
 ```
 
 ---
@@ -928,39 +951,39 @@ labels:
 Este plano foi estruturado com base nas referências técnicas abaixo obtidas via Context7:
 
 1. Payload deployment/self-hosting (Docker multi-stage, standalone)
-   - https://github.com/payloadcms/payload/blob/main/docs/production/deployment.mdx
+   - <https://github.com/payloadcms/payload/blob/main/docs/production/deployment.mdx>
 2. Strapi Docker deployment (Compose com PostgreSQL)
-   - https://github.com/strapi/documentation/blob/main/docusaurus/docs/cms/installation/docker.md
+   - <https://github.com/strapi/documentation/blob/main/docusaurus/docs/cms/installation/docker.md>
 3. Twenty self-hosting com Docker Compose
-   - https://twenty.com/developers/section/self-hosting/docker-compose
+   - <https://twenty.com/developers/section/self-hosting/docker-compose>
 4. Next.js App Router caching/revalidation (`revalidatePath`, `revalidateTag`, ISR)
-   - https://github.com/vercel/next.js/blob/v16.1.5/docs/01-app/02-guides/caching.mdx
-   - https://github.com/vercel/next.js/blob/v16.1.5/docs/01-app/02-guides/incremental-static-regeneration.mdx
+   - <https://github.com/vercel/next.js/blob/v16.1.5/docs/01-app/02-guides/caching.mdx>
+   - <https://github.com/vercel/next.js/blob/v16.1.5/docs/01-app/02-guides/incremental-static-regeneration.mdx>
 5. BullMQ filas, retries/backoff e rate limiting
-   - https://github.com/taskforcesh/bullmq/blob/master/docs/gitbook/guide/rate-limiting.md
-   - https://github.com/taskforcesh/bullmq/blob/master/docs/gitbook/patterns/stop-retrying-jobs.md
+   - <https://github.com/taskforcesh/bullmq/blob/master/docs/gitbook/guide/rate-limiting.md>
+   - <https://github.com/taskforcesh/bullmq/blob/master/docs/gitbook/patterns/stop-retrying-jobs.md>
 
 Fontes complementares para licenças/imagens e operação com Portainer/Traefik:
 
 1. Payload repository (MIT)
-   - https://github.com/payloadcms/payload
+   - <https://github.com/payloadcms/payload>
 2. Twenty repository (GPLv3)
-   - https://github.com/twentyhq/twenty
+   - <https://github.com/twentyhq/twenty>
 3. Twenty Docker image
-   - https://hub.docker.com/r/twentycrm/twenty
+   - <https://hub.docker.com/r/twentycrm/twenty>
 4. EspoCRM Docker image (AGPLv3)
-   - https://hub.docker.com/r/espocrm/espocrm
+   - <https://hub.docker.com/r/espocrm/espocrm>
 5. Appwrite Docker image
-   - https://hub.docker.com/r/appwrite/appwrite
+   - <https://hub.docker.com/r/appwrite/appwrite>
 6. Directus Docker image (BSL 1.1)
-   - https://hub.docker.com/r/directus/directus
+   - <https://hub.docker.com/r/directus/directus>
 7. Traefik Docker provider
-   - https://doc.traefik.io/traefik/providers/docker/
+   - <https://doc.traefik.io/traefik/providers/docker/>
 8. Portainer Stacks
-   - https://docs.portainer.io/user/docker/stacks/add
+   - <https://docs.portainer.io/user/docker/stacks/add>
 9. Strapi + Traefik guidance (nota sobre imagens oficiais)
-   - https://strapi.io/blog/how-to-run-strapi-with-docker-and-traefik
+   - <https://strapi.io/blog/how-to-run-strapi-with-docker-and-traefik>
 
 ---
 
-*PRD v3.1 — PrimeUrban CMS+CRM (Payload-first, MIT/Open Source).*
+_PRD v3.1 — PrimeUrban CMS+CRM (Payload-first, MIT/Open Source)._

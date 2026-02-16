@@ -11,26 +11,26 @@ O repositorio esta em transicao para uma arquitetura completa de CMS + CRM.
 
 ## Stack atual
 
-| Camada | Tecnologia |
-|---|---|
-| Web | Next.js 16 + React 19 |
-| Linguagem | TypeScript 5 |
-| UI | Tailwind CSS 4 + Radix UI + Lucide |
-| Validacao de formularios | React Hook Form + Zod |
-| Analytics | Vercel Analytics |
+| Camada                   | Tecnologia                         |
+| ------------------------ | ---------------------------------- |
+| Web                      | Next.js 16 + React 19              |
+| Linguagem                | TypeScript 5                       |
+| UI                       | Tailwind CSS 4 + Radix UI + Lucide |
+| Validacao de formularios | React Hook Form + Zod              |
+| Analytics                | Vercel Analytics                   |
 
 ## Stack alvo (roadmap)
 
-| Camada | Tecnologia |
-|---|---|
-| CMS/Admin/Auth | Payload CMS 3.x (MIT) |
-| Banco | PostgreSQL 16 |
-| Filas e jobs | Redis 7 + BullMQ |
-| Storage | MinIO (S3-compatible) |
-| Imagens | imgproxy |
+| Camada          | Tecnologia                                |
+| --------------- | ----------------------------------------- |
+| CMS/Admin/Auth  | Payload CMS 3.x (MIT)                     |
+| Banco           | PostgreSQL 16                             |
+| Filas e jobs    | Redis 7 + BullMQ                          |
+| Storage         | MinIO (S3-compatible)                     |
+| Imagens         | imgproxy                                  |
 | Observabilidade | Prometheus + Grafana + Loki + Uptime Kuma |
-| Orquestracao | Docker Compose via Portainer |
-| Proxy/TLS | Traefik |
+| Orquestracao    | Docker Compose via Portainer              |
+| Proxy/TLS       | Traefik                                   |
 
 ## Quick Start
 
@@ -52,12 +52,12 @@ Acesse `http://localhost:3000`.
 
 ## Scripts
 
-| Comando | Descricao |
-|---|---|
-| `npm run dev` | Sobe o ambiente de desenvolvimento |
-| `npm run build` | Gera build de producao |
-| `npm run start` | Executa build em modo producao |
-| `npm run lint` | Executa ESLint |
+| Comando         | Descricao                          |
+| --------------- | ---------------------------------- |
+| `npm run dev`   | Sobe o ambiente de desenvolvimento |
+| `npm run build` | Gera build de producao             |
+| `npm run start` | Executa build em modo producao     |
+| `npm run lint`  | Executa ESLint                     |
 
 ## Estrutura do projeto
 

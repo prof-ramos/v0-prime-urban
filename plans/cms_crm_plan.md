@@ -1,8 +1,8 @@
 # CMS e CRM - Product Requirements Document (PRD)
 
 **PrimeUrban - Sistema Imobiliário Completo**
-*Última atualização: Fevereiro 2026*
-*Versão: 2.0*
+_Última atualização: Fevereiro 2026_
+_Versão: 2.0_
 
 ---
 
@@ -14,26 +14,26 @@ Sistema integrado de CMS e CRM para a PrimeUrban Imobiliária, permitindo gestã
 
 ### 1.2 Stack Tecnológico
 
-| Camada | Tecnologia | Justificativa |
-|--------|-----------|---------------|
-| Framework | Next.js 16 (App Router) | SSR/ISR nativo, Server Components |
-| Linguagem | TypeScript 5.x (strict) | Segurança de tipos end-to-end |
-| Estilização | Tailwind CSS 4.1.9 + shadcn/ui | Design system consistente |
-| CMS | Payload CMS 3.x | Integração nativa Next.js, admin embutido |
-| Banco de Dados | PostgreSQL (Neon.tech → VPS) | Relacional, full-text search nativo |
-| Busca | PostgreSQL `tsvector` + `pg_trgm` | Busca fuzzy sem serviço externo |
-| Storage | Vercel Blob (MVP) → MinIO S3 (VPS) | Compatível com API S3 |
-| Autenticação | Payload Auth (nativo) | Evita dependência extra; já integra roles, sessions e JWT |
-| Imagens | Cloudinary (CDN + transformações) | WebP automático, crop, resize on-the-fly |
-| E-mail | Resend (MVP) → AWS SES (escala) | SDK moderno, templates React |
-| Cache | Next.js ISR + `unstable_cache` | Revalidação sob demanda por webhook do Payload |
-| Monitoramento | Vercel Analytics + Sentry | Erros, performance, Web Vitals |
+| Camada         | Tecnologia                         | Justificativa                                             |
+| -------------- | ---------------------------------- | --------------------------------------------------------- |
+| Framework      | Next.js 16 (App Router)            | SSR/ISR nativo, Server Components                         |
+| Linguagem      | TypeScript 5.x (strict)            | Segurança de tipos end-to-end                             |
+| Estilização    | Tailwind CSS 4.1.9 + shadcn/ui     | Design system consistente                                 |
+| CMS            | Payload CMS 3.x                    | Integração nativa Next.js, admin embutido                 |
+| Banco de Dados | PostgreSQL (Neon.tech → VPS)       | Relacional, full-text search nativo                       |
+| Busca          | PostgreSQL `tsvector` + `pg_trgm`  | Busca fuzzy sem serviço externo                           |
+| Storage        | Vercel Blob (MVP) → MinIO S3 (VPS) | Compatível com API S3                                     |
+| Autenticação   | Payload Auth (nativo)              | Evita dependência extra; já integra roles, sessions e JWT |
+| Imagens        | Cloudinary (CDN + transformações)  | WebP automático, crop, resize on-the-fly                  |
+| E-mail         | Resend (MVP) → AWS SES (escala)    | SDK moderno, templates React                              |
+| Cache          | Next.js ISR + `unstable_cache`     | Revalidação sob demanda por webhook do Payload            |
+| Monitoramento  | Vercel Analytics + Sentry          | Erros, performance, Web Vitals                            |
 
 ### 1.3 Arquitetura de Deployment
 
 **Fase 1 — MVP (Vercel):**
 
-```
+````text
 ┌─────────────────────────────────────────────────────┐
 │                 Vercel Platform                      │
 │                                                     │
@@ -55,11 +55,11 @@ Sistema integrado de CMS e CRM para a PrimeUrban Imobiliária, permitindo gestã
 │  │  (Imagens)   │  │  (E-mail) │  │  (Erros)     │  │
 │  └─────────────┘  └───────────┘  └──────────────┘  │
 └─────────────────────────────────────────────────────┘
-```
+```text
 
 **Fase 2 — Escala (VPS):**
 
-```
+```text
 ┌─────────────────────────────────────────────────────┐
 │              VPS (Coolify / Docker Compose)          │
 │                                                     │
@@ -77,7 +77,7 @@ Sistema integrado de CMS e CRM para a PrimeUrban Imobiliária, permitindo gestã
 │  │  (Storage)    │  │  (Proxy)  │  │  (Monitoring)│  │
 │  └──────────────┘  └───────────┘  └──────────────┘  │
 └─────────────────────────────────────────────────────┘
-```
+```text
 
 ---
 
@@ -96,7 +96,7 @@ Sistema integrado de CMS e CRM para a PrimeUrban Imobiliária, permitindo gestã
 
 **Fluxo (Jornada de Compra):**
 
-```
+```text
 Entrada              Busca/Filtros          Detalhes do Imóvel     Contato/Conversão
 ──────────────────   ──────────────────     ──────────────────     ──────────────────
 • SEO Orgânico       • Tipo (V/L)           • Galeria de fotos     • Formulário
@@ -107,33 +107,33 @@ Entrada              Busca/Filtros          Detalhes do Imóvel     Contato/Conv
                      • Vagas/Área (m²)      • Imóveis similares
                      • Comodidades
                      • Palavra-chave
-```
+```text
 
 **Filtros de Busca:**
 
-| # | Filtro | Tipo de Input | Observação |
-|---|--------|--------------|------------|
-| 1 | Tipo | Toggle: Comprar / Alugar | Obrigatório |
-| 2 | Categoria | Multi-select chips | Apartamento, Casa, Comercial, Terreno, Cobertura, Studio |
-| 3 | Bairro | Multi-select com busca | Populados dinamicamente do CMS |
-| 4 | Preço | Range slider (min/max) | Formatado em R$ |
-| 5 | Quartos | Botões: 1+, 2+, 3+, 4+, 5+ | - |
-| 6 | Banheiros | Botões: 1+, 2+, 3+, 4+ | - |
-| 7 | Vagas | Botões: 1+, 2+, 3+, 4+ | - |
-| 8 | Área (m²) | Range slider | - |
-| 9 | Características | Multi-select chips | Piscina, Academia, etc. |
-| 10 | Palavra-chave | Text input com debounce 300ms | Busca em título, código, descrição |
+| #   | Filtro          | Tipo de Input                 | Observação                                               |
+| --- | --------------- | ----------------------------- | -------------------------------------------------------- |
+| 1   | Tipo            | Toggle: Comprar / Alugar      | Obrigatório                                              |
+| 2   | Categoria       | Multi-select chips            | Apartamento, Casa, Comercial, Terreno, Cobertura, Studio |
+| 3   | Bairro          | Multi-select com busca        | Populados dinamicamente do CMS                           |
+| 4   | Preço           | Range slider (min/max)        | Formatado em R$                                          |
+| 5   | Quartos         | Botões: 1+, 2+, 3+, 4+, 5+    | -                                                        |
+| 6   | Banheiros       | Botões: 1+, 2+, 3+, 4+        | -                                                        |
+| 7   | Vagas           | Botões: 1+, 2+, 3+, 4+        | -                                                        |
+| 8   | Área (m²)       | Range slider                  | -                                                        |
+| 9   | Características | Multi-select chips            | Piscina, Academia, etc.                                  |
+| 10  | Palavra-chave   | Text input com debounce 300ms | Busca em título, código, descrição                       |
 
 **Ordenação:** Mais recentes · Menor preço · Maior preço · Maior área · Mais visualizados
 
 **Pontos de Conversão → CRM:**
 
-| Ação do Usuário | Evento no CRM |
-|-----------------|---------------|
-| Visualiza imóvel | Registro anônimo de interesse (cookie-based) |
-| Clica WhatsApp | Lead criado automaticamente (source: `whatsapp`) |
-| Preenche formulário | Lead qualificado (source: `website`) |
-| Agenda visita | Oportunidade criada, atividade gerada |
+| Ação do Usuário     | Evento no CRM                                    |
+| ------------------- | ------------------------------------------------ |
+| Visualiza imóvel    | Registro anônimo de interesse (cookie-based)     |
+| Clica WhatsApp      | Lead criado automaticamente (source: `whatsapp`) |
+| Preenche formulário | Lead qualificado (source: `website`)             |
+| Agenda visita       | Oportunidade criada, atividade gerada            |
 
 ---
 
@@ -151,7 +151,7 @@ Entrada              Busca/Filtros          Detalhes do Imóvel     Contato/Conv
 
 **Fluxo do Administrador:**
 
-```
+```text
 Login (Payload Auth)    Dashboard             Gestão de Conteúdo    Ações de CRM
 ──────────────────      ──────────────────    ──────────────────    ──────────────────
 • Payload Auth nativo   • KPIs:               • CRUD Imóveis        • Pipeline vendas
@@ -160,20 +160,20 @@ Login (Payload Auth)    Dashboard             Gestão de Conteúdo    Ações de
   - agent                 - Conversão rate    • Bairros             • Relatórios
   - assistant             - Receita potencial • SEO
                         • Alertas pendentes   • Publicação/Revisão
-```
+```text
 
 **Permissões por Role:**
 
-| Recurso | admin | agent | assistant |
-|---------|-------|-------|-----------|
-| Imóveis — CRUD completo | ✅ | ✅ | Somente leitura |
-| Imóveis — Publicar/Despublicar | ✅ | ❌ | ❌ |
-| Leads — Visualizar todos | ✅ | Somente atribuídos | ❌ |
-| Leads — Criar/Editar | ✅ | ✅ | ✅ |
-| Pipeline — Mover estágios | ✅ | ✅ | ❌ |
-| Relatórios | ✅ | Parcial | ❌ |
-| Configurações do sistema | ✅ | ❌ | ❌ |
-| Usuários — Gerenciar | ✅ | ❌ | ❌ |
+| Recurso                        | admin | agent              | assistant       |
+| ------------------------------ | ----- | ------------------ | --------------- |
+| Imóveis — CRUD completo        | ✅    | ✅                 | Somente leitura |
+| Imóveis — Publicar/Despublicar | ✅    | ❌                 | ❌              |
+| Leads — Visualizar todos       | ✅    | Somente atribuídos | ❌              |
+| Leads — Criar/Editar           | ✅    | ✅                 | ✅              |
+| Pipeline — Mover estágios      | ✅    | ✅                 | ❌              |
+| Relatórios                     | ✅    | Parcial            | ❌              |
+| Configurações do sistema       | ✅    | ❌                 | ❌              |
+| Usuários — Gerenciar           | ✅    | ❌                 | ❌              |
 
 ---
 
@@ -183,103 +183,103 @@ Login (Payload Auth)    Dashboard             Gestão de Conteúdo    Ações de
 
 ```typescript
 interface Property {
-  id: string;
+  id: string
 
   // Identificação
-  title: string;
-  slug: string; // auto-generated, unique
-  code: string; // Código interno (ex: PRM-001), auto-increment
-  status: 'draft' | 'published' | 'sold' | 'rented' | 'paused';
+  title: string
+  slug: string // auto-generated, unique
+  code: string // Código interno (ex: PRM-001), auto-increment
+  status: 'draft' | 'published' | 'sold' | 'rented' | 'paused'
 
   // Tipo e Categoria
-  type: 'sale' | 'rent';
-  category: 'apartment' | 'house' | 'commercial' | 'land' | 'penthouse' | 'studio';
+  type: 'sale' | 'rent'
+  category: 'apartment' | 'house' | 'commercial' | 'land' | 'penthouse' | 'studio'
 
   // Preço
-  price: number;
-  condominiumFee?: number;
-  iptu?: number;
+  price: number
+  condominiumFee?: number
+  iptu?: number
 
   // Características Principais
-  bedrooms: number;
-  suites?: number;
-  bathrooms: number;
-  parkingSpots: number;
-  totalArea: number;        // m²
-  privateArea?: number;     // m² — área privativa
-  builtArea?: number;       // m² — casas
-  usableArea?: number;      // m² — apartamentos
+  bedrooms: number
+  suites?: number
+  bathrooms: number
+  parkingSpots: number
+  totalArea: number // m²
+  privateArea?: number // m² — área privativa
+  builtArea?: number // m² — casas
+  usableArea?: number // m² — apartamentos
 
   // Características Detalhadas
-  floor?: number;
-  totalFloors?: number;
-  constructionYear?: number;
-  propertyAge?: 'new' | 'under_construction' | 'used' | 'renovated';
-  facing?: 'north' | 'south' | 'east' | 'west';
-  position?: 'front' | 'back' | 'side';
+  floor?: number
+  totalFloors?: number
+  constructionYear?: number
+  propertyAge?: 'new' | 'under_construction' | 'used' | 'renovated'
+  facing?: 'north' | 'south' | 'east' | 'west'
+  position?: 'front' | 'back' | 'side'
 
   // Localização
   address: {
-    street: string;
-    number: string;
-    complement?: string;
-    neighborhood: Relationship<Neighborhood>; // FK
-    city: string;
-    state: string;
-    zipCode: string;
-    latitude?: number;
-    longitude?: number;
-  };
+    street: string
+    number: string
+    complement?: string
+    neighborhood: Relationship<Neighborhood> // FK
+    city: string
+    state: string
+    zipCode: string
+    latitude?: number
+    longitude?: number
+  }
 
   // Descrições
-  shortDescription: string; // max 160 chars (listagens + meta description fallback)
-  fullDescription: RichText; // Payload Rich Text (Lexical)
+  shortDescription: string // max 160 chars (listagens + meta description fallback)
+  fullDescription: RichText // Payload Rich Text (Lexical)
 
   // Mídia
-  featuredImage: Relationship<Media>; // FK
-  gallery: Relationship<Media>[]; // FK[]
-  videoUrl?: string; // YouTube/Vimeo URL
+  featuredImage: Relationship<Media> // FK
+  gallery: Relationship<Media>[] // FK[]
+  videoUrl?: string // YouTube/Vimeo URL
 
   // Comodidades e Características
-  amenities: Relationship<Amenity>[]; // FK[] — collection separada para i18n futuro
-  buildingFeatures?: Relationship<Amenity>[];
+  amenities: Relationship<Amenity>[] // FK[] — collection separada para i18n futuro
+  buildingFeatures?: Relationship<Amenity>[]
 
   // Acabamentos
-  flooring?: 'ceramic' | 'porcelain' | 'laminate' | 'hardwood' | 'vinyl' | 'other';
-  windowType?: 'aluminum' | 'pvc' | 'wood' | 'iron';
+  flooring?: 'ceramic' | 'porcelain' | 'laminate' | 'hardwood' | 'vinyl' | 'other'
+  windowType?: 'aluminum' | 'pvc' | 'wood' | 'iron'
 
   // Tags e Destaques
-  tags?: Relationship<Tag>[]; // "Novo", "Oportunidade", "Exclusivo"
-  featured: boolean; // Exibir na homepage
-  highlightText?: string; // "Últimas unidades", "Aceita permuta"
+  tags?: Relationship<Tag>[] // "Novo", "Oportunidade", "Exclusivo"
+  featured: boolean // Exibir na homepage
+  highlightText?: string // "Últimas unidades", "Aceita permuta"
 
   // Relacionamentos
-  agent: Relationship<User>; // Corretor responsável
+  agent: Relationship<User> // Corretor responsável
 
   // SEO (Payload SEO Plugin)
   meta: {
-    title?: string;
-    description?: string;
-    image?: Relationship<Media>;
-  };
+    title?: string
+    description?: string
+    image?: Relationship<Media>
+  }
 
   // Analytics
-  viewCount: number; // Incrementado via API route
-  contactCount: number; // Incrementado ao gerar lead
+  viewCount: number // Incrementado via API route
+  contactCount: number // Incrementado ao gerar lead
 
   // Timestamps (Payload auto)
-  createdAt: Date;
-  updatedAt: Date;
-  publishedAt?: Date;
+  createdAt: Date
+  updatedAt: Date
+  publishedAt?: Date
 
   // Busca (campo virtual, populado por hook)
-  _searchIndex?: string; // tsvector: title + description + neighborhood + code
+  _searchIndex?: string // tsvector: title + description + neighborhood + code
 }
-```
+```text
 
 ### 3.1.1 Campos Exibidos no Card de Imóvel (Listagem)
 
-```
+```text
 ┌─────────────────────────────────────────────┐
 │ [Imagem Destaque]           [Tag: Exclusivo] │
 │ [Badge: Venda]  [Badge: Apartamento]        │
@@ -293,7 +293,7 @@ interface Property {
 ├─────────────────────────────────────────────┤
 │ [Código: PRM-001]     [Ver Detalhes →]      │
 └─────────────────────────────────────────────┘
-```
+```text
 
 **Campos obrigatórios no card:**
 
@@ -336,199 +336,222 @@ interface Property {
 
 ```typescript
 interface Neighborhood {
-  id: string;
-  name: string;
-  slug: string; // unique
-  description?: RichText;
-  featuredImage?: Relationship<Media>;
-  averagePrice?: number; // Calculado por hook (média dos imóveis ativos)
-  propertyCount?: number; // Virtual field — count de imóveis ativos
-  city: string;
-  state: string;
-  active: boolean;
+  id: string
+  name: string
+  slug: string // unique
+  description?: RichText
+  featuredImage?: Relationship<Media>
+  averagePrice?: number // Calculado por hook (média dos imóveis ativos)
+  propertyCount?: number // Virtual field — count de imóveis ativos
+  city: string
+  state: string
+  active: boolean
   // SEO
   meta?: {
-    title?: string;
-    description?: string;
-  };
-  createdAt: Date;
-  updatedAt: Date;
+    title?: string
+    description?: string
+  }
+  createdAt: Date
+  updatedAt: Date
 }
-```
+```text
 
 ### 3.3 Mídia (Media)
 
 ```typescript
 interface Media {
-  id: string;
-  filename: string;
-  alt: string;
-  mimeType: string;
-  filesize: number;
-  width?: number;
-  height?: number;
-  url: string; // Cloudinary URL
-  thumbnailURL?: string;
-  focalX?: number; // Payload focal point
-  focalY?: number;
-  folder?: string; // Organização: "properties/PRM-001", "neighborhoods"
-  createdAt: Date;
-  updatedAt: Date;
+  id: string
+  filename: string
+  alt: string
+  mimeType: string
+  filesize: number
+  width?: number
+  height?: number
+  url: string // Cloudinary URL
+  thumbnailURL?: string
+  focalX?: number // Payload focal point
+  focalY?: number
+  folder?: string // Organização: "properties/PRM-001", "neighborhoods"
+  createdAt: Date
+  updatedAt: Date
 }
-```
+```text
 
 ### 3.4 Tags
 
 ```typescript
 interface Tag {
-  id: string;
-  label: string; // "Novo", "Oportunidade", "Exclusivo", "Últimas unidades"
-  slug: string;
-  color: string; // Hex color para badge
-  active: boolean;
+  id: string
+  label: string // "Novo", "Oportunidade", "Exclusivo", "Últimas unidades"
+  slug: string
+  color: string // Hex color para badge
+  active: boolean
 }
-```
+```text
 
 ### 3.5 Comodidades (Amenities)
 
 ```typescript
 interface Amenity {
-  id: string;
-  label: string; // "Piscina", "Academia"
-  slug: string; // "pool", "gym"
-  icon: string; // Nome do ícone Lucide (ex: "waves", "dumbbell")
-  category: 'property' | 'building'; // Comodidade do imóvel ou do condomínio
-  active: boolean;
+  id: string
+  label: string // "Piscina", "Academia"
+  slug: string // "pool", "gym"
+  icon: string // Nome do ícone Lucide (ex: "waves", "dumbbell")
+  category: 'property' | 'building' // Comodidade do imóvel ou do condomínio
+  active: boolean
 }
-```
+```text
 
 ### 3.6 Leads (CRM)
 
 ```typescript
 interface Lead {
-  id: string;
+  id: string
 
   // Dados Pessoais
-  name: string;
-  email?: string;
-  phone: string; // Obrigatório — principal canal de contato
-  whatsapp?: string; // Se diferente do phone
+  name: string
+  email?: string
+  phone: string // Obrigatório — principal canal de contato
+  whatsapp?: string // Se diferente do phone
 
   // Origem
-  source: 'website' | 'whatsapp' | 'facebook' | 'instagram' | 'google_ads' | 'indication' | 'portal' | 'other';
-  sourceDetails?: string; // URL da página, nome da campanha, UTM params
-  utmSource?: string;
-  utmMedium?: string;
-  utmCampaign?: string;
+  source:
+    | 'website'
+    | 'whatsapp'
+    | 'facebook'
+    | 'instagram'
+    | 'google_ads'
+    | 'indication'
+    | 'portal'
+    | 'other'
+  sourceDetails?: string // URL da página, nome da campanha, UTM params
+  utmSource?: string
+  utmMedium?: string
+  utmCampaign?: string
 
   // Interesse
-  interestType: 'buy' | 'rent' | 'sell' | 'invest';
-  budget?: { min?: number; max?: number }; // Range em vez de valor único
-  preferredNeighborhoods?: Relationship<Neighborhood>[];
-  preferredCategories?: Property['category'][]; // Tipos de imóvel de interesse
+  interestType: 'buy' | 'rent' | 'sell' | 'invest'
+  budget?: { min?: number; max?: number } // Range em vez de valor único
+  preferredNeighborhoods?: Relationship<Neighborhood>[]
+  preferredCategories?: Property['category'][] // Tipos de imóvel de interesse
 
   // Imóveis Visualizados/Interessados
-  viewedProperties?: Relationship<Property>[]; // Rastreio de interesse
-  favoriteProperties?: Relationship<Property>[]; // Marcados explicitamente
+  viewedProperties?: Relationship<Property>[] // Rastreio de interesse
+  favoriteProperties?: Relationship<Property>[] // Marcados explicitamente
 
   // Status do Funil
-  status: 'new' | 'contacted' | 'qualified' | 'visit_scheduled' | 'proposal_sent' | 'negotiation' | 'closed_won' | 'closed_lost';
-  priority: 'low' | 'medium' | 'high' | 'hot';
-  lostReason?: 'price' | 'location' | 'timing' | 'competitor' | 'no_response' | 'other';
-  lostReasonDetails?: string;
+  status:
+    | 'new'
+    | 'contacted'
+    | 'qualified'
+    | 'visit_scheduled'
+    | 'proposal_sent'
+    | 'negotiation'
+    | 'closed_won'
+    | 'closed_lost'
+  priority: 'low' | 'medium' | 'high' | 'hot'
+  lostReason?: 'price' | 'location' | 'timing' | 'competitor' | 'no_response' | 'other'
+  lostReasonDetails?: string
 
   // Atribuição
-  assignedTo?: Relationship<User>; // Corretor responsável
+  assignedTo?: Relationship<User> // Corretor responsável
 
   // Consentimento (LGPD)
-  lgpdConsent: boolean;
-  consentDate: Date;
-  consentIP?: string;
+  lgpdConsent: boolean
+  consentDate: Date
+  consentIP?: string
 
   // Score (calculado)
-  score?: number; // 0-100, baseado em engajamento
+  score?: number // 0-100, baseado em engajamento
 
-  createdAt: Date;
-  updatedAt: Date;
-  lastContactAt?: Date; // Atualizado por hook ao registrar atividade
+  createdAt: Date
+  updatedAt: Date
+  lastContactAt?: Date // Atualizado por hook ao registrar atividade
 }
-```
+```text
 
 ### 3.7 Oportunidades (Deals)
 
 ```typescript
 interface Deal {
-  id: string;
-  lead: Relationship<Lead>;
-  property: Relationship<Property>;
-  type: 'sale' | 'rent';
+  id: string
+  lead: Relationship<Lead>
+  property: Relationship<Property>
+  type: 'sale' | 'rent'
 
   // Valores
-  askingPrice: number; // Preço pedido
-  offerPrice?: number; // Proposta do cliente
-  finalPrice?: number; // Preço fechado
+  askingPrice: number // Preço pedido
+  offerPrice?: number // Proposta do cliente
+  finalPrice?: number // Preço fechado
 
   // Status
-  stage: 'interest' | 'visit' | 'proposal' | 'negotiation' | 'documentation' | 'closed_won' | 'closed_lost';
-  probability?: number; // % de chance de fechar
+  stage:
+    | 'interest'
+    | 'visit'
+    | 'proposal'
+    | 'negotiation'
+    | 'documentation'
+    | 'closed_won'
+    | 'closed_lost'
+  probability?: number // % de chance de fechar
 
   // Comissão
-  commissionRate?: number;
-  commissionValue?: number; // Calculado: finalPrice * commissionRate
+  commissionRate?: number
+  commissionValue?: number // Calculado: finalPrice * commissionRate
 
   // Datas
-  expectedCloseDate?: Date;
-  closedAt?: Date;
+  expectedCloseDate?: Date
+  closedAt?: Date
 
-  agent: Relationship<User>;
-  notes?: string;
+  agent: Relationship<User>
+  notes?: string
 
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Date
+  updatedAt: Date
 }
-```
+```text
 
 ### 3.8 Atividades (Activities)
 
 ```typescript
 interface Activity {
-  id: string;
-  lead: Relationship<Lead>;
-  deal?: Relationship<Deal>;
-  type: 'call' | 'whatsapp' | 'email' | 'visit' | 'note' | 'task' | 'proposal' | 'system';
-  description: string;
-  scheduledAt?: Date;
-  completedAt?: Date;
-  dueAt?: Date; // Para tarefas
-  result?: 'success' | 'no_answer' | 'callback' | 'not_interested' | 'rescheduled' | 'other';
-  isOverdue?: boolean; // Virtual field: dueAt < now && !completedAt
-  createdBy: Relationship<User>;
-  createdAt: Date;
+  id: string
+  lead: Relationship<Lead>
+  deal?: Relationship<Deal>
+  type: 'call' | 'whatsapp' | 'email' | 'visit' | 'note' | 'task' | 'proposal' | 'system'
+  description: string
+  scheduledAt?: Date
+  completedAt?: Date
+  dueAt?: Date // Para tarefas
+  result?: 'success' | 'no_answer' | 'callback' | 'not_interested' | 'rescheduled' | 'other'
+  isOverdue?: boolean // Virtual field: dueAt < now && !completedAt
+  createdBy: Relationship<User>
+  createdAt: Date
 }
-```
+```text
 
 ### 3.9 Usuários (Users — Payload Auth Collection)
 
 ```typescript
 interface User {
-  id: string;
-  email: string; // Unique, usado para login (Payload Auth)
-  name: string;
-  role: 'admin' | 'agent' | 'assistant';
-  phone?: string;
-  avatar?: Relationship<Media>;
-  creci?: string; // Registro profissional do corretor
-  bio?: string; // Exibido na página do imóvel
-  active: boolean;
-  commissionRate?: number; // % padrão para corretores
+  id: string
+  email: string // Unique, usado para login (Payload Auth)
+  name: string
+  role: 'admin' | 'agent' | 'assistant'
+  phone?: string
+  avatar?: Relationship<Media>
+  creci?: string // Registro profissional do corretor
+  bio?: string // Exibido na página do imóvel
+  active: boolean
+  commissionRate?: number // % padrão para corretores
 
   // Payload Auth fields (automáticos)
   // hash, salt, loginAttempts, lockUntil, etc.
 
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Date
+  updatedAt: Date
 }
-```
+```text
 
 ---
 
@@ -577,9 +600,9 @@ interface User {
 
 #### 4.2.1 Pipeline de Vendas
 
-```
+```text
 Novo → Contactado → Qualificado → Visita Agendada → Proposta Enviada → Negociação → Fechado (Ganho/Perdido)
-```
+```text
 
 **Funcionalidades:**
 
@@ -637,14 +660,14 @@ Novo → Contactado → Qualificado → Visita Agendada → Proposta Enviada →
 
 ### 5.1 Rotas Públicas (Frontend)
 
-| Método | Rota | Descrição |
-|--------|------|-----------|
-| GET | `/api/properties` | Listagem com filtros, paginação, ordenação |
-| GET | `/api/properties/[slug]` | Detalhes do imóvel |
-| GET | `/api/neighborhoods` | Lista de bairros ativos |
-| POST | `/api/leads` | Criação de lead (formulário de contato) |
-| POST | `/api/properties/[id]/view` | Incrementar view count |
-| GET | `/api/search` | Full-text search com `pg_trgm` |
+| Método | Rota                        | Descrição                                  |
+| ------ | --------------------------- | ------------------------------------------ |
+| GET    | `/api/properties`           | Listagem com filtros, paginação, ordenação |
+| GET    | `/api/properties/[slug]`    | Detalhes do imóvel                         |
+| GET    | `/api/neighborhoods`        | Lista de bairros ativos                    |
+| POST   | `/api/leads`                | Criação de lead (formulário de contato)    |
+| POST   | `/api/properties/[id]/view` | Incrementar view count                     |
+| GET    | `/api/search`               | Full-text search com `pg_trgm`             |
 
 ### 5.2 Rotas Autenticadas (Admin — Payload REST/Local API)
 
@@ -652,21 +675,21 @@ Payload CMS expõe automaticamente REST API para todas as collections em `/api/{
 
 ### 5.3 Webhooks (Payload Hooks)
 
-| Evento | Ação |
-|--------|------|
+| Evento                             | Ação                                                           |
+| ---------------------------------- | -------------------------------------------------------------- |
 | `properties.afterChange` (publish) | Revalidar ISR da página, notificar leads com interesse similar |
-| `leads.afterCreate` | Enviar e-mail para corretor, distribuir via round-robin |
-| `activities.afterCreate` | Atualizar `lastContactAt` do lead |
-| `leads.afterChange` (closed_lost) | Validar preenchimento de `lostReason` |
+| `leads.afterCreate`                | Enviar e-mail para corretor, distribuir via round-robin        |
+| `activities.afterCreate`           | Atualizar `lastContactAt` do lead                              |
+| `leads.afterChange` (closed_lost)  | Validar preenchimento de `lostReason`                          |
 
 ### 5.4 Rate Limiting
 
-| Rota | Limite |
-|------|--------|
-| `POST /api/leads` | 5 req/min por IP |
+| Rota                             | Limite                  |
+| -------------------------------- | ----------------------- |
+| `POST /api/leads`                | 5 req/min por IP        |
 | `POST /api/properties/[id]/view` | 1 req/min por IP+imóvel |
-| `GET /api/properties` | 60 req/min por IP |
-| `GET /api/search` | 30 req/min por IP |
+| `GET /api/properties`            | 60 req/min por IP       |
+| `GET /api/search`                | 30 req/min por IP       |
 
 ---
 
@@ -674,12 +697,12 @@ Payload CMS expõe automaticamente REST API para todas as collections em `/api/{
 
 ### 6.1 ISR (Incremental Static Regeneration)
 
-| Página | Estratégia | Revalidação |
-|--------|-----------|-------------|
-| Homepage | ISR | 60s + on-demand via webhook |
-| Listagem `/imoveis` | SSR com cache | `unstable_cache` 30s |
-| Detalhe `/imovel/[slug]` | ISR | On-demand via `revalidatePath` no Payload hook |
-| Bairros | ISR | 3600s |
+| Página                   | Estratégia    | Revalidação                                    |
+| ------------------------ | ------------- | ---------------------------------------------- |
+| Homepage                 | ISR           | 60s + on-demand via webhook                    |
+| Listagem `/imoveis`      | SSR com cache | `unstable_cache` 30s                           |
+| Detalhe `/imovel/[slug]` | ISR           | On-demand via `revalidatePath` no Payload hook |
+| Bairros                  | ISR           | 3600s                                          |
 
 ### 6.2 Banco de Dados
 
@@ -709,13 +732,13 @@ Payload CMS expõe automaticamente REST API para todas as collections em `/api/{
 
 ### 7.2 E-mail (Resend)
 
-| Trigger | Template | Destinatário |
-|---------|----------|-------------|
-| Novo lead | "Novo lead recebido" | Corretor atribuído |
-| Lead sem contato >24h | "Alerta: lead pendente" | Corretor + Admin |
-| Tarefa próxima (1h) | "Lembrete de tarefa" | Corretor |
-| Imóvel publicado | "Novo imóvel disponível" | Leads com interesse similar |
-| Visita agendada | "Confirmação de visita" | Lead + Corretor |
+| Trigger               | Template                 | Destinatário                |
+| --------------------- | ------------------------ | --------------------------- |
+| Novo lead             | "Novo lead recebido"     | Corretor atribuído          |
+| Lead sem contato >24h | "Alerta: lead pendente"  | Corretor + Admin            |
+| Tarefa próxima (1h)   | "Lembrete de tarefa"     | Corretor                    |
+| Imóvel publicado      | "Novo imóvel disponível" | Leads com interesse similar |
+| Visita agendada       | "Confirmação de visita"  | Lead + Corretor             |
 
 ### 7.3 Google
 
@@ -730,18 +753,18 @@ Payload CMS expõe automaticamente REST API para todas as collections em `/api/{
 
 ### 8.1 Captura e Distribuição de Leads
 
-```
+```text
 Lead criado (formulário/WhatsApp)
   → Verificar duplicidade (phone + email)
   → Se duplicado: merge + notificar corretor existente
   → Se novo: distribuir via round-robin para corretor ativo
   → Enviar e-mail de notificação ao corretor
   → Se não contactado em 24h: escalar para admin
-```
+```text
 
 ### 8.2 Score de Lead
 
-```
+```text
 +10 pontos: Visualizou imóvel
 +20 pontos: Clicou WhatsApp
 +30 pontos: Preencheu formulário
@@ -749,16 +772,16 @@ Lead criado (formulário/WhatsApp)
 +50 pontos: Recebeu proposta
 -20 pontos: Sem interação em 7 dias
 -50 pontos: Sem interação em 30 dias
-```
+```text
 
 ### 8.3 Notificação de Novos Imóveis
 
-```
+```text
 Imóvel publicado
   → Buscar leads com interesse similar (bairro + faixa de preço + categoria)
   → Enviar e-mail: "Novo imóvel que pode te interessar"
   → Registrar atividade tipo "system" no lead
-```
+```text
 
 ---
 
@@ -775,16 +798,16 @@ Imóvel publicado
 
 ### 9.2 LGPD Compliance
 
-| Requisito | Implementação |
-|-----------|--------------|
-| Consentimento explícito | Checkbox obrigatório no formulário + timestamp + IP |
-| Direito de acesso | API route `/api/lgpd/export?email=` — exporta dados do lead em JSON |
-| Direito de exclusão | API route `/api/lgpd/delete?email=` — anonimiza dados (não deleta para integridade referencial) |
-| Retenção de dados | Leads inativos >24 meses: anonimização automática via cron job |
-| Portabilidade | Export CSV/JSON dos dados pessoais |
-| DPO | Configurável nas settings do Payload (nome + e-mail do encarregado) |
-| Política de Privacidade | Página `/privacidade` com texto completo |
-| Cookie consent | Banner de cookies com opt-in (analytics) |
+| Requisito               | Implementação                                                                                   |
+| ----------------------- | ----------------------------------------------------------------------------------------------- |
+| Consentimento explícito | Checkbox obrigatório no formulário + timestamp + IP                                             |
+| Direito de acesso       | API route `/api/lgpd/export?email=` — exporta dados do lead em JSON                             |
+| Direito de exclusão     | API route `/api/lgpd/delete?email=` — anonimiza dados (não deleta para integridade referencial) |
+| Retenção de dados       | Leads inativos >24 meses: anonimização automática via cron job                                  |
+| Portabilidade           | Export CSV/JSON dos dados pessoais                                                              |
+| DPO                     | Configurável nas settings do Payload (nome + e-mail do encarregado)                             |
+| Política de Privacidade | Página `/privacidade` com texto completo                                                        |
+| Cookie consent          | Banner de cookies com opt-in (analytics)                                                        |
 
 ---
 
@@ -792,12 +815,12 @@ Imóvel publicado
 
 ### 10.1 Estratégia
 
-| Tipo | Ferramenta | Escopo |
-|------|-----------|--------|
-| Unit | Vitest | Utils, hooks, formatters |
-| Integration | Vitest + Testing Library | Componentes com estado, formulários |
-| E2E | Playwright | Fluxos críticos: busca, contato, login admin, CRUD imóvel |
-| Visual | Playwright screenshots | Regressão visual de páginas-chave |
+| Tipo        | Ferramenta               | Escopo                                                    |
+| ----------- | ------------------------ | --------------------------------------------------------- |
+| Unit        | Vitest                   | Utils, hooks, formatters                                  |
+| Integration | Vitest + Testing Library | Componentes com estado, formulários                       |
+| E2E         | Playwright               | Fluxos críticos: busca, contato, login admin, CRUD imóvel |
+| Visual      | Playwright screenshots   | Regressão visual de páginas-chave                         |
 
 ### 10.2 Fluxos E2E Críticos
 
@@ -811,13 +834,13 @@ Imóvel publicado
 
 ## 11. Monitoramento e Observabilidade
 
-| Aspecto | Ferramenta | Métrica |
-|---------|-----------|---------|
-| Erros | Sentry | Error rate, stack traces, breadcrumbs |
-| Performance | Vercel Analytics | TTFB, FCP, LCP, CLS, INP |
-| Uptime | Vercel (MVP) / Uptime Kuma (VPS) | Uptime %, response time |
-| Logs | Vercel Logs (MVP) / Loki (VPS) | Request logs, error logs |
-| Business | Dashboard CRM | Leads/dia, conversão, receita |
+| Aspecto     | Ferramenta                       | Métrica                               |
+| ----------- | -------------------------------- | ------------------------------------- |
+| Erros       | Sentry                           | Error rate, stack traces, breadcrumbs |
+| Performance | Vercel Analytics                 | TTFB, FCP, LCP, CLS, INP              |
+| Uptime      | Vercel (MVP) / Uptime Kuma (VPS) | Uptime %, response time               |
+| Logs        | Vercel Logs (MVP) / Loki (VPS)   | Request logs, error logs              |
+| Business    | Dashboard CRM                    | Leads/dia, conversão, receita         |
 
 **Alertas:**
 
@@ -873,7 +896,7 @@ Imóvel publicado
 
 **Objetivo:** CMS funcionando com dados reais no site.
 
-**Semana 1: Setup e Estrutura**
+#### Semana 1: Setup e Estrutura
 
 - [ ] Instalar Payload CMS 3.x no projeto existente
 - [ ] Configurar PostgreSQL (Neon.tech) + connection pooler
@@ -883,7 +906,7 @@ Imóvel publicado
 - [ ] Configurar Sentry para error tracking
 - [ ] Seed: migrar dados mockados atuais para o banco
 
-**Semana 2: CMS Core**
+#### Semana 2: CMS Core
 
 - [ ] Formulário multi-etapas de cadastro de imóvel
 - [ ] Upload de imagens com drag-and-drop e reordenação
@@ -892,7 +915,7 @@ Imóvel publicado
 - [ ] SEO plugin configurado
 - [ ] Ações em lote (publicar, pausar)
 
-**Semana 3: Frontend Integration**
+#### Semana 3: Frontend Integration
 
 - [ ] Conectar listagem ao Payload Local API
 - [ ] Página de detalhes dinâmica com ISR
@@ -905,7 +928,7 @@ Imóvel publicado
 
 **Objetivo:** Captura e gestão de leads.
 
-**Semana 4: Leads e Captura**
+#### Semana 4: Leads e Captura
 
 - [ ] Collection Leads + Deals
 - [ ] Formulário de contato com LGPD consent
@@ -914,7 +937,7 @@ Imóvel publicado
 - [ ] Detecção de duplicidade
 - [ ] API routes com rate limiting
 
-**Semana 5: Pipeline e Atividades**
+#### Semana 5: Pipeline e Atividades
 
 - [ ] Kanban de pipeline (drag-and-drop)
 - [ ] Collection Activities
@@ -923,7 +946,7 @@ Imóvel publicado
 - [ ] Score automático de leads
 - [ ] Notificações por e-mail (Resend)
 
-**Semana 6: Analytics e Relatórios**
+#### Semana 6: Analytics e Relatórios
 
 - [ ] Dashboard de métricas no admin
 - [ ] Relatórios exportáveis (CSV)
@@ -936,7 +959,7 @@ Imóvel publicado
 
 **Objetivo:** Automações, LGPD completo, preparação para escala.
 
-**Semana 7: Automações e LGPD**
+#### Semana 7: Automações e LGPD
 
 - [ ] Workflow: notificar leads sobre novos imóveis
 - [ ] Workflow: escalar leads sem contato >24h
@@ -945,7 +968,7 @@ Imóvel publicado
 - [ ] LGPD: rotas de export/delete, anonimização automática, cookie consent
 - [ ] Política de privacidade
 
-**Semana 8: Preparação para Escala**
+#### Semana 8: Preparação para Escala
 
 - [ ] Dockerização (Dockerfile + docker-compose)
 - [ ] Scripts de backup automatizado (pg_dump → S3)
@@ -958,7 +981,7 @@ Imóvel publicado
 
 ## 14. Modelo de Dados Relacional
 
-```
+```text
 ┌──────────────┐       ┌──────────────────────────┐       ┌──────────────┐
 │    Users     │       │       Properties          │       │Neighborhoods │
 ├──────────────┤       ├──────────────────────────┤       ├──────────────┤
@@ -1019,7 +1042,7 @@ Imóvel publicado
                        │ probability          │
                        │ expected_close_date  │
                        └──────────────────────┘
-```
+````
 
 ---
 
@@ -1073,4 +1096,4 @@ Imóvel publicado
 
 ---
 
-*PRD v2.0 — PrimeUrban CMS+CRM. Stack: Next.js 16 + Payload CMS 3.x + PostgreSQL.*
+_PRD v2.0 — PrimeUrban CMS+CRM. Stack: Next.js 16 + Payload CMS 3.x + PostgreSQL._
