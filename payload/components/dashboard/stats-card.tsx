@@ -1,6 +1,6 @@
 import type { LucideIcon } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { cn } from '@/lib/utils'
 
 interface StatsCardProps {
   title: string
@@ -9,6 +9,7 @@ interface StatsCardProps {
   icon?: LucideIcon
   trend?: { value: number; label: string }
   badge?: { text: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }
+  variant?: 'default' | 'featured'
 }
 
 export function StatsCard({
@@ -18,28 +19,33 @@ export function StatsCard({
   icon: Icon,
   trend,
   badge,
+  variant = 'default',
 }: StatsCardProps) {
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
-        {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
-      </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold">{value}</div>
-        {description && <p className="text-xs text-muted-foreground">{description}</p>}
-        {trend && (
-          <Badge variant="secondary" className="mt-2">
-            {trend.value > 0 ? '+' : ''}
-            {trend.value}% {trend.label}
-          </Badge>
+    <article className={cn('pu-stat-card', variant === 'featured' && 'pu-stat-card--featured')}>
+      <header className="pu-stat-card__header">
+        <p className="pu-stat-card__title">{title}</p>
+        {Icon && (
+          <span className="pu-stat-card__icon" aria-hidden>
+            <Icon className="h-4 w-4" />
+          </span>
         )}
-        {badge && (
-          <Badge variant={badge.variant} className="mt-2">
-            {badge.text}
-          </Badge>
-        )}
-      </CardContent>
-    </Card>
+      </header>
+      <div className="pu-stat-card__body">
+        <p className="pu-stat-card__value">{value}</p>
+        {description && <p className="pu-stat-card__description">{description}</p>}
+      </div>
+      {(trend || badge) && (
+        <footer className="pu-stat-card__footer">
+          {trend && (
+            <Badge variant="secondary">
+              {trend.value > 0 ? '+' : ''}
+              {trend.value}% {trend.label}
+            </Badge>
+          )}
+          {badge && <Badge variant={badge.variant}>{badge.text}</Badge>}
+        </footer>
+      )}
+    </article>
   )
 }

@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from 'react'
 import { useAuth } from '@payloadcms/ui'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import type { Lead } from '@/payload/payload-types'
+import { cn } from '@/lib/utils'
 
 interface RecentLeadsProps {
   limit?: number
@@ -12,16 +12,16 @@ interface RecentLeadsProps {
 
 const statusConfig: Record<
   string,
-  { label: string; color: string }
+  { label: string; className: string }
 > = {
-  new: { label: 'Novo', color: 'bg-blue-500' },
-  contacted: { label: 'Contactado', color: 'bg-yellow-500' },
-  qualified: { label: 'Qualificado', color: 'bg-green-500' },
-  visit_scheduled: { label: 'Visita', color: 'bg-purple-500' },
-  proposal_sent: { label: 'Proposta', color: 'bg-orange-500' },
-  negotiation: { label: 'Negociação', color: 'bg-cyan-500' },
-  closed_won: { label: 'Ganho', color: 'bg-emerald-600' },
-  closed_lost: { label: 'Perdido', color: 'bg-red-500' },
+  new: { label: 'Novo', className: 'pu-status-badge pu-status-badge--new' },
+  contacted: { label: 'Contactado', className: 'pu-status-badge pu-status-badge--contacted' },
+  qualified: { label: 'Qualificado', className: 'pu-status-badge pu-status-badge--qualified' },
+  visit_scheduled: { label: 'Visita', className: 'pu-status-badge pu-status-badge--visit' },
+  proposal_sent: { label: 'Proposta', className: 'pu-status-badge pu-status-badge--proposal' },
+  negotiation: { label: 'Negociação', className: 'pu-status-badge pu-status-badge--negotiation' },
+  closed_won: { label: 'Ganho', className: 'pu-status-badge pu-status-badge--won' },
+  closed_lost: { label: 'Perdido', className: 'pu-status-badge pu-status-badge--lost' },
 }
 
 export function RecentLeads({ limit = 5 }: RecentLeadsProps) {
@@ -52,15 +52,19 @@ export function RecentLeads({ limit = 5 }: RecentLeadsProps) {
   }, [user, limit])
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Leads Recentes</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <section className="pu-admin-panel">
+      <header className="pu-admin-panel__header">
+        <p className="pu-admin-panel__kicker">Pipeline</p>
+        <h2 className="pu-admin-panel__title">Leads recentes</h2>
+        <p className="pu-admin-panel__description">
+          Acompanhe os contatos mais novos e priorize os próximos passos.
+        </p>
+      </header>
+      <div className="pu-admin-panel__content">
         {loading ? (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="flex items-center justify-between animate-pulse">
+              <div key={i} className="pu-lead-row animate-pulse">
                 <div className="space-y-2">
                   <div className="h-4 w-32 bg-muted rounded" />
                   <div className="h-3 w-24 bg-muted rounded" />
@@ -70,29 +74,29 @@ export function RecentLeads({ limit = 5 }: RecentLeadsProps) {
             ))}
           </div>
         ) : leads.length === 0 ? (
-          <p className="text-muted-foreground text-center py-4">Nenhum lead encontrado</p>
+          <p className="pu-admin-panel__empty">Nenhum lead encontrado no momento.</p>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {leads.map((lead) => {
               const config = statusConfig[lead.status] || {
                 label: lead.status,
-                color: 'bg-gray-500',
+                className: 'pu-status-badge',
               }
               return (
-                <div key={lead.id} className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium">{lead.name}</p>
-                    <p className="text-sm text-muted-foreground">{lead.phone}</p>
+                <article key={lead.id} className="pu-lead-row">
+                  <div className="pu-lead-row__main">
+                    <p className="pu-lead-row__name">{lead.name}</p>
+                    <p className="pu-lead-row__meta">{lead.phone}</p>
                   </div>
-                  <Badge className={`${config.color} text-white hover:${config.color}`}>
+                  <Badge className={cn(config.className)}>
                     {config.label}
                   </Badge>
-                </div>
+                </article>
               )
             })}
           </div>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </section>
   )
 }

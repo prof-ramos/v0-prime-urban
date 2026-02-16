@@ -8,10 +8,11 @@ export function QuickActions() {
   const router = useRouter()
 
   return (
-    <div className="flex gap-2">
+    <div className="pu-quick-actions" role="group" aria-label="Ações rápidas">
       <Button
-        variant="outline"
+        variant="secondary"
         size="sm"
+        className="pu-quick-actions__button"
         onClick={() => router.push('/admin/collections/properties/create')}
       >
         <Plus className="h-4 w-4 mr-2" />
@@ -20,6 +21,7 @@ export function QuickActions() {
       <Button
         variant="outline"
         size="sm"
+        className="pu-quick-actions__button"
         onClick={() => router.push('/admin/collections/leads/create')}
       >
         <MessageSquare className="h-4 w-4 mr-2" />
@@ -28,6 +30,7 @@ export function QuickActions() {
       <Button
         variant="outline"
         size="sm"
+        className="pu-quick-actions__button"
         onClick={() => router.push('/admin/collections/activities/create')}
       >
         <Calendar className="h-4 w-4 mr-2" />
