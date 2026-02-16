@@ -1,19 +1,21 @@
 import { sqliteAdapter } from '@payloadcms/db-sqlite'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
-import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
+import { buildConfig } from 'payload'
 import { seoPlugin } from '@payloadcms/plugin-seo'
+import type { GenerateDescription, GenerateTitle } from '@payloadcms/plugin-seo/types'
+import { pt } from '@payloadcms/translations/languages/pt'
 
-import { Users } from './collections/users'
-import { Media } from './collections/media'
-import { Tags } from './collections/tags'
+import { Activities } from './collections/activities'
 import { Amenities } from './collections/amenities'
+import { Deals } from './collections/deals'
+import { Leads } from './collections/leads'
+import { MEDIA } from './collections/media'
 import { Neighborhoods } from './collections/neighborhoods'
 import { Properties } from './collections/properties'
-import { Leads } from './collections/leads'
-import { Deals } from './collections/deals'
-import { Activities } from './collections/activities'
+import { Tags } from './collections/tags'
+import { Users } from './collections/users'
 
 import { SETTINGS } from './globals/settings'
 import { LGPD_SETTINGS } from './globals/lgpd-settings'
@@ -35,22 +37,40 @@ const getSecret = (): string => {
   return devSecret
 }
 
-interface SEOArgs {
-  doc: {
-    title?: string
-    name?: string
-    shortDescription?: string
-  }
+interface SEODoc {
+  title?: string
+  name?: string
+  shortDescription?: string
 }
 
+type SEOGenerateTitleArgs = Parameters<GenerateTitle<SEODoc>>[0]
+type SEOGenerateDescriptionArgs = Parameters<GenerateDescription<SEODoc>>[0]
+
 export default buildConfig({
+  i18n: {
+    supportedLanguages: { pt },
+  },
   admin: {
     importMap: {
       baseDir: path.resolve(dirname),
     },
     user: 'users',
+    components: {
+      graphics: {
+        Logo: '/payload/components/logo#Logo',
+      },
+      views: {
+        dashboard: {
+          Component: '/payload/components/dashboard/AgentDashboard#AgentDashboard',
+        },
+      },
+    },
+    meta: {
+      title: 'PrimeUrban Admin',
+      description: 'Painel Administrativo - PrimeUrban Imóveis',
+    },
   },
-  collections: [Users, Media, Tags, Amenities, Neighborhoods, Properties, Leads, Deals, Activities],
+  collections: [Users, MEDIA, Tags, Amenities, Neighborhoods, Properties, Leads, Deals, Activities],
   globals: [SETTINGS, LGPD_SETTINGS],
   editor: lexicalEditor({}),
   secret: getSecret(),
@@ -67,12 +87,12 @@ export default buildConfig({
       collections: ['properties', 'neighborhoods'],
       globals: ['settings'],
       uploadsCollection: 'media',
-      generateTitle: (args: unknown) => {
-        const { doc } = args as SEOArgs
+      generateTitle: (args: SEOGenerateTitleArgs) => {
+        const { doc } = args
         return `PrimeUrban | ${doc?.title || doc?.name || 'Imóveis'}`
       },
-      generateDescription: (args: unknown) => {
-        const { doc } = args as SEOArgs
+      generateDescription: (args: SEOGenerateDescriptionArgs) => {
+        const { doc } = args
         return doc?.shortDescription || 'Especialista em imóveis de alto padrão.'
       },
     }),

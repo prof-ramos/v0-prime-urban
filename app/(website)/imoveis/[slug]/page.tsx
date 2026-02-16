@@ -1,4 +1,3 @@
-import { notFound } from "next/navigation"
 import Link from "next/link"
 import { ChevronLeft, Share2, Heart } from "lucide-react"
 import { Header } from "@/components/header"
@@ -8,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { getPropertyBySlug, getPropertySlugs } from "@/lib/api"
 import { formatCurrency } from "@/lib/utils"
 import type { Metadata } from "next"
+import type { Property } from "@/lib/types"
 
 export const revalidate = 3600 // Revalida a cada 1 hora (ISR)
 
@@ -86,13 +86,33 @@ export async function generateStaticParams() {
  * Server Component que busca dados do datasource atual e renderiza a página de detalhe
  */
 export default async function PropertyPage({ params }: PropertyPageProps) {
-  try {
-    const { slug } = await params
-    const property = await getPropertyBySlug(slug)
+  const { slug } = await params
+  const property = await getPropertyBySlug(slug).catch<Property | null>((error) => {
+    console.error('Erro ao buscar imóvel:', error)
+    return null
+  })
 
-    if (!property) {
-      notFound()
-    }
+  if (!property) {
+    return (
+      <div className="flex min-h-screen flex-col">
+        <Header />
+        <main className="flex-1 bg-background">
+          <div className="container mx-auto px-4 py-16">
+            <div className="max-w-md mx-auto text-center">
+              <h1 className="text-2xl font-semibold mb-4">Imóvel não encontrado</h1>
+              <p className="text-muted-foreground mb-6">
+                Desculpe, não foi possível carregar este imóvel no momento.
+              </p>
+              <Button asChild>
+                <Link href="/imoveis">Ver todos os imóveis</Link>
+              </Button>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    )
+  }
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -182,27 +202,4 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
       <Footer />
     </div>
   )
-  } catch (error) {
-    // Se o datasource não estiver disponível, mostrar página de erro
-    console.error('Erro ao buscar imóvel:', error)
-    return (
-      <div className="flex min-h-screen flex-col">
-        <Header />
-        <main className="flex-1 bg-background">
-          <div className="container mx-auto px-4 py-16">
-            <div className="max-w-md mx-auto text-center">
-              <h1 className="text-2xl font-semibold mb-4">Imóvel não encontrado</h1>
-              <p className="text-muted-foreground mb-6">
-                Desculpe, não foi possível carregar este imóvel no momento.
-              </p>
-              <Button asChild>
-                <Link href="/imoveis">Ver todos os imóveis</Link>
-              </Button>
-            </div>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    )
-  }
 }

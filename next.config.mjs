@@ -10,7 +10,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'v0.blob.com', // Placeholder para Vercel Blob futuramente
+        hostname: 'images.unsplash.com', // Para imagens de placeholder
       },
     ],
   },

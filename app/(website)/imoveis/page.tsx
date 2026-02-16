@@ -4,6 +4,7 @@ import { PropertyCard } from "@/components/property-card"
 import type { FilterState } from "@/lib/types"
 import { getProperties } from "@/lib/api"
 import type { Property } from "@/lib/types"
+import Link from "next/link"
 import { LayoutGrid } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import dynamic from "next/dynamic"
@@ -26,37 +27,13 @@ interface PropertiesPageProps {
  * Client-side filtering é delegado ao PropertyFiltersClient
  */
 export default async function PropertiesPage({ searchParams }: PropertiesPageProps) {
-  try {
-    // Buscar todos os imóveis do datasource atual
-    const properties = await getProperties()
-
-    return (
-      <div className="flex min-h-screen flex-col">
-        <Header />
-        <main className="flex-1 bg-background">
-          {/* Page Header */}
-          <div className="bg-[var(--navy-900)] py-12 md:py-16">
-            <div className="container mx-auto px-4">
-              <h1 className="font-serif text-3xl md:text-4xl font-bold text-white mb-2 text-balance">
-                Imóveis em Brasília
-              </h1>
-              <p className="text-white/70">
-                Encontre apartamentos, casas e coberturas nos melhores bairros da capital
-              </p>
-            </div>
-          </div>
-
-          <div className="container mx-auto px-4 py-6 md:py-8">
-            {/* Client-side Filters Component */}
-            <PropertyFiltersClient properties={properties} />
-          </div>
-        </main>
-        <Footer />
-      </div>
-    )
-  } catch (error) {
-    // Se o datasource não estiver disponível, mostrar página de erro
+  // Buscar todos os imóveis do datasource atual
+  const properties = await getProperties().catch<Property[] | null>((error) => {
     console.error('Erro ao buscar imóveis:', error)
+    return null
+  })
+
+  if (!properties) {
     return (
       <div className="flex min-h-screen flex-col">
         <Header />
@@ -82,7 +59,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
                 Desculpe, não foi possível carregar os imóveis no momento.
               </p>
               <Button asChild>
-                <a href="/">Voltar ao início</a>
+                <Link href="/">Voltar ao início</Link>
               </Button>
             </div>
           </div>
@@ -91,4 +68,29 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
       </div>
     )
   }
+
+  return (
+    <div className="flex min-h-screen flex-col">
+      <Header />
+      <main className="flex-1 bg-background">
+        {/* Page Header */}
+        <div className="bg-[var(--navy-900)] py-12 md:py-16">
+          <div className="container mx-auto px-4">
+            <h1 className="font-serif text-3xl md:text-4xl font-bold text-white mb-2 text-balance">
+              Imóveis em Brasília
+            </h1>
+            <p className="text-white/70">
+              Encontre apartamentos, casas e coberturas nos melhores bairros da capital
+            </p>
+          </div>
+        </div>
+
+        <div className="container mx-auto px-4 py-6 md:py-8">
+          {/* Client-side Filters Component */}
+          <PropertyFiltersClient properties={properties} />
+        </div>
+      </main>
+      <Footer />
+    </div>
+  )
 }
