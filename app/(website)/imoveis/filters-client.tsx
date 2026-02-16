@@ -143,7 +143,7 @@ export function PropertyFiltersClient({ properties }: PropertyFiltersClientProps
         <div className="flex items-center gap-3">
           {/* Sort */}
           <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-[180px]" data-testid="sort-trigger">
               <SelectValue placeholder="Ordenar por" />
             </SelectTrigger>
             <SelectContent>
