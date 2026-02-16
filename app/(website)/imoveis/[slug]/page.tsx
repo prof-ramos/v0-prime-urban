@@ -5,7 +5,7 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import dynamic from "next/dynamic"
 import { Button } from "@/components/ui/button"
-import { getPropertyBySlug, mockProperties } from "@/lib/mock-data"
+import { getPropertyBySlug, getPropertySlugs } from "@/lib/api"
 import { formatCurrency } from "@/lib/utils"
 import type { Metadata } from "next"
 
@@ -32,44 +32,67 @@ interface PropertyPageProps {
   params: Promise<{ slug: string }>
 }
 
+/**
+ * Gera metadados dinâmicos para SEO baseado nos dados do imóvel
+ */
 export async function generateMetadata({ params }: PropertyPageProps): Promise<Metadata> {
-  const { slug } = await params
-  const property = getPropertyBySlug(slug)
-  
-  if (!property) {
+  try {
+    const { slug } = await params
+    const property = await getPropertyBySlug(slug)
+
+    if (!property) {
+      return {
+        title: "Imóvel não encontrado",
+      }
+    }
+
     return {
-      title: "Imóvel não encontrado",
+      title: property.title,
+      description: `${property.type === "apartamento" ? "Apartamento" : property.type} ${
+        property.transactionType === "venda" ? "à venda" : "para alugar"
+      } em ${property.neighborhood}, Brasília. ${property.bedrooms} quartos, ${
+        property.privateArea
+      }m². ${formatCurrency(property.price)}`,
+      openGraph: {
+        title: property.title,
+        description: `${property.bedrooms} quartos, ${property.privateArea}m² - ${formatCurrency(property.price)}`,
+        images: property.images,
+      },
+    }
+  } catch (error) {
+    // Retornar metadados padrão se o banco não estiver disponível
+    return {
+      title: "Imóvel | PrimeUrban",
     }
   }
-
-  return {
-    title: property.title,
-    description: `${property.type === "apartamento" ? "Apartamento" : property.type} ${
-      property.transactionType === "venda" ? "à venda" : "para alugar"
-    } em ${property.neighborhood}, Brasília. ${property.bedrooms} quartos, ${
-      property.privateArea
-    }m². ${formatCurrency(property.price)}`,
-    openGraph: {
-      title: property.title,
-      description: `${property.bedrooms} quartos, ${property.privateArea}m² - ${formatCurrency(property.price)}`,
-      images: property.images,
-    },
-  }
 }
 
+/**
+ * Gera rotas estáticas para todos os imóveis no build time
+ * Retorna array vazio se o banco não estiver disponível
+ */
 export async function generateStaticParams() {
-  return mockProperties.map((property) => ({
-    slug: property.slug,
-  }))
+  try {
+    const slugs = await getPropertySlugs()
+    return slugs
+  } catch (error) {
+    // Se o datasource não estiver disponível, não gerar rotas estáticas
+    console.warn('Datasource não disponível para generateStaticParams:', error)
+    return []
+  }
 }
 
+/**
+ * Server Component que busca dados do datasource atual e renderiza a página de detalhe
+ */
 export default async function PropertyPage({ params }: PropertyPageProps) {
-  const { slug } = await params
-  const property = getPropertyBySlug(slug)
+  try {
+    const { slug } = await params
+    const property = await getPropertyBySlug(slug)
 
-  if (!property) {
-    notFound()
-  }
+    if (!property) {
+      notFound()
+    }
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -79,15 +102,15 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
           {/* Breadcrumb & Actions */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
             <nav className="flex items-center gap-2 text-sm">
-              <Link 
-                href="/" 
+              <Link
+                href="/"
                 className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 Início
               </Link>
               <ChevronLeft className="h-4 w-4 rotate-180 text-muted-foreground" />
-              <Link 
-                href="/imoveis" 
+              <Link
+                href="/imoveis"
                 className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 Imóveis
@@ -99,17 +122,17 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
             </nav>
 
             <div className="flex items-center gap-2">
-              <Button 
-                variant="outline" 
-                size="sm" 
+              <Button
+                variant="outline"
+                size="sm"
                 className="border-border/50 min-h-[44px] bg-transparent"
               >
                 <Share2 className="h-4 w-4 mr-2" />
                 Compartilhar
               </Button>
-              <Button 
-                variant="outline" 
-                size="sm" 
+              <Button
+                variant="outline"
+                size="sm"
                 className="border-border/50 min-h-[44px] bg-transparent"
               >
                 <Heart className="h-4 w-4 mr-2" />
@@ -124,15 +147,15 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
             <div className="lg:col-span-2 space-y-6">
               <PropertyGallery images={property.images} title={property.title} />
               <PropertyInfo property={property} />
-              
+
               {/* Description */}
               <div className="bg-card rounded-xl border border-border/50 p-6">
                 <h2 className="font-semibold text-lg mb-4">Descrição</h2>
                 <p className="text-muted-foreground leading-relaxed">
-                  Excelente {property.type} localizado em {property.neighborhood}, uma das regiões mais valorizadas de Brasília. 
-                  O imóvel conta com {property.bedrooms} quartos{property.suites ? `, sendo ${property.suites} suíte(s)` : ""}, 
-                  {property.bathrooms} banheiro(s) e {property.parkingSpaces} vaga(s) de garagem. 
-                  Com {property.privateArea}m² de área privativa{property.totalArea ? ` e ${property.totalArea}m² de área total` : ""}, 
+                  Excelente {property.type} localizado em {property.neighborhood}, uma das regiões mais valorizadas de Brasília.
+                  O imóvel conta com {property.bedrooms} quartos{property.suites ? `, sendo ${property.suites} suíte(s)` : ""},
+                  {property.bathrooms} banheiro(s) e {property.parkingSpaces} vaga(s) de garagem.
+                  Com {property.privateArea}m² de área privativa{property.totalArea ? ` e ${property.totalArea}m² de área total` : ""},
                   oferece conforto e praticidade para sua família.
                   {property.solarOrientation && ` Orientação solar ${property.solarOrientation}.`}
                   {property.acceptsPets && " Aceita pets."}
@@ -159,4 +182,27 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
       <Footer />
     </div>
   )
+  } catch (error) {
+    // Se o datasource não estiver disponível, mostrar página de erro
+    console.error('Erro ao buscar imóvel:', error)
+    return (
+      <div className="flex min-h-screen flex-col">
+        <Header />
+        <main className="flex-1 bg-background">
+          <div className="container mx-auto px-4 py-16">
+            <div className="max-w-md mx-auto text-center">
+              <h1 className="text-2xl font-semibold mb-4">Imóvel não encontrado</h1>
+              <p className="text-muted-foreground mb-6">
+                Desculpe, não foi possível carregar este imóvel no momento.
+              </p>
+              <Button asChild>
+                <Link href="/imoveis">Ver todos os imóveis</Link>
+              </Button>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    )
+  }
 }
