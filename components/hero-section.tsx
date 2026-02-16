@@ -16,6 +16,9 @@ import {
 } from "@/components/ui/select"
 import { NEIGHBORHOODS_DF, NEIGHBORHOODS_GO, NEIGHBORHOODS_MG } from "@/lib/constants"
 
+// Total regions: 35 RAs (DF) + 29 GO + 4 MG = 68
+const TOTAL_REGIONS = 68
+
 export function HeroSection() {
   const [searchQuery, setSearchQuery] = useState("")
   const [transactionType, setTransactionType] = useState<string>("")
@@ -144,7 +147,7 @@ export function HeroSection() {
               <p className="text-sm text-primary-foreground/60">Imóveis disponíveis</p>
             </div>
             <div className="text-center">
-              <p className="text-3xl md:text-4xl font-bold text-secondary">68</p>
+              <p className="text-3xl md:text-4xl font-bold text-secondary">{TOTAL_REGIONS}</p>
               <p className="text-sm text-primary-foreground/60">Regiões atendidas</p>
             </div>
             <div className="text-center">
