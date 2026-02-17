@@ -1,4 +1,4 @@
-import type { Access, CollectionBeforeChangeHook, CollectionConfig } from 'payload'
+import { ValidationError, type Access, type CollectionBeforeChangeHook, type CollectionConfig } from 'payload'
 
 import { isAdmin } from '../access/is-admin'
 import {
@@ -34,11 +34,67 @@ const normalizeUserContactFields: CollectionBeforeChangeHook = async ({ data, or
   return data
 }
 
+const validatePasswordStrength: CollectionBeforeChangeHook = async ({ data, req }) => {
+  if (!data || typeof data.password !== 'string') return data
+
+  const password = data.password.trim()
+  if (!password) return data
+
+  const hasMinLength = password.length >= 8
+  const hasLetter = /[A-Za-z]/.test(password)
+  const hasNumber = /\d/.test(password)
+
+  if (!hasMinLength || !hasLetter || !hasNumber) {
+    throw new ValidationError(
+      {
+        collection: 'users',
+        errors: [
+          {
+            path: 'password',
+            message: 'Senha deve ter ao menos 8 caracteres com letras e números.',
+          },
+        ],
+        req,
+      },
+      req.t,
+    )
+  }
+
+  return data
+}
+
+const readSelfOrAdmin: Access = ({ req, id }) => {
+  if (isAdmin({ req })) return true
+  if (!req.user) return false
+
+  if (id === undefined || id === null) {
+    return { id: { equals: req.user.id } }
+  }
+
+  return String(req.user.id) === String(id)
+}
+
 const isSelfOrAdmin: Access = ({ req, id }) => {
   if (isAdmin({ req })) return true
   if (!req.user || id === undefined || id === null) return false
 
   return String(req.user.id) === String(id)
+}
+
+const preventRoleChangeByNonAdmin: CollectionBeforeChangeHook = async ({
+  data,
+  operation,
+  originalDoc,
+  req,
+}) => {
+  if (!data || operation !== 'update') return data
+  if (req.user?.role === 'admin') return data
+
+  if (typeof data.role === 'string' && data.role !== originalDoc?.role) {
+    data.role = originalDoc?.role
+  }
+
+  return data
 }
 
 export const Users: CollectionConfig = {
@@ -54,17 +110,19 @@ export const Users: CollectionConfig = {
   },
   access: {
     create: isAdmin,
-    read: isSelfOrAdmin,
+    read: readSelfOrAdmin,
     update: isSelfOrAdmin,
     delete: isAdmin,
   },
   auth: {
     tokenExpiration: 7200, // 2 hours
-    maxLoginAttempts: 5,
-    lockTime: 600000, // 10 minutes
+    minPasswordLength: 8,
+    // In development/test we disable aggressive lockouts to keep automated suites deterministic.
+    maxLoginAttempts: process.env.NODE_ENV === 'production' ? 5 : 1000,
+    lockTime: process.env.NODE_ENV === 'production' ? 600000 : 1000, // 10 minutes in production
   },
   hooks: {
-    beforeChange: [normalizeUserContactFields],
+    beforeChange: [validatePasswordStrength, preventRoleChangeByNonAdmin, normalizeUserContactFields],
   },
   fields: [
     {

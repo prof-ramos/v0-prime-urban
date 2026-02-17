@@ -11,10 +11,17 @@ const toStringValue = (value: unknown): string | null => {
 const stripNonDigits = (value: string): string => value.replace(/\D/g, '')
 
 export const normalizeBrazilianPhone = (phone: string): string => {
-  const digits = stripNonDigits(phone)
+  let digits = stripNonDigits(phone)
+
   if (digits.startsWith('55') && digits.length > 11) {
-    return digits.slice(2)
+    digits = digits.slice(2)
   }
+
+  // Remove prefixo nacional "0" quando vier no DDD (ex.: 061999999999 -> 61999999999)
+  if (digits.length === 12 && digits.startsWith('0')) {
+    digits = digits.slice(1)
+  }
+
   return digits
 }
 

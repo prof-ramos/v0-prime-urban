@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Orientações para o Claude Code trabalhar com este repositório — PrimeUrban, uma plataforma de listagem de imóveis em Brasília.
+Orientações para o Claude Code trabalhar com este repositório — PrimeUrban, uma plataforma de listagem de imóveis em Brasília com Payload CMS.
 
 ## Comandos Essenciais
 
@@ -9,6 +9,9 @@ Orientações para o Claude Code trabalhar com este repositório — PrimeUrban,
 pnpm dev           # Servidor de desenvolvimento (localhost:3000)
 pnpm build         # Build de produção
 pnpm start         # Servidor de produção
+
+# Payload CMS
+pnpm payload:generate:importmap  # Regenerar import map do Payload
 
 # Qualidade de código
 pnpm lint          # ESLint
@@ -25,13 +28,22 @@ npx tsc --noEmit   # Verificação de tipos TypeScript
 
 ```
 app/                          # Rotas e páginas (App Router)
-├── layout.tsx                # Layout raiz (pt-BR, fontes, analytics, error boundary)
-├── page.tsx                  # Homepage (Server Component)
-├── not-found.tsx             # Página 404
-├── globals.css               # Design tokens e Tailwind config
-└── imoveis/
-    ├── page.tsx              # Listagem de imóveis (Client Component)
-    └── [slug]/page.tsx       # Detalhe do imóvel (Server Component, ISR 1h)
+├── (payload)/                # Route group para Payload CMS
+│   ├── admin/                # Admin do Payload (/admin)
+│   │   └── custom.css        # Estilos customizados do admin
+│   ├── api/                  # API routes do Payload (/api/*)
+│   └── layout.tsx            # Layout do admin
+│
+├── (website)/                # Route group para site público
+│   ├── imoveis/
+│   │   ├── page.tsx          # Listagem de imóveis (Client Component)
+│   │   └── [slug]/page.tsx   # Detalhe do imóvel (Server Component, ISR 1h)
+│   ├── globals.css           # Design tokens e Tailwind config
+│   ├── layout.tsx            # Layout raiz (pt-BR, fontes, analytics, error boundary)
+│   ├── page.tsx              # Homepage (Server Component)
+│   └── not-found.tsx         # Página 404
+│
+└── api/                      # API routes adicionais
 
 components/                   # Componentes React
 ├── header.tsx                # Navegação sticky com menu mobile
@@ -59,29 +71,53 @@ components/                   # Componentes React
     ├── slider.tsx            # Dual-thumb (filtro de preço)
     └── sheet.tsx             # Side drawer (filtros mobile)
 
+payload/                      # Configuração do Payload CMS
+├── collections/              # Collections do Payload
+│   ├── Users.ts              # Usuários do admin
+│   ├── Media.ts              # Biblioteca de mídia
+│   ├── Tags.ts               # Tags para propriedades
+│   ├── Amenities.ts          # Amenidades (piscina, academia, etc.)
+│   ├── Neighborhoods.ts      # Bairros de Brasília
+│   ├── Properties.ts         # Imóveis
+│   ├── Leads.ts              # Leads de contato
+│   ├── Deals.ts              # Negócios/vendas
+│   └── Activities.ts         # Atividades do CRM
+│
+├── globals/                  # Globals do Payload
+│   ├── Settings.ts           # Configurações gerais do site
+│   └── lgpd-settings.ts      # Configurações LGPD
+│
+├── access/                   # Controle de acesso
+├── components/               # Componentes custom do admin
+│   ├── logo.tsx              # Logo do admin
+│   └── dashboard/            # Dashboards customizados
+│
+├── hooks/                    # Hooks do Payload (beforeValidate, afterChange, etc.)
+├── payload-types.ts          # Tipos TypeScript gerados
+└── payload.config.ts         # Configuração principal do Payload
+
 lib/
 ├── types.ts                  # Interfaces e union types
 ├── constants.ts              # Config, lookups O(1), labels
 ├── utils.ts                  # cn() (clsx + twMerge), formatCurrency()
-└── mock-data.ts              # Dados mock com caching em Map
+└── mock-data.ts              # Dados mock para desenvolvimento (DEPRECIADO - usar Payload API)
 
 public/                       # Assets estáticos
 ├── manifest.json             # PWA manifest
 ├── sw.js                     # Service worker
 └── *.png, *.svg              # Ícones e placeholders
-
-styles/
-└── globals.css               # Mirror de app/globals.css
 ```
 
 ### Rotas
 
 | Rota | Arquivo | Tipo | Descrição |
 |------|---------|------|-----------|
-| `/` | `app/page.tsx` | Server Component | Homepage com hero, destaques, bairros |
-| `/imoveis` | `app/imoveis/page.tsx` | Client Component | Listagem com filtros, sort, grid/list |
-| `/imoveis/[slug]` | `app/imoveis/[slug]/page.tsx` | Server Component (ISR 3600s) | Detalhe com galeria, info, contato |
-| 404 | `app/not-found.tsx` | Server Component | Página não encontrada |
+| `/` | `app/(website)/page.tsx` | Server Component | Homepage com hero, destaques, bairros |
+| `/imoveis` | `app/(website)/imoveis/page.tsx` | Client Component | Listagem com filtros, sort, grid/list |
+| `/imoveis/[slug]` | `app/(website)/imoveis/[slug]/page.tsx` | Server Component (ISR 3600s) | Detalhe com galeria, info, contato |
+| `/admin` | `app/(payload)/admin/*` | Payload Admin | Painel administrativo |
+| `/api/*` | `app/(payload)/api/*` | Payload API | API REST do Payload |
+| 404 | `app/(website)/not-found.tsx` | Server Component | Página não encontrada |
 
 ---
 
@@ -89,17 +125,55 @@ styles/
 
 | Tecnologia | Versão | Uso |
 |-----------|---------|-----|
-| Next.js | 16.1.6 | App Router, ISR, dynamic imports |
-| React | 19.2.0 | Server/Client Components |
-| TypeScript | 5.x | strict mode |
-| Tailwind CSS | 4.1.9 | @theme inline, CSS variables |
-| Radix UI | shadcn/ui (new-york) | Componentes primitivos |
-| React Hook Form | 7.60.0 | Formulários |
-| Zod | 3.25.76 | Validação de schemas |
-| use-debounce | 5.2.1 | Debounce de filtros |
-| Lucide React | 0.454.0 | Ícones |
-| Vercel Analytics | 1.3.1 | Analytics de produção |
-| Workbox | 7.4.0 | Service worker / PWA |
+| **Payload CMS** | 3.76.1 | Headless CMS, admin panel, API |
+| **Next.js** | 16.1.6 | App Router, ISR, dynamic imports |
+| **React** | 19.2.0 | Server/Client Components |
+| **TypeScript** | 5.x | strict mode |
+| **Tailwind CSS** | 4.1.9 | @theme inline, CSS variables |
+| **Radix UI** | shadcn/ui (new-york) | Componentes primitivos |
+| **React Hook Form** | 7.60.0 | Formulários |
+| **Zod** | 3.25.76 | Validação de schemas |
+| **use-debounce** | 5.2.1 | Debounce de filtros |
+| **Lucide React** | 0.454.0 | Ícones |
+| **Vercel Analytics** | 1.3.1 | Analytics de produção |
+| **Workbox** | 7.4.0 | Service worker / PWA |
+| **SQLite** | via @payloadcms/db-sqlite | Banco de dados |
+
+---
+
+## Payload CMS
+
+### Collections
+
+| Collection | Descrição | Acesso |
+|------------|-----------|--------|
+| `users` | Usuários do admin | Admin apenas |
+| `media` | Biblioteca de mídia | Admin apenas |
+| `tags` | Tags para propriedades | Admin apenas |
+| `amenities` | Amenidades (piscina, etc.) | Admin apenas |
+| `neighborhoods` | Bairros de Brasília | Admin apenas |
+| `properties` | Imóveis | Público (leitura), Admin (escrita) |
+| `leads` | Leads de contato | Admin apenas |
+| `deals` | Negócios/vendas | Admin apenas |
+| `activities` | Atividades do CRM | Admin apenas |
+
+### Globals
+
+| Global | Descrição |
+|--------|-----------|
+| `settings` | Configurações gerais do site |
+| `lgpd-settings` | Configurações LGPD (cookies, privacidade) |
+
+### API Payload
+
+```typescript
+// Exemplo de fetch de propriedades
+const response = await fetch(`${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/properties?depth=1`)
+const { docs } = await response.json()
+
+// Exemplo com filtros
+const response = await fetch('/api/properties?where[transactionType][equals]=venda&depth=2')
+```
 
 ---
 
@@ -111,7 +185,7 @@ styles/
 - **Funções/hooks:** camelCase — `formatCurrency`, `normalizeNeighborhood`
 - **Constantes:** SCREAMING_SNAKE_CASE — `WHATSAPP_CONFIG`, `PRICE_LIMITS`
 - **Tipos/interfaces:** PascalCase — `Property`, `FilterState`
-- **Arquivos:** kebab-case — `property-card.tsx`, `mock-data.ts`
+- **Arquivos:** kebab-case — `property-card.tsx`, `payload.config.ts`
 
 ### Ordem de Imports
 
@@ -129,9 +203,10 @@ import { formatCurrency } from "@/lib/utils"     // 7. Utilitários locais
 ### TypeScript
 
 - Union types em vez de strings genéricas (`"venda" | "aluguel"`, não `string`)
-- Evitar `any` — usar tipos de `@/lib/types`
+- Evitar `any` — usar tipos de `@/lib/types` ou `payload-types.ts`
 - `interface` para objetos, `type` para unions e aliases
 - Filtros incluem `""` para "qualquer" (`TransactionTypeFilter = "venda" | "aluguel" | ""`)
+- Usar tipos gerados pelo Payload: `import type { Property } from '@/payload-types'`
 
 ### React
 
@@ -142,6 +217,14 @@ import { formatCurrency } from "@/lib/utils"     // 7. Utilitários locais
 - Sempre fazer cleanup em `useEffect` (abort controllers, event listeners)
 - `next/dynamic` para code splitting de componentes pesados
 
+### Payload CMS
+
+- **Never** edit `payload-types.ts` — é gerado automaticamente
+- Usar hooks do Payload para lógica de negócio (beforeValidate, afterChange, etc.)
+- Collections em `payload/collections/`, globals em `payload/globals/`
+- Access control em `payload/access/`
+- Componentes custom do admin em `payload/components/`
+
 ### Componentes UI
 
 - Sempre usar componentes de `components/ui/` (shadcn/ui) para primitivos
@@ -151,21 +234,22 @@ import { formatCurrency } from "@/lib/utils"     // 7. Utilitários locais
 
 ---
 
-## Tipos Principais (`lib/types.ts`)
+## Tipos Principais
 
 ```typescript
-// Imóvel
-interface Property {
-  id, slug, title, type, transactionType,
-  address, neighborhood, price, condominiumFee?, iptu?,
-  privateArea, totalArea?, bedrooms, suites?, bathrooms, parkingSpaces,
-  images[], description?, amenities?, featured?, acceptsPets?, solarOrientation?
-}
+// De payload-types.ts (gerado automaticamente)
+import type { Property, Neighborhood, Lead, Deal, Activity } from '@/payload-types'
 
-// Filtros
+// De lib/types.ts (types custom)
 interface FilterState {
-  search, transactionType, propertyType, neighborhood,
-  minPrice, maxPrice, bedrooms, parkingSpaces
+  search: string
+  transactionType: "venda" | "aluguel" | ""
+  propertyType: "apartamento" | "casa" | "cobertura" | "sala_comercial" | ""
+  neighborhood: string
+  minPrice: number
+  maxPrice: number
+  bedrooms: number
+  parkingSpaces: number
 }
 
 // Union types
@@ -175,7 +259,7 @@ type PropertyType = "apartamento" | "casa" | "cobertura" | "sala_comercial"
 
 ---
 
-## Design Tokens (`app/globals.css`)
+## Design Tokens (`app/(website)/globals.css`)
 
 ### Cores
 
@@ -205,12 +289,11 @@ type PropertyType = "apartamento" | "casa" | "cobertura" | "sala_comercial"
 
 ## Dados e Estado
 
-### Dados Mock (`lib/mock-data.ts`)
+### Fonte de Dados
 
-- 6 propriedades mock com dados completos
-- Caching com `Map` para lookups O(1): `getPropertyBySlug()`, `getFeaturedProperties()`
-- `normalizeNeighborhood()` para buscas sem acentos
-- Sem banco de dados ou API externa — tudo in-memory
+- **Payload CMS API** — Fonte única de verdade para dados
+- Banco SQLite: `payload.db` (desenvolvimento)
+- `payload-types.ts` — Tipos TypeScript gerados automaticamente
 
 ### Gestão de Estado
 
@@ -233,8 +316,7 @@ type PropertyType = "apartamento" | "casa" | "cobertura" | "sala_comercial"
 
 ### Caching e Lookups
 
-- O(1) lookups com `Map` para propriedades, bairros, tipos (`lib/constants.ts`, `lib/mock-data.ts`)
-- Resultados de `getFeaturedProperties()` cacheados em variável de módulo
+- O(1) lookups com `Map` para propriedades, bairros, tipos (`lib/constants.ts`)
 - Iterações combinadas (filter + map em loop único)
 - Early exit quando nenhum filtro ativo
 
@@ -273,12 +355,13 @@ type PropertyType = "apartamento" | "casa" | "cobertura" | "sala_comercial"
 - `strict: true`
 - Target: ES6, Module: esnext
 - Path alias: `@/*` → `./*`
+- Payload alias: `@payload-config` → `./payload/payload.config.ts`
 - Plugin: `next`
 
 ### Tailwind CSS
 
 - Versão 4.x com `@tailwindcss/postcss`
-- Config via `@theme inline` em `app/globals.css` (sem `tailwind.config.js`)
+- Config via `@theme inline` em `app/(website)/globals.css` (sem `tailwind.config.js`)
 - Animações: `tw-animate-css`
 - Dark mode: `@custom-variant dark (&:is(.dark *))`
 
@@ -290,6 +373,14 @@ type PropertyType = "apartamento" | "casa" | "cobertura" | "sala_comercial"
 - CSS variables: true
 - Aliases: `@/components`, `@/components/ui`, `@/lib/utils`
 
+### Payload CMS (`payload/payload.config.ts`)
+
+- Banco: SQLite via `@payloadcms/db-sqlite`
+- Editor: Lexical via `@payloadcms/richtext-lexical`
+- Plugins: SEO plugin
+- Traduções: Português (pt)
+- Admin customizado: Logo, Dashboard
+
 ---
 
 ## Acessibilidade
@@ -298,3 +389,33 @@ type PropertyType = "apartamento" | "casa" | "cobertura" | "sala_comercial"
 - Focus-visible com ring styling nos componentes interativos
 - Idioma da página: `pt-BR`
 - ARIA labels nos elementos interativos
+
+---
+
+## Desenvolvimento
+
+### Comandos Úteis
+
+```bash
+# Desenvolvimento
+pnpm dev                    # Inicia servidor em localhost:3000
+
+# Payload
+pnpm payload:generate:importmap  # Regenera import map após adicionar componentes
+
+# Qualidade
+pnpm lint                   # ESLint
+npx tsc --noEmit            # Verifica tipos sem gerar arquivos
+
+# Produção
+pnpm build                  # Build para produção
+pnpm start                  # Servidor de produção
+```
+
+### Links Úteis
+
+- Admin Payload: `http://localhost:3000/admin`
+- API Payload: `http://localhost:3000/api`
+- Documentação Payload: `https://payloadcms.com/docs`
+- Documentação Next.js: `https://nextjs.org/docs`
+- Documentação shadcn/ui: `https://ui.shadcn.com`

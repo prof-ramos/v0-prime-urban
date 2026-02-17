@@ -26,7 +26,10 @@ import { MetaTitleComponent as MetaTitleComponent_a8a977ebc872c5d5ea7ee689724c08
 import { MetaDescriptionComponent as MetaDescriptionComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { MetaImageComponent as MetaImageComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { PreviewComponent as PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
-import { default as default_b2f0c166e38a1ab22917e034b14d7d1b } from '../../../payload/icon.svg'
+import { PropertyStatusCell as PropertyStatusCell_e2aa296c17d9f303340ccb2b82d1e0e0 } from '../../../payload/components/fields/PropertyStatusCell'
+import { LeadStatusSelect as LeadStatusSelect_117de6062e38760b9fecb6ebad3fd8b4 } from '../../../payload/components/fields/LeadStatusSelect'
+import { Logo as Logo_6453d4efeb33fd1ead5ac6bbffe223f0 } from '../../../payload/components/logo'
+import { AgentDashboard as AgentDashboard_998cffbad40659b36bfc22b47fb35964 } from '../../../payload/components/dashboard/AgentDashboard'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
 export const importMap = {
@@ -58,6 +61,9 @@ export const importMap = {
   "@payloadcms/plugin-seo/client#MetaDescriptionComponent": MetaDescriptionComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@payloadcms/plugin-seo/client#MetaImageComponent": MetaImageComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@payloadcms/plugin-seo/client#PreviewComponent": PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
-  "/icon.svg#default": default_b2f0c166e38a1ab22917e034b14d7d1b,
+  "/components/fields/PropertyStatusCell#PropertyStatusCell": PropertyStatusCell_e2aa296c17d9f303340ccb2b82d1e0e0,
+  "/components/fields/LeadStatusSelect#LeadStatusSelect": LeadStatusSelect_117de6062e38760b9fecb6ebad3fd8b4,
+  "/components/logo#Logo": Logo_6453d4efeb33fd1ead5ac6bbffe223f0,
+  "/components/dashboard/AgentDashboard#AgentDashboard": AgentDashboard_998cffbad40659b36bfc22b47fb35964,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }

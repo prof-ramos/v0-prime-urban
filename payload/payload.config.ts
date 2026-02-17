@@ -7,6 +7,7 @@ import { seoPlugin } from '@payloadcms/plugin-seo'
 import type { GenerateDescription, GenerateTitle } from '@payloadcms/plugin-seo/types'
 import { pt } from '@payloadcms/translations/languages/pt'
 
+import { isDevBypassActive } from './access/dev-bypass'
 import { Activities } from './collections/Activities'
 import { Amenities } from './collections/Amenities'
 import { Deals } from './collections/Deals'
@@ -55,13 +56,21 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
     user: 'users',
+    // Auto-login in development only (bypass authentication)
+    autoLogin: isDevBypassActive()
+      ? {
+          email: 'dev@primeurban.com',
+          password: 'dev-password-123',
+          prefillOnly: false, // true = prefill only, false = auto-login
+        }
+      : false,
     components: {
       graphics: {
-        Logo: '/payload/components/logo#Logo',
+        Logo: '/components/logo#Logo',
       },
       views: {
         dashboard: {
-          Component: '/payload/components/dashboard/AgentDashboard#AgentDashboard',
+          Component: '/components/dashboard/AgentDashboard#AgentDashboard',
         },
       },
     },

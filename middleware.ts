@@ -81,6 +81,8 @@ class RateLimiter {
 
 // Global rate limiter instance: 100 requests per IP per 15 minutes
 const RATE_LIMITER = new RateLimiter(RATE_LIMIT_REQUESTS, RATE_LIMIT_WINDOW_MINUTES)
+const RATE_LIMIT_ENABLED =
+  process.env.NODE_ENV === 'production' && process.env.DISABLE_RATE_LIMIT !== 'true'
 
 const getClientIp = (request: NextRequest): string => {
   const forwardedForIp = request.headers.get(FORWARDED_FOR_HEADER)?.split(',')[0]?.trim()
@@ -101,6 +103,10 @@ const getClientIp = (request: NextRequest): string => {
  * Applies rate limiting to all /api routes.
  */
 export function middleware(request: NextRequest) {
+  if (!RATE_LIMIT_ENABLED) {
+    return NextResponse.next()
+  }
+
   const ip = getClientIp(request)
   const result = RATE_LIMITER.check(ip)
 

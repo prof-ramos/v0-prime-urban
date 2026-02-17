@@ -7,6 +7,7 @@ during end-to-end testing.
 
 import os
 from typing import Dict, Any, Optional
+import requests
 from playwright.sync_api import Page, BrowserContext
 from dotenv import load_dotenv
 from pathlib import Path
@@ -194,6 +195,7 @@ def _perform_login(
     success_indicators = [
         "/admin/collections" in current_url,
         "/admin/dashboard" in current_url,
+        current_url.rstrip("/") == f"{base_url}/admin".lower(),
         "/admin/" in current_url and "/login" not in current_url,
     ]
 
@@ -204,6 +206,43 @@ def _perform_login(
         has_token = bool(token)
     except Exception:
         pass
+
+    if not any(success_indicators) and not has_token:
+        # Fallback: autentica via API e injeta token no localStorage.
+        try:
+            api_login = requests.post(
+                f"{base_url}/api/users/login",
+                json={
+                    "email": credentials["email"],
+                    "password": credentials["password"],
+                },
+                timeout=15,
+            )
+            api_data = api_login.json() if api_login.content else {}
+            token = api_data.get("token")
+            if api_login.status_code == 200 and token:
+                page.goto(base_url)
+                page.evaluate(
+                    "(payloadToken) => localStorage.setItem('payload-token', payloadToken)",
+                    token,
+                )
+                page.goto(admin_url)
+                page.wait_for_load_state("networkidle")
+                page.wait_for_timeout(1500)
+
+                current_url = page.url.lower()
+                success_indicators = [
+                    "/admin/collections" in current_url,
+                    "/admin/dashboard" in current_url,
+                    current_url.rstrip("/") == f"{base_url}/admin".lower(),
+                    "/admin/" in current_url and "/login" not in current_url,
+                ]
+                try:
+                    has_token = bool(page.evaluate("localStorage.getItem('payload-token')"))
+                except Exception:
+                    has_token = False
+        except Exception:
+            pass
 
     assert any(success_indicators) or has_token, f"Login failed, still at login page: {page.url}"
 

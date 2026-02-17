@@ -39,3 +39,19 @@ repomix-output.xml
 
 # claude code
 .claude/
+
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Test artifacts
+tests/e2e/screenshots/
+
+# Local logs
+*.log

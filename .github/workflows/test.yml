@@ -1,0 +1,171 @@
+name: Tests
+
+on:
+  pull_request:
+    branches: ['**']
+  push:
+    branches: [main]
+
+env:
+  PAYLOAD_SECRET: dev-secret
+
+jobs:
+  test-api:
+    name: API Tests (pytest)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+
+      - name: Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install uv
+        run: python -m pip install --upgrade uv
+
+      - name: Create Python venv
+        run: uv venv --python 3.14 venv
+
+      - name: Install Python dependencies
+        run: uv pip install --python venv/bin/python -r requirements-dev.txt
+
+      - name: Seed database
+        run: pnpm db:seed
+
+      - name: Build project
+        run: pnpm build
+
+      - name: Start app server
+        run: |
+          pnpm start > next-start.log 2>&1 &
+          for i in {1..90}; do
+            if curl -sf http://127.0.0.1:3000/api/properties >/dev/null; then
+              echo "Server is ready"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Server failed to start"
+          cat next-start.log
+          exit 1
+
+      - name: Run API tests
+        run: uv run --python venv/bin/python -m pytest tests/api -v -m api
+
+      - name: Upload API artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: api-artifacts
+          path: |
+            htmlcov/
+            next-start.log
+          retention-days: 7
+
+  test-e2e:
+    name: E2E Tests (pytest-playwright)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+
+      - name: Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install uv
+        run: python -m pip install --upgrade uv
+
+      - name: Create Python venv
+        run: uv venv --python 3.14 venv
+
+      - name: Install Python dependencies
+        run: uv pip install --python venv/bin/python -r requirements-dev.txt
+
+      - name: Install Playwright browsers
+        run: uv run --python venv/bin/python playwright install --with-deps chromium
+
+      - name: Seed database
+        run: pnpm db:seed
+
+      - name: Build project
+        run: pnpm build
+
+      - name: Start app server
+        run: |
+          pnpm start > next-start.log 2>&1 &
+          for i in {1..90}; do
+            if curl -sf http://127.0.0.1:3000/api/properties >/dev/null; then
+              echo "Server is ready"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Server failed to start"
+          cat next-start.log
+          exit 1
+
+      - name: Run E2E tests
+        env:
+          E2E_BASE_URL: http://127.0.0.1:3000
+        run: uv run --python venv/bin/python -m pytest tests/e2e -v -m e2e
+
+      - name: Upload E2E artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-artifacts
+          path: |
+            htmlcov/
+            tests/e2e/screenshots/
+            next-start.log
+          retention-days: 7

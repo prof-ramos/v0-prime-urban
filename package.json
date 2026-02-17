@@ -8,7 +8,13 @@
     "dev": "next dev",
     "lint": "eslint .",
     "payload:generate:importmap": "payload generate:importmap",
-    "start": "next start"
+    "start": "next start",
+    "test:e2e": "pytest tests/e2e -v -m e2e",
+    "test:api": "pytest tests/api -v -m api",
+    "test:all": "pytest tests/ -v",
+    "test:coverage": "pytest tests/ --cov=tests --cov-report=html",
+    "test:watch": "pytest-watch tests/",
+    "db:seed": "payload run scripts/seed.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

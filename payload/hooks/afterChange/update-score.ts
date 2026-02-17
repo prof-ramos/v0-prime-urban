@@ -25,7 +25,7 @@ export const updateLeadScore: CollectionAfterChangeHook = async ({ doc, req, ope
   // Apenas atualiza se o score mudou
   if (lead.score !== score) {
     try {
-      await req.payload.update({
+      const updatedLead = await req.payload.update({
         collection: 'leads',
         id: lead.id,
         data: {
@@ -35,6 +35,7 @@ export const updateLeadScore: CollectionAfterChangeHook = async ({ doc, req, ope
           internalUpdate: true,
         },
       })
+      return updatedLead
     } catch (error: unknown) {
       req.payload.logger.error({
         msg: 'Falha ao atualizar score do lead',

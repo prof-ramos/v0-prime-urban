@@ -26,7 +26,7 @@ export const Leads: CollectionConfig = {
     group: 'CRM',
   },
   access: {
-    create: () => true,
+    create: ({ req }) => ['admin', 'agent'].includes(req.user?.role || ''),
     read: ({ req }) => {
       if (req.user?.role === 'admin') return true
       if (req.user?.role === 'agent') return { assignedTo: { equals: req.user.id } }
@@ -41,7 +41,7 @@ export const Leads: CollectionConfig = {
   },
   hooks: {
     beforeChange: [normalizeLeadPhone],
-    afterChange: [distributeLead, updateLeadScore],
+    afterChange: [updateLeadScore, distributeLead],
   },
   fields: [
     {
@@ -53,7 +53,7 @@ export const Leads: CollectionConfig = {
     {
       name: 'phone',
       type: 'text',
-      required: true,
+      required: false,
       label: 'Telefone',
       validate: validateBrazilianPhone,
     },
@@ -103,7 +103,7 @@ export const Leads: CollectionConfig = {
       admin: {
         position: 'sidebar',
         components: {
-          Field: '/payload/components/fields/LeadStatusSelect#LeadStatusSelect',
+          Field: '/components/fields/LeadStatusSelect#LeadStatusSelect',
         },
       },
       label: 'Status',

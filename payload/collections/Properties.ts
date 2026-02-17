@@ -42,6 +42,18 @@ const syncNeighborhoodName: CollectionBeforeChangeHook = async ({ data, req }) =
   return data
 }
 
+const preserveGeneratedIdentity: CollectionBeforeChangeHook = async ({
+  data,
+  operation,
+  originalDoc,
+}) => {
+  if (!data || operation !== 'update' || !originalDoc) return data
+
+  data.code = originalDoc.code
+  data.slug = originalDoc.slug
+  return data
+}
+
 export const Properties: CollectionConfig = {
   slug: 'properties',
   labels: {
@@ -61,7 +73,7 @@ export const Properties: CollectionConfig = {
     delete: ({ req }) => req.user?.role === 'admin',
   },
   hooks: {
-    beforeChange: [autoSlug('title'), autoCode('PRM'), syncNeighborhoodName],
+    beforeChange: [autoSlug('title'), autoCode('PRM'), syncNeighborhoodName, preserveGeneratedIdentity],
     afterChange: [revalidateProperty, notifyInterestedLeads],
   },
   fields: [
@@ -144,7 +156,7 @@ export const Properties: CollectionConfig = {
                   admin: {
                     position: 'sidebar',
                     components: {
-                      Cell: '/payload/components/fields/PropertyStatusCell#PropertyStatusCell',
+                      Cell: '/components/fields/PropertyStatusCell#PropertyStatusCell',
                     },
                   },
                 },

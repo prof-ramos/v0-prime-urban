@@ -396,7 +396,7 @@ export interface Property {
 export interface Lead {
   id: number;
   name: string;
-  phone: string;
+  phone?: string | null;
   email?: string | null;
   lastContactAt?: string | null;
   source?: ('website' | 'whatsapp' | 'instagram' | 'referral' | 'other') | null;

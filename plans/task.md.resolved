@@ -1,0 +1,44 @@
+# CodeRabbit Debug Findings — Plano de Correção
+
+## Fase 1: PLANNING
+- [x] Ler e analisar [analisecoderabbit_debug.md](file:///Users/gabrielramos/v0-prime-urban/analisecoderabbit_debug.md) (80+ findings)
+- [x] Verificar cada arquivo-fonte mencionado nos findings
+- [x] Consultar documentação Payload CMS via Context7
+- [x] Categorizar findings por prioridade (Crítico/Alto/Médio/Baixo)
+- [/] Criar [implementation_plan.md](file:///Users/gabrielramos/v0-prime-urban/implementation_plan.md) com findings categorizados
+- [ ] Revisar plano com o usuário
+
+## Fase 2: EXECUTION — Prioridade Crítica (Segurança)
+- [ ] Remover credenciais hardcoded de [payload.config.ts](file:///Users/gabrielramos/v0-prime-urban/payload/payload.config.ts)
+- [ ] Remover senhas de teste do console output em [seed.ts](file:///Users/gabrielramos/v0-prime-urban/seed.ts)
+- [ ] Limpar credenciais de [DEV_BYPASS_SECURITY_REPORT.md](file:///Users/gabrielramos/v0-prime-urban/DEV_BYPASS_SECURITY_REPORT.md)
+- [ ] Documentar `NEXT_PUBLIC_PAYLOAD_URL` em [CLAUDE.md](file:///Users/gabrielramos/v0-prime-urban/CLAUDE.md)
+
+## Fase 3: EXECUTION — Prioridade Alta (Bugs/Comportamento Incorreto)
+- [ ] Corrigir normalização de telefone em [validators.ts](file:///Users/gabrielramos/v0-prime-urban/payload/hooks/validators.ts) (caso length=11)
+- [ ] Corrigir [test_python_version](file:///Users/gabrielramos/v0-prime-urban/tests/api/test_config.py#19-23) em [test_config.py](file:///Users/gabrielramos/v0-prime-urban/tests/api/test_config.py) (3.14 → 3.10)
+- [ ] Corrigir `--cov=tests` → `--cov=payload` em [pytest.ini](file:///Users/gabrielramos/v0-prime-urban/pytest.ini)
+- [ ] Corrigir hook order em [Properties.ts](file:///Users/gabrielramos/v0-prime-urban/payload/collections/Properties.ts) (preserveGeneratedIdentity)
+- [ ] Corrigir testes sem asserções reais em [test-primeurban.py](file:///Users/gabrielramos/v0-prime-urban/test-primeurban.py)
+- [ ] Corrigir URLs hardcoded nos testes
+
+## Fase 4: EXECUTION — Prioridade Média (Qualidade de Código)
+- [ ] Lazy instantiation do RateLimiter em [middleware.ts](file:///Users/gabrielramos/v0-prime-urban/middleware.ts)
+- [ ] Padronizar idioma dos comentários em [dev-bypass.ts](file:///Users/gabrielramos/v0-prime-urban/payload/access/dev-bypass.ts)
+- [ ] Mover imports inline para top-level (vários arquivos)
+- [ ] Renomear camelCase → snake_case nos helpers Python
+- [ ] Documentar scripts pytest no [package.json](file:///Users/gabrielramos/v0-prime-urban/package.json)
+- [ ] Refatorar testes duplicados com `pytest.mark.parametrize`
+
+## Fase 5: EXECUTION — Prioridade Baixa (Nitpicks)
+- [ ] Design tokens no logo.tsx
+- [ ] Reordenar imports em [seed.ts](file:///Users/gabrielramos/v0-prime-urban/seed.ts)/[scripts/seed.ts](file:///Users/gabrielramos/v0-prime-urban/scripts/seed.ts)
+- [ ] Melhorar seletores Playwright nos testes e2e
+- [ ] DRY no CI workflow [.github/workflows/test.yml](file:///Users/gabrielramos/v0-prime-urban/.github/workflows/test.yml)
+- [ ] Melhorar tipagem no `payload-client.ts`
+
+## Fase 6: VERIFICATION
+- [ ] Executar `pnpm build` sem erros
+- [ ] Executar testes Python que foram corrigidos
+- [ ] Verificar que credenciais foram removidas do código
+- [ ] Criar walkthrough.md

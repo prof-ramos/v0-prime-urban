@@ -89,7 +89,7 @@ class TestAdminLogin:
         THEN user should be redirected to admin dashboard
 
         Note: This test is skipped until test credentials are properly set up.
-        Use the setup_test_users.py script to create test users first.
+        Use `pnpm db:seed` to create test users first.
         """
         admin = AdminPage(page, base_url)
         admin.goto_admin()

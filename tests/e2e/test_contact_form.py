@@ -16,12 +16,6 @@ from tests.e2e.pages.contact_form_page import ContactFormPage
 # FIXTURES
 # =============================================================================
 
-@pytest.fixture(scope="session")
-def base_url() -> str:
-    """Base URL for the application."""
-    return "http://localhost:3000"
-
-
 @pytest.fixture(scope="function")
 def contact_form_page(page: Page, base_url: str) -> ContactFormPage:
     """
