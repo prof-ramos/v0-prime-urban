@@ -1,0 +1,29 @@
+# Dependências de desenvolvimento para testes PrimeUrban
+# Python 3.14.3
+
+# Framework de testes
+pytest>=8.0.0
+pytest-cov>=4.1.0
+pytest-xdist>=3.5.0  # Execução paralela
+pytest-asyncio>=0.23.0  # Suporte a async/await
+
+# Playwright para testes E2E
+playwright>=1.40.0
+pytest-playwright>=0.7.0
+pytest-base-url>=2.0.0
+
+# HTTP client para testes de API
+requests>=2.31.0
+
+# Utilitários
+python-dotenv>=1.0.0
+pydantic>=2.5.0  # Validação de dados
+
+# Relatórios
+pytest-html>=4.1.0
+pytest-json-report>=1.5.0
+
+# Debug
+# pytest-pdb published versions are currently <=0.3.1
+pytest-pdb>=0.3.1
+ipdb>=0.13.0
